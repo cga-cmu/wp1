@@ -28,6 +28,8 @@
 
 \newcommand{\T}{{\mbox {T}}}
 
+\newcommand{\gc}{{\mbox {GravityCompensation}}}
+
 \newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
 \newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
 
@@ -281,6 +283,8 @@ load and fatigue?
 
 \subsection{What speeds and forces are needed to run?}
 
+\subsection{What operator-exoskeleton contact forces are acceptable?}
+
 \section{What performance is currently available?}
 
 \subsection{Reference Design: linear hydraulic}
@@ -440,6 +444,12 @@ Things that don't fit well elsewhere.
  air bags
 \end{verbatim}
 
+The human and exoskeleton limbs are typically connected to each
+other with straps or padding. These connections typically have substantial
+compliance and play, and may or may not have appropriate damping.
+Typically the human and the exoskeleton do not move the same way:
+pose, and linear and angular velocities and accelerations are not the same.
+
 \section{Control approaches}
 
 What are current approaches to exoskeleton control?
@@ -458,6 +468,11 @@ motion (position, velocity, and acceleration).
 
 Useful paper: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
 
+Stability proofs of any of these methods should be viewed extremely skeptically due
+to the unmodeled operator-exoskeleton and exoskeleton-world contact dynamics, 
+actuator unmodeled dynamics, joint play and structural deformation, controller
+time delays which are typically ignored, especially in proofs involving
+passivity arguments or Lyapunov functions.
 
 \subsection{No control}
 
@@ -487,9 +502,10 @@ Similar to counterbalancing or physical gravity compensation, except done
 with exoskeleton actuators to cancel exoskeleton weight (but not inertia).
 A simple formulation is:
 \begin{equation}
-\mJ^{\tr} (m\vg)
+\vtau = \mJ^{\tr} (m\vg)
 \end{equation}
-where $\mJ$ is a Jacobian matrix, $m$ is the weight of the exoskeleton,
+where $\vtau$ are the exoskeleton joint torques, 
+$\mJ$ is a Jacobian matrix, $m$ is the weight of the exoskeleton,
 and $\vg$ is the gravity vector. 
 Operator relies on mechanical backdrivability to drive
 exokeleton to do task.
@@ -511,6 +527,10 @@ exoskeleton, the exoskeleton controller maps from exoskeleton configuration
 and velocity to desired joint/actuator/synergy forces.
 In this case the actuators need to generate forces and torques rather than
 positions or angles, or linear or angular velocities.
+
+The major drawback of impedance/ admittance control
+is that a predefined trajectory or a predefined point must be
+assigned as a desired value.[06990981] NOT REALLY TRUE, SEE INVERSE DYNAMICS.
 
 \subsection{Operator-Exoskeleton Force Control/Admittance Control}
 
@@ -535,7 +555,27 @@ operator and the exoskeleton. The actuators in this case may be force or
 position sources, but ultimately operator-exoskeleton forces are mapped
 to exoskeleton velocities or angular velocities.
 
-This is how the Sarcos WEAR exoskeleton works.
+This is how the Sarcos XOS/WEAR exoskeleton works.
+
+\begin{equation}
+\dot{\vq} = \mJ^{-1} (\mK_1 \vf)
+\end{equation}
+\begin{equation}
+\vtau = \mK_2 \dot{\vq} + \gc
+\end{equation}
+where $\dot{\vq}$ are the exoskeleton joint velocities,
+$\mJ$ is a Jacobian matrix, $\mK_1$ is a gain matrix,
+$\vf$ is the operator-exoskeleton force, 
+$\vtau$ is the exoskeleton joint torques, $\mK_2$ is a gain matrix,
+and $\gc$ is gravity compensation.
+[06990981]
+
+Inverting a Jacobian matrix is problematic when the Jacobian matrices are
+near singular, which is common in human gait and manipulation.
+Using a fixed or gain scheduled gain matrix may make more sense.
+\begin{equation}
+\dot{\vq} = \mK_3 \vf
+\end{equation}
 
 \subsubsection{Operator force feedback}
 
@@ -772,6 +812,9 @@ http://news.discovery.com/tech/robotics/exoskeleton-robots-top-5.htm
 http://blog.equipoisinc.com/new-technologies-emerging-aerospace-defense-manufacturing/
 http://nextbigfuture.com/2015/03/lower-body-exoskeleton-audi-chairless.html
 
+E. Guizzo and H. Goldstein, "The rise of the body bots [robotic
+exoskeletons]," Spectrum, IEEE, vol. 42, pp. 50-56, 2005.
+
 A. M. Dollar, H. Herr, Lower extremity exoskeletons and active
 orthoses: challenges and state-of-the-art, IEEE
 Transactions on Robotics: 24 (2008) 144-158.
@@ -787,7 +830,7 @@ BLEEX: Berkeley Lower Extremity Exoskeleton
 Ekso Bionics
 http://www.bloomberg.com/bw/articles/2013-03-28/businesses-bet-on-iron-man-like-exoskeletons
 
-Sarcos WEAR
+Sarcos XOS/WEAR
 http://www.army-technology.com/features/featuremilitary-exoskeletons-uncovered-ironman-suits-a-concrete-possibility
 http://www.robaid.com/bionics/raytheons-second-generation-exoskeleton-xos-2.htm
 
@@ -827,6 +870,10 @@ Cyberdyne: HAL 2000 up to at least HAL 5
 http://www.computerweekly.com/photostory/2240108388/Photos-Cyberdyne-Hal-robotic-exoskeleton-to-help-paralyzed/7/Japan-beats-the-US-to-it-Cyberdyne-Hal-robotic-exoskeleton-to-help-paralyzed
 http://spectrum.ieee.org/robotics/medical-robots/exoskeletons-are-on-the-march
 http://www.dailymail.co.uk/sciencetech/article-2384930/Robotic-exoskeleton-help-rehabilitate-disabled-people-passes-safety-tests--paving-way-sale-UK.html
+H. Kawamoto, S. Lee, S. Kanbe, and Y. Sankai, "Power assist method
+for HAL-3 using EMG-based feedback controller," in Systems, Man
+and Cybernetics, 2003. IEEE International Conference on, 2003, pp.
+1648-1653.
 
 Noonee
 http://www.extremetech.com/extreme/188417-rejoice-commuters-and-workers-the-chairless-chair-exoskeleton-lets-you-sit-down-anywhere-anytime
@@ -851,6 +898,13 @@ http://www.micromega-dynamics.com/esa-projects/exoskeleton.html
 UCLA
 http://bionics.seas.ucla.edu/research/exoskeleton_device_3.html
 http://bionics.seas.ucla.edu/research/exoskeleton_device_2.html
+
+RoboKnee
+J. E. Pratt, B. T. Krupp, C. J. Morse, and S. H. Collins, "The
+RoboKnee: an exoskeleton for enhancing strength and endurance
+during walking," in Robotics and Automation, 2004. Proceedings.
+ICRA'04. 2004 IEEE International Conference on, 2004, pp. 2430-
+2435.
 
 NASA/IHMC
 http://www.nasa.gov/offices/oct/home/feature_exoskeleton.html#.VfHU72wVhBc
@@ -881,12 +935,21 @@ http://biomech.media.mit.edu/portfolio_page/load-bearing-exoskeleton-for-augment
 MIT exo
 http://biomech.media.mit.edu/portfolio_page/load-bearing-exoskeleton-for-walking/
 http://www.technovelgy.com/ct/Science-Fiction-News.asp?NewsNum=1205
+C. J. Walsh, K. Endo, and H. Herr, "A quasi-passive leg exoskeleton
+for load-carrying augmentation," International Journal of Humanoid
+Robotics, vol. 4, pp. 487-506, 2007.
 
 Honda (Stride Management Assist (SMA))
 http://www.slashgear.com/honda-demo-walking-assist-exoskeleton-for-elderly-disabled-2211295/
 http://singularityhub.com/2010/09/13/hondas-exoskeletons-help-you-walk-like-asimo-video/
+Honda Walking Assist Device
+Y. Ikeuchi, J. Ashihara, Y. Hiki, H. Kudoh, and T. Noda, "Walking
+assist device with bodyweight support system," in Intelligent Robots
+and Systems, 2009. IROS 2009. IEEE/RSJ International Conference on,
+2009, pp. 4073-4079.
 
 REX exoskeleton
+http://www.rexbionics.com/
 http://www.gizmag.com/rex-robotic-exoskeleton/15736/pictures
 http://www.stripes.com/news/exoskeleton-could-benefit-troops-with-spinal-cord-injuries-1.113657
 http://www.funis2cool.com/cool/rex-the-robotic-exoskeleton-could-change-the-lives-of-disabled-people.html
@@ -1102,11 +1165,6 @@ http://www.nature.com/nature/journal/v522/n7555/fig_tab/nature14288_SF1.html
 Control of a lower extremity exoskeleton for human performance
 amplification
 JLC Racine - 2003 - dl.acm.org
-
-The RoboKnee: an exoskeleton for enhancing strength and endurance during
-walking
-JE Pratt, BT Krupp, CJ Morse… - … and Automation, 2004. …, 2004 -
-ieeexplore.ieee.org
 
 Locomotive control of a wearable lower exoskeleton for walking enhancement
 KH Low, X Liu, CH Goh, H Yu - Journal of Vibration and Control, 2006 -
