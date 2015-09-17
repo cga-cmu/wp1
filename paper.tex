@@ -432,6 +432,7 @@ power movements (jumping, moving through doors and walls)?
   adjustable moment arm
    linear slider
    XY slider for actuation and ``joint'' on foot.
+ series elastic actuation
 \end{verbatim}
 
 \section{System issues}
@@ -449,6 +450,9 @@ other with straps or padding. These connections typically have substantial
 compliance and play, and may or may not have appropriate damping.
 Typically the human and the exoskeleton do not move the same way:
 pose, and linear and angular velocities and accelerations are not the same.
+
+Heat exhaust. Heatsink cooling, Force air colling, Water cooling.
+Will housing and structure get too hot and fry operator?
 
 \section{Control approaches}
 
@@ -495,6 +499,13 @@ Recognizing/estimating phase goes here.
 Phase Triggered References could go here.
 
 Motion capture, motion libraries goes here.
+
+Often finite state machines whose states correspond to left stance, double support 1,
+right stance, and double support 2 are used to select behaviors. Gait transitions
+can be triggered by foot touchdown and liftoff events, or
+displacement of the Center of Mass (CoM).
+
+step-width adaptation algorithm
 
 \subsection{Active gravity compensation}
 
@@ -998,6 +1009,17 @@ https://mindwalker-project.eu/
 
 http://www.utwente.nl/ctw/bw/research/projects/MINDWALKER/
 http://tnsre.embs.org/2015/03/27/design-control-mindwalker-exoskeleton/
+
+Each of the powered joints has a series elastic
+actuator, which can deliver 100 Nm torque and 1 kW power -> 10rad/s
+IEEE TRANSACTIONS ON NEURAL SYSTEMS AND REHABILITATION ENGINEERING, VOL. 23, NO. 2, MARCH 2015 277-
+Design and Control of the MINDWALKER
+Exoskeleton
+Shiqian Wang, Letian Wang, Cory Meijneke, Edwin van Asseldonk, Thomas Hoellinger, Guy Cheron,
+Yuri Ivanenko, Valentina La Scaleia, Francesca Sylos-Labini, Marco Molinari, Federica Tamburella,
+Iolanda Pisotta, Freygardur Thorsteinsson, Michel Ilzkovitz, Jeremi Gancet, Yashodhan Nevatia,
+Ralf Hauffe, Frank Zanow, and Herman van der Kooij
+
 
 HEIKA
 https://www.heika-research.de/26_166.php
