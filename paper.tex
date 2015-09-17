@@ -1,0 +1,1155 @@
+\documentclass[letterpaper,12pt,fullpage]{article}
+
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{cite}
+\usepackage{graphicx}
+% \usepackage[dvips]{graphicx}
+% \usepackage{epsfig} % for postscript graphics files
+  % \graphicspath{{../eps/}}
+% \DeclareGraphicsExtensions{.eps}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage[cmex10]{amsmath}
+%\usepackage{array}
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+%\usepackage{eqparbox}
+\usepackage[tight,footnotesize]{subfigure}
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+%\usepackage{fixltx2e}
+%\usepackage{stfloats}
+\usepackage{hyperref}
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+\input latex-commands
+
+\newcommand{\T}{{\mbox {T}}}
+
+\newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
+\newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
+
+\begin{document}
+
+\title{A Survey of Exoskeleton Control (Draft 1.1)}
+
+\author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
+Carnegie Mellon University}
+
+\maketitle
+
+\begin{abstract}
+Abstract to be written.
+\end{abstract}
+
+\section{Executive Summary}
+
+Executive Summary to be written.
+
+\section{What is this paper about?}
+
+This paper surveys state of the art exoskeleton technology with an
+emphasis on control. The focus is on exoskeleton technologies that allow a
+highly trained and top percentile athletic 
+operator to carry a payload that weighs approximately the same amount
+as the operator. We envisage these types of exoskeletons to be useful
+in carrying protective and safety equipment for SWAT teams, police,
+firefighters, and soldiers. 
+
+We expect each exoskeleton controller
+to be used by and optimized for a single operator.
+A substantial investment in capturing the operators normal behavior,
+operator training and learning, and controller customization can be made.
+
+We do not survey exoskeleton technology for human arms. 
+We treat a torso and helmet of the exoskeleton as the payload,
+and focus on a lower body exoskeleton to support any payloads that
+are on the torso or head.
+We do not cover global energy storage such as batteries or liquid fuel.
+
+\section{What would it be like for the operator?}
+
+\subsection{``Invisible'' exoskeleton}
+
+Can we build an exoskeleton allows the operator to behave naturally
+and exerts little or no force on the operator?
+
+\subsection{``Natural'' exoskeleton}
+
+Can we build an exoskeleton allows the operator to behave naturally?
+
+\subsection{``Symbiotic'' exoskeleton}
+
+Can we build an exoskeleton that allows the operator/exoskeleton team
+to be effective? The operator needs to learn to ``fly'' the suit,
+just as operators learn to operate parachutes,
+wing suits, diving equipment, high and low temperature protective
+suits, firefighting equipment, and high altitude flight suits.
+
+\subsection{Physical Constraints}
+
+1) There is a weight distribution issue. Ideally the exoskeleton should
+have a center of mass at the same location as the operator. Otherwise,
+operator movements can be degraded and substantial forces occur between
+the operator and the exoskeleton.
+
+This constraint can be reduced with the use of propulsive forces other
+than foot contacts: rockets (solid or liquid fuel), jets, exploding armor,
+ducted fan air flow, ...
+
+A later white paper will discuss the use of propulsive forces other
+than foot contacts, as well as additional actuation at the contacts (air
+bags, springs, other ways to rapidly apply stored energy) for
+operator safety (dodging threats, ...) and high performance (jumping, ...).
+
+\section{Recognizing Operator Intent}
+
+Survey current operator/exoskeleton interfaces.
+
+The further in the future the control system can predict what the operator
+is going to do, the easier it is to control the exoskeleton. One way
+to think about predicting operator intent is to imagine you are in
+a hand-to-hand fight and you want to predict your opponent's next move.
+You can also think about playing poker. What ``tells'' does the opponent
+have?
+You are allowed to instrument your opponent. What sensors would you use?
+How would you interpret the sensors?
+
+\subsection{Intent time scales}
+
+What time scales does intent operate on, and what might we use
+to estimate intent on different time scales?
+
+\begin{verbatim}
+10 sec - rely on perceiving situation and thinking like your opponent.
+         What are the probabilities of various attacks? Responses?
+1 sec - measure set/tells to estimate probability of particular behaviors.
+100 msec - EMG, muscle state, force helpful here
+10 msec - EMG, muscle state, force helpful here and
+         immediate sensors: joint pos,vel, IMU, contact forces
+1 msec - immediate sensors: joint pos,vel, IMU, contact forces
+\end{verbatim}
+
+\subsection{Signal flow analysis}
+
+To what extent can we use brain, neural, and muscle electrical signals
+(EMG) to anticipate what the operator will do and increase performance?
+
+\subsubsection{What signals are there?}
+
+\begin{verbatim}
+- perceive what user sees, hears, feels, smells, tastes.
+- superhuman perception (RF signals, UV, IR, ultrasound, ...)
+- brain signals
+- spinal signals (motorneuron pools)
+- motor nerve signals
+- muscle signals (EMG)
+- instrumenting muscles: muscle force at tendons, muscle internal pressure
+- sensory nerve signals
+- implanted tissue markers, other implanted sensors
+- tissue imaging (ultrasound, optical)
+- human/exo contact force
+- contact strain, deformation rate
+- exo joint/IMU sensing
+- train user to emit special signals (play a videogame with their body,
+  hands, eyes, neural signals, muscle signals, ...)
+\end{verbatim}
+
+A future white paper will discuss how intent prediction could be 
+made easier with superhuman perception.
+
+A future white paper will discuss how intent prediction could be 
+made easier with implanted markers and devices, as well as continuous
+operator imaging such as ultrasound.
+
+\subsubsection{Signal timing?}
+
+So for inferring the ``intent'' of a human operator of an
+exoskeleton,
+I would like to put a timeline together of events.
+I guessed some timing, which I hope you will correct.
+
+When I say leg EMG or leg muscle I mean
+gastrocneumius or vastus lateralis (``fast'' muscles).
+
+What are delays between:
+\begin{verbatim}
+visual event to leg EMG start
+auditory event to leg EMG start
+vestibular event to leg EMG start
+foot tactile event to leg EMG start
+EMG start to 10% leg muscle
+EMG start to peak leg muscle
+\end{verbatim}
+
+What are your guesses for motorneuron activation to leg EMG activation?
+
+{\b From Hartmut Geyer:}
+
+The traveling time for neural signals is roughly 100m/s in humans.
+Thus, to go from any sensory system in the head (vestibular, ocular,
+auditory) to the leg muscles will take between 50ms (hip muscles) and
+100ms (foot muscles). Once the signal reaches the muscle, it takes
+another 5-10ms to be recognized by the surface EMG sensor (electrical
+field propagation in muscle tissue is about 0.4m/s).
+
+With that calculation:\\
+vis/aud/vestib to EMG: 50-70ms for vastus and about 80-100ms for
+gastroc
+
+example: paper on vestibular reflexes reporting 60ms to
+90ms:�\url{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4288134/}
+��
+If the motor cortex is involved with active calculations, times can
+take longer (I don't know numbers for this, but would guess adding
+50-100ms). I've heard that in combat soldiers, the motor cortex is
+getting by-passed, and they act far more reflexively from sensory
+systems directly through the lower brain. So if this is for military
+applications, I'd expect to see responses mainly determined by
+reflex travel times.
+
+Foot tactile event to gastrocnemius EMG:
+\begin{itemize}
+\item
+traveling time in neural system: 10ms foot sensors->spinal cord +
+10ms spinal cord->muscle�
+\item
+mechanical delay foot to foot sensory cells: 5-10ms
+\item
+electrical delay muscle activation to EMG: 5-10ms
+\item
+total: 30-40ms (which is consistent with reported EMG activities
+after mechanical disturbance at ankle joint with bowden cable jerk:
+\url{http://jn.physiology.org/content/76/2/1112.short�reports 42ms)}
+\end{itemize}
+
+Foot tactile event to vastus EMG:\\�
+- same as gastrocnemius less about 5ms for shorter travel time down
+the spinal cord to the muscle.
+
+EMG start to 10\% leg muscle force:\\
+- this gets tricky: EMG has fixed delay from muscle activation due to
+travel of electrical field to muscle surface (5-10ms, see top). Delay
+of muscle force production follows low pass filter function (calcium
+ion dynamics), often modeled as single pole filter with 10ms
+characteristic time. At 10\% force, both EMG and leg force could
+actually occur at the same time.�
+
+EMG start to peak muscle force:\\
+typically, (full) force production trails EMG by about 30ms in fast
+muscles (electromechanical delay, due to calcium ion dynamics
+traveling from sarkoplasmatic reticulum to cross bridge binding
+sites, \url{http://www.ncbi.nlm.nih.gov/pubmed/527577})
+
+alpha motoneuron activation to leg EMG:\\
+- travel time spinal cord to muscle (5ms for vastus, 10ms for
+gastocnemius) plus 5-10ms before muscle activation gets recognized in
+surface EMG:\\
+net vastus: 10-15ms\\
+net gastrocnemius: 15-20ms
+
+\subsubsection{What can be measured?}
+
+\subsubsection{How can the operator communicate with the exoskeleton}
+
+\begin{verbatim}
+Operator uses high frequency range or patterns of output to
+signal what to do
+ - selection
+ - parameterization (how far, how high, how fast)
+\end{verbatim}
+
+The operator controls more than the pose and motion of the
+exoskeleton. What if there are "pointing" sensors or communication
+devices that need to be aimed at or track an area of interest? What if
+there are additional (physical or virtual) pan/tilt/zoom cameras
+pointing to the side and rear or line of sight secure communications,
+for example. What about other controls, such as power assist level or
+thermal control? How can an operator naturally express intent and
+control these additional degress of freedom?
+
+\subsection{Operator load and fatigue}
+
+To what extent can task recognition and "autonomy" reduce operator
+load and fatigue?
+
+\section{What are the specs?}
+
+\subsection{What speeds and forces are needed to walk?}
+
+\subsection{What speeds and forces are needed to run?}
+
+\section{What performance is currently available?}
+
+\subsection{Reference Design: linear hydraulic}
+
+Survey state of the art using linear hydraulic actuators:
+Sarcos Primus Humanoid, Atlas(BDI), Cheetah(BDI)
+
+\subsection{Reference Design: linear electric}
+
+Survey state of the art using linear electric actuators (typically ballscrews):
+Roboray (Samsung)
+
+\subsection{Reference Design: rotary electric}
+
+Survey state of the art using rotary electric actuators:
+Schaft~\cite{shaft_foot_placement,shaft_push_recov}, Cheetah(MIT)
+
+\section{Sensing}
+
+\begin{verbatim}
+sensing
+ actuator length/angle
+ actuator velocity
+ actuator force/torque 
+ actuator sensing is pre-transmission
+  joint backlash
+  joint play
+  structural flexibility
+  actuator and transmission friction (10 Nm in Atlas)
+ joint angle
+ joint velocity
+ joint torque
+ IMUs all over
+ cameras all over
+\end{verbatim}
+
+\section{Energy Storage}
+
+We will only address energy storage
+in terms of control issues.
+
+\subsection{Global energy storage}
+
+\begin{verbatim}
+ battery
+ gasoline/jet fuel/diesel
+ chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
+ pressurized gas
+ other?
+ energy boost systems (jump, escape response in biology)
+  chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
+  pressurized gas
+  spring
+  other?
+\end{verbatim}
+
+\subsection{Joint-level/local energy storage (on joint or synergy)}
+
+Can we use energy storage to assist control: charging batteries,
+pressurizing accumulators, using springs, ... ?
+
+\begin{verbatim}
+ accumulator (really an air spring)
+ physical springs/damping
+ supercapacitor/battery/electrical for local electric braking
+\end{verbatim}
+
+\section{Actuation}
+
+Survey possible actuation systems.
+
+What role do physical properties of actuation play in control? Highly
+geared electric systems and hydraulic systems are inherently very
+stiff and go where you want, but must be made compliant/backdrivable
+using high performance (expensive and fragile) force control.
+Pneumatics and Series Elastic Actuation (SEA) are inherently
+compliant/backdrivable, which may reduce the performance
+needed from the sensors and control system, but may not be able to
+produce needed forces and speeds.
+
+\subsection{Global actuation}
+
+\begin{verbatim}
+ hydraulic pump 
+ gas (air) pump
+\end{verbatim}
+
+\subsection{Joint-level/synergy/local actuation}
+
+\begin{verbatim}
+ rotary electric
+  motor
+ linear electric
+  ball screw (both motor and transmission)
+ linear hydraulic
+  moog thing
+ rotary hydraulic
+ linear pneumatic
+ rotary pneumatic
+ linear or rotary impulsive actuation (IC engine style actuation)
+ energy boost systems (jump, escape response in biology)
+  chemical (air bag style: explosive actuation: solid/liquid fuel rocket)
+  pressurized gas
+  spring
+  other?
+\end{verbatim}
+
+\subsection{Flywheels}
+
+Energy storage and actuation for high manueverability.
+
+\section{Transmissions and Drive Trains}
+
+\subsection{How can clutches and gear shifts help?}
+
+How can we implement a gear shifting system (the crucial mechanical
+system missing in current robots)? How do we switch from manipulation
+while standing, walking, running, other rapid movement (dodging), and
+power movements (jumping, moving through doors and walls)?
+
+\subsection{Global Transmission}
+
+\begin{verbatim}
+ electric circuit
+ hydraulic circuit
+ gas (air) circuit
+\end{verbatim}
+
+\subsection{Joint-level/synergy/local transmission}
+
+\begin{verbatim}
+ rigid
+  gears
+   planetary
+   other
+  harmonic drive
+  ball screw
+  cosine attachment
+  Sarcos Primus Humanoid knee - to reduce moment arm variation with angle
+ hydraulic/pneumatic circuit
+ variable
+  belts
+  cones
+  fluid
+  adjustable moment arm
+   linear slider
+   XY slider for actuation and ``joint'' on foot.
+\end{verbatim}
+
+\section{System issues}
+
+Things that don't fit well elsewhere.
+
+\begin{verbatim}
+ bearing play, structural flexibility: +/- 2cm COM uncertainty
+ how attached to human (exoskeleton)
+ air bags
+\end{verbatim}
+
+\section{Control approaches}
+
+What are current approaches to exoskeleton control?
+
+How do exoskeleton control approaches compare with current and
+possible approaches to mobile manipulation and humanoid robot control?
+
+Role of phase estimation, behavioral clocks, and phase reset events
+such as impacts.
+
+Terms like impedance and admittance are used, but are often confusing,
+as there are two inputs into the exoskeleton (operator-exo forces and
+exo-world contact forces), and the output of the
+exoskeleton can be exoskeleton actuator forces and torques, or exoskeleton
+motion (position, velocity, and acceleration).
+
+Useful paper: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
+
+
+\subsection{No control}
+
+Rely on counterbalancing, mechanical springs, air springs, etc.
+to reduce forces. 
+Operator relies on mechanical backdrivability to drive
+exokeleton to do task.
+
+\subsection{Closed loop behavior selection, open loop behavior
+execution}
+
+Use joint/Cartesian position and velocity control of exoskeleton 
+with pre-generated references or selected targets and automatically generated trajectories to move to targets or perform tasks.
+Getting behavior selection is very important, operator may do it with
+special interface (keyboard, game controller, ...).
+Operator relies on mechanical backdrivability to correct exoskeleton behavior.
+
+Recognizing/estimating phase goes here.
+
+Phase Triggered References could go here.
+
+Motion capture, motion libraries goes here.
+
+\subsection{Active gravity compensation}
+
+Similar to counterbalancing or physical gravity compensation, except done
+with exoskeleton actuators to cancel exoskeleton weight (but not inertia).
+A simple formulation is:
+\begin{equation}
+\mJ^{\tr} (m\vg)
+\end{equation}
+where $\mJ$ is a Jacobian matrix, $m$ is the weight of the exoskeleton,
+and $\vg$ is the gravity vector. 
+Operator relies on mechanical backdrivability to drive
+exokeleton to do task.
+
+Sarcos Primus Humanoid (ATR) video:\\
+\url{https://www.youtube.com/watch?v=KNxxLm4sPys}
+
+\subsection{Impedance Control}
+
+What is impedance?
+\url{https://en.wikipedia.org/wiki/Mechanical_impedance}
+Stiffness, damping, and mass are components of an impedance, as
+they map kinematic variables (position, velocity, and acceleration)
+to forces and torques.
+
+The goal here is to make the exoskeleton imitate a desired linear dynamic system.
+In the case where there is no force sensing between the operator and the
+exoskeleton, the exoskeleton controller maps from exoskeleton configuration
+and velocity to desired joint/actuator/synergy forces.
+In this case the actuators need to generate forces and torques rather than
+positions or angles, or linear or angular velocities.
+
+\subsection{Operator-Exoskeleton Force Control/Admittance Control}
+
+The goal here is to use force sensing between the operator and the
+exoskeleton to ultimately generate exoskeleton velocities or angular velocities,
+imitating a desired linear dynamic system.
+This type of control is often referred to as admittance control as the
+exoskeleton maps contact forces into joint motion.
+Inverse dynamics control (see below)
+can be used to improve this type of control performance.
+
+What is admittance?
+\url{https://en.wikipedia.org/wiki/Admittance}
+Compliance, inverse damping, inverse mass are components of an admittance,
+as they map force and torques to kinematic variables (position, velocity, and
+acceleration). 
+
+\subsubsection{Get out of the way control}
+
+The exoskeleton moves as to create as little force as possible between the
+operator and the exoskeleton. The actuators in this case may be force or
+position sources, but ultimately operator-exoskeleton forces are mapped
+to exoskeleton velocities or angular velocities.
+
+This is how the Sarcos WEAR exoskeleton works.
+
+\subsubsection{Operator force feedback}
+
+The exoskeleton moves as to provide a scale version of exoskeleton-world
+contact forces, or some other (usually simple) mapping. 
+The actuators in this case may be force or
+position sources, but ultimately operator-exoskeleton forces are mapped
+to exoskeleton velocities or angular velocities to control the
+operator-exoskeleton forces to desired values.
+
+\subsubsection{Integral admittance control}
+
+{\it [Exoskeletons] have the implicit property
+of causing a virtual modification of the dynamic response of
+the human limb. We use this property of the exoskeletons
+action to formulate a unified control design framework called
+Integral Admittance [torque to angle] Shaping, which designs exoskeleton con-
+trollers capable of producing the desired dynamic response
+for the assisted limb. In this framework, a virtual increase
+in the admittance of the limb is produced by coupling it
+to an exoskeleton that exhibits active behavior. Specifically,
+our framework shapes the magnitude profile of the integral
+admittance (i.e. torque-to-angle relationship) of the coupled
+human-exoskeleton system, such that the desired assistance is
+achieved. This framework also ensures that the coupled stability
+and passivity are guaranteed.}~\cite{Nagarajan_etal_2015}
+
+{\it ... the impedance of the coupled human-exoskeleton
+system needs to be reduced below that of the unassisted
+human limb. This implies that the exoskeleton needs to
+cancel its own impedance first and then compensate for
+at least a part of the human limb’s impedance. Therefore,
+the desired exoskeleton behavior must be that of a negative
+impedance ... Consequently,
+the feedback gains will all be
+positive. In other words, the exoskeleton controller uses
+positive feedback, and hence the exoskeleton exhibits active
+behavior, which is capable of performing net positive work
+on the limb. ...
+However, positive feedback naturally raises the question of
+stability, and so we now explain how coupled stability can be
+achieved. Although the exoskeleton exhibits active behavior,
+which can be potentially destabilizing, the controller can be
+designed such that the coupled human-exoskeleton system
+is stable and passive. ... 
+}~\cite{Nagarajan_etal_2015}
+
+{\it
+... Inertia compensation is more complex ...
+It can be shown that using only positive acceleration
+feedback ..., the gain margin of the coupled system
+reduces to the moment of inertia of the exoskeleton, which
+implies that the exoskeleton controller ... can at the most
+compensate for the exoskeleton’s own moment of inertia
+before going unstable. This implies that the moment of
+inertia of the coupled human-exoskeleton system cannot be
+reduced below that of the unassisted human limb, without
+compromising coupled stability. However, using low-pass
+filtered acceleration feedback, it can be shown that inertia 
+reduction can be achieved. ...
+This work uses filtered acceleration
+feedback with a second-order low-pass Butterworth filter. ...
+}~\cite{Nagarajan_etal_2015}
+
+This is a form of frequency domain virtual model control.
+
+We are skeptical that acceleration feedback (even low pass filtered acceleration
+estimated by a Kalman filter) will
+work well on real systems. Impacts, shock waves, and the fact that neither
+the operator's body parts or the exoskeletons parts are rigid bodies and the
+joints are not well defined suggest this approach would be fragile to modeling
+error and unmodeled dynamics.
+
+\begin{verbatim}
+Kalman filter:
+P. Canet, “Kalman filter estimation of angular velocity and accelera-
+tion: On-line implementation,” McGill University, Montr ́eal, Canada,
+Tech. Rep. TR-CIM-94-15, Nov. 1994.
+\end{verbatim}
+
+\subsection{Inverse dynamics control}
+
+The goal here is to map from desired motion (in this case desired
+accelerations) to exoskeleton actuator commands (and desired operator
+and world contact forces).
+Inverse dynamics control is a generalization of active gravity compensation to include
+inertial, Coriolis, and centripetal forces (forces due to acceleration and
+velocity).
+Inverse dynamics can be added to open loop behavior execution, operator force
+feedback control, impedance control, and admittance control.
+
+A key question is where does desired acceleration come from?
+\begin{verbatim}
+  Operator-Exoskeleton Force Control/Admittance Control  
+  Receding Horizon Control of optimal trajectory of 
+    idealized LIPM+flywheel model (Atkeson)
+  intent prediction (see above)
+  neuromuscular model (Geyer, Wang, Van de Panne)
+  hybrid: Optimal control + neuromuscular model (Atkeson NSF Proposal)
+    - NMM provides bias through changes to optimization criterion
+    - NMM provides hard constraints
+    - NMM replaces components of model-based optimization scheme
+\end{verbatim}
+
+\subsection{Virtual model control}
+
+The goal here is to make the exoskeleton imitate a desired (usually nonlinear)
+dynamic system,
+For running it could be a pogo stick or trampoline, for example.
+
+There are several possible versions of this type of control:
+\begin{enumerate}
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton actuator or internal forces.
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton acceleration.
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton-world contact forces.
+\item
+Map from exoskeleton-world contact forces and system state to exoskeleton actuator or internal forces.
+\item
+Map from exoskeleton-world contact forces and system state to exoskeleton acceleration.
+\item
+Some combination of the above.
+\end{enumerate}
+
+\begin{verbatim}
+virtual model approach: hopper, compass gait (J. Pratt)
+estimate trajectory (jumping) vs. program behavior (trampoline, hopper,
+   compass gait)
+- J' control + behavior
+- Inverse dynamics + behavior
+\end{verbatim}
+
+\subsection{Task Specific Control}
+
+Task specific control can involve switching low level control modes, or abstracting
+the behavior of the exoskeleton with a hierarchy:
+\begin{enumerate}
+\item
+Task specific control: Generate desired motions and contact forces between
+the operator and the exoskeleton, and the exoskeleton and the world.
+\item
+Sometimes there are intermediate levels of control.
+\item
+Exoskeleton control: Control the exoskeleton to generate the desired motions and
+desired contact forces, with the desired impedance or admittance.
+\end{enumerate}
+
+\subsection{Survey literature and current exoskeleton systems for other approaches}
+
+\subsection{How handle hand and other non-foot contact forces?}
+
+Admittance control?
+
+Map external contact forces to internal contact forces (operator-exoskeleton).
+
+\subsection{Symbiosis and Autonomy, Handling Errors, and Superhuman Reflexes}
+
+A later white paper will discuss
+possible combinations of response to user and exoskeleton
+autonomy including balance control; response to trips, slips,
+stumbles, and fumbles; task assistance and guidance (guide operator to
+doorknob, button, or light switch); superhuman response to external
+perturbations such as projectiles and explosions; and autonomous
+execution (operator/exoskeleton symbiosis with multi-tasking)?
+
+\section{Do we need physical contact?}
+
+Current exoskeletons use physical contact with the operator to control
+the exoskeleton. Can we make an exoskeleton that does not touch or
+minimally touches the operator, and in which there is no power
+transfer between the operator and the exoskeleton? These types of
+systems might allow an operator to behave more normally, have a
+greater range of movement, be less tiring, and for non-enclosing
+systems, allow the operator to move independently of the system (such
+as aim and fire standard weapons or dive for cover) for additional
+operator performance and safety.
+\begin{enumerate}
+\item
+A "fat suit" or "sumo suit" could fully enclose the operator, but
+use distance sensing to move with the operator.
+\item
+A "shield" could enclose the front of an operator (or whatever
+portion of the operator is threatened) and move with the operator,
+\item
+A "human shield" (actually a machine shield) could move ahead of
+an operator, mimicking the operators movement.
+\item
+An "angel" could walk, jump, or fly between an operator and potential
+hostile sites, and deflect or disable projectiles.
+\end{enumerate}
+
+\section{One Time Use?}
+
+What happens if the suit is "one time use"? For example, ablative armor,
+armor that reacts to incoming projectiles before they hit,
+or explosive shielding could be used. Could the armor weight be decreased?
+The expensive parts of the suit could be re-usable, and even autonomously
+return to safe areas.
+
+\section{Conclusions and Recommendations}
+
+Conclusions and Recommendations to be written.
+
+\bibliographystyle{plain}
+\bibliography{exo}
+
+\newpage
+
+\section{Appendix: Our List of Exoskeletons}
+
+Please tell us what is missing.
+
+\subsection{Surveys}
+
+\begin{verbatim}
+Surveys:
+http://exoskeletonreport.com/
+http://robohub.org/tag/exoskeleton/
+http://robohub.org/exoskeletons-new-and-older/
+http://neurogadget.com/tag/exoskeleton
+http://www.engadget.com/tag/exoskeleton/
+http://spectrum.ieee.org/robotics/medical-robots/exoskeletons-around-the-world
+http://spectrum.ieee.org/robotics/medical-robots/exoskeletons-are-on-the-march
+http://spectrum.ieee.org/biomedical/bionics/the-rise-of-the-body-bots
+http://www.extremetech.com/electronics/139633-will-we-ever-have-iron-man-exoskeletons
+http://futurewarstories.blogspot.com/2014/08/fws-topics-combat-exoskeletons.html
+https://prezi.com/jygcvfxiesnm/a-brief-introduction-to-biomechanical-exoskeletons/
+http://news.discovery.com/tech/robotics/exoskeleton-robots-top-5.htm
+http://blog.equipoisinc.com/new-technologies-emerging-aerospace-defense-manufacturing/
+http://nextbigfuture.com/2015/03/lower-body-exoskeleton-audi-chairless.html
+
+A. M. Dollar, H. Herr, Lower extremity exoskeletons and active
+orthoses: challenges and state-of-the-art, IEEE
+Transactions on Robotics: 24 (2008) 144-158.
+(surveys exoskeletons)
+http://excedrin.media.mit.edu/wp-content/uploads/sites/3/2013/07/Dollar-2008_Lower-Extremity-Exoskeletons-and-Active-Orthoses-Challenges-and-State-of-the-Art.pdf
+\end{verbatim}
+
+\subsection{Exoskeletons}
+
+\begin{verbatim}
+BLEEX: Berkeley Lower Extremity Exoskeleton
+
+Ekso Bionics
+http://www.bloomberg.com/bw/articles/2013-03-28/businesses-bet-on-iron-man-like-exoskeletons
+
+Sarcos WEAR
+http://www.army-technology.com/features/featuremilitary-exoskeletons-uncovered-ironman-suits-a-concrete-possibility
+http://www.robaid.com/bionics/raytheons-second-generation-exoskeleton-xos-2.htm
+
+Lockheed Martin HULC, FORTIS
+http://www.lockheedmartin.com/us/news/features/2014/mfc-103114-relief-daily-grind-industrial-exoskeletons-work.html
+http://www.lockheedmartin.com/us/products/exoskeleton/FORTIS.html
+http://www.dailytech.com/From+HULC+to+FORTIS+the+Evolution+of+Lockheed+Martins+Incredible+Exosuit/article36421.htm
+http://www.wired.com/2014/09/navys-exoskeleton-could-make-workers-20-times-more-productive/
+http://robrady.com/design-project/lockheed-martin-fortis-human-powered-exoskeleton
+http://www.cnn.com/2013/05/22/tech/innovation/exoskeleton-robot-suit/
+
+DKFI CAPIO and Exoskeleton Active (VI-Bot)
+http://robotik.dfki-bremen.de/en/research/robot-systems/exoskeleton-passive.html
+http://robotik.dfki-bremen.de/en/research/robot-systems/exoskeleton-active.html
+
+DAEWOO
+http://mashable.com/2014/08/05/daewoo-exoskeleton/#xz8IUKO3bmk_
+http://www.geek.com/science/daewoo-dock-workers-now-using-strength-enhancing-exo-skeletons-1601290/
+
+Vanderbilt
+http://www.dailytech.com/Iron+Man+New+Robotic+Exoskeleton+Helps+Paraplegics+Walk/article29079.htm
+http://research.vuse.vanderbilt.edu/cim/research_orthosis.html
+
+Vanderbilt/Parker-Hannafin
+http://www.indego.com/indego/en/home
+https://www.youtube.com/watch?v=-bYYmZNxaZk
+https://en.wikipedia.org/wiki/Vanderbilt_exoskeleton
+http://www.roboticstrends.com/article/parker_hannifin_indego_exoskeleton
+http://www.crainscleveland.com/article/20141112/BLOGS03/141119915/parker-hannifin-accepts-the-challenge-of-commercializing-the-indego--41951672-812546791-1442419256=:6352--
+
+Activelink/Panasonic
+http://pinktentacle.com/2009/09/power-loader-exoskeleton-suit/
+http://www.extremetech.com/extreme/173463-worlds-first-affordable-powered-exoskeleton-is-almost-here-prepare-for-mech-wars
+http://www.dealstreetasia.com/stories/panasonic-to-release-commercial-exoskeleton-to-market-in-4q-2015-9269/
+
+Cyberdyne: HAL 2000 up to at least HAL 5
+http://www.computerweekly.com/photostory/2240108388/Photos-Cyberdyne-Hal-robotic-exoskeleton-to-help-paralyzed/7/Japan-beats-the-US-to-it-Cyberdyne-Hal-robotic-exoskeleton-to-help-paralyzed
+http://spectrum.ieee.org/robotics/medical-robots/exoskeletons-are-on-the-march
+http://www.dailymail.co.uk/sciencetech/article-2384930/Robotic-exoskeleton-help-rehabilitate-disabled-people-passes-safety-tests--paving-way-sale-UK.html
+
+Noonee
+http://www.extremetech.com/extreme/188417-rejoice-commuters-and-workers-the-chairless-chair-exoskeleton-lets-you-sit-down-anywhere-anytime
+
+Kanagawa Institute of Technology
+pneumatic exoskeleton developed at the Kanagawa Institute of Technology,
+in Atsugi, Japan, allows Akiko Michihisa, a fitness trainer, ...
+http://www.ubergizmo.com/2007/10/air-pressure-exoskeleton/
+
+Monash/Chen
+http://www.dailymail.co.uk/sciencetech/article-2639939/Super-fireman-The-hi-tech-exoskeleton-firefighters-superhuman-abilities.html
+http://news.discovery.com/tech/robotics/firefighter-exoskeleton-to-the-rescue-140521.htm
+
+Sagawa Electronics
+https://www.youtube.com/watch?v=tYgHdxmCcAI
+http://www.ohgizmo.com/2013/07/11/mk3-exoskeleton-suit-promises-to-make-schoolgirls-better-taller-stronger/
+http://www.bitrebels.com/technology/powered-jacket-exoskeleton-japan/
+
+Micromega
+http://www.micromega-dynamics.com/esa-projects/exoskeleton.html
+
+UCLA
+http://bionics.seas.ucla.edu/research/exoskeleton_device_3.html
+http://bionics.seas.ucla.edu/research/exoskeleton_device_2.html
+
+NASA/IHMC
+http://www.nasa.gov/offices/oct/home/feature_exoskeleton.html#.VfHU72wVhBc
+http://www.dailymail.co.uk/sciencetech/article-2216748/Nasa-developing-exoskeleton-help-astronauts-exercise-zero-gravity-help-disabled-people-walk-Earth.html
+http://robots.ihmc.us/x1-mina-exoskeleton/
+
+DARPA Warrior Web program
+http://gajitz.com/darpas-exoskeleton-can-help-soldiers-run-4-minute-miles/
+http://www.dailymail.co.uk/sciencetech/article-2348174/Robotic-exoskeleton--soft-light-pulls-like-pair-trousers--day-soldiers-superhuman-strength.html
+http://www.theengineer.co.uk/in-depth/the-big-story/power-dressing-why-its-exoskeleton-time/1019633.articlehttp://www.theengineer.co.uk/in-depth/the-big-story/power-dressing-why-its-exoskeleton-time/1019633.article
+http://www.engadget.com/2014/09/12/darpa-harvard-soft-exosuit/
+
+ESA
+http://www.esa.int/spaceinimages/Images/2014/06/Ready_to_wear_exoskeleton
+http://www.esa.int/spaceinimages/Images/2014/06/Exoskeleton
+http://www.sciencefocus.com/blog/exoskeleton-turning-man-machine
+
+3D Systems
+http://www.dezeen.com/2014/03/05/3d-printed-exoskeleton-helps-paralysed-users-walk/
+
+U.Penn
+http://www.popsci.com/article/technology/invention-awards-2014-powerful-portable-and-affordable-robotic-exoskeleton
+https://www.youtube.com/watch?v=kAyI1YrWThQ
+
+MIT Herr:
+http://biomech.media.mit.edu/portfolio_page/load-bearing-exoskeleton-for-augmentation-of-human-running/
+
+MIT exo
+http://biomech.media.mit.edu/portfolio_page/load-bearing-exoskeleton-for-walking/
+http://www.technovelgy.com/ct/Science-Fiction-News.asp?NewsNum=1205
+
+Honda (Stride Management Assist (SMA))
+http://www.slashgear.com/honda-demo-walking-assist-exoskeleton-for-elderly-disabled-2211295/
+http://singularityhub.com/2010/09/13/hondas-exoskeletons-help-you-walk-like-asimo-video/
+
+REX exoskeleton
+http://www.gizmag.com/rex-robotic-exoskeleton/15736/pictures
+http://www.stripes.com/news/exoskeleton-could-benefit-troops-with-spinal-cord-injuries-1.113657
+http://www.funis2cool.com/cool/rex-the-robotic-exoskeleton-could-change-the-lives-of-disabled-people.html
+
+Waterloo
+http://www.eng.uwaterloo.ca/~jpiorkow/fydp/
+
+Soft pneumatic exo
+http://cwwang.com/2008/04/08/soft-pneumatic-exoskeleton/
+
+ReWalk
+http://www.businessinsider.com/human-exoskeleton-approved-by-fda-2014-6
+
+Revision Military PROWLER Human Augmentation System (HAS) Exoskeleton
+https://www.youtube.com/watch?v=Zq4amM9u-6o
+
+Yasakawa
+http://www.crunchwear.com/yaskawa-electrics-ankle-exoskeleton-gives-strength/
+
+http://www.engadget.com/2015/08/20/japans-top-oil-company-is-building-an-aliens-power-loader/
+
+http://robohub.org/clinical-trials-begin-for-russias-first-medical-exoskeleton/
+
+https://en.wikipedia.org/wiki/Z_series_(space_suits)
+
+https://en.wikipedia.org/wiki/Extravehicular_Mobility_Unit
+
+Passive:
+http://techcrunch.com/2011/03/23/japanese-engineers-create-human-powered-exoskeleton-suit-video/
+http://www.jneuroengrehab.com/content/6/1/21/figure/F2?highres=y
+
+SUEFUL-7: A 7DOF upper-limb exoskeleton robot with muscle-model-oriented
+EMG-based control
+RARC Gopura, K Kiguchi, Y Li - Intelligent Robots and Systems …, 2009 -
+ieeexplore.ieee.org
+
+EU BALANCE program
+http://balance-fp7.eu/
+points us to European work
+http://cordis.europa.eu/project/rcn/106854_en.html
+
+MINDWALKER
+http://www.3me.tudelft.nl/en/about-the-faculty/departments/biomechanical-engineering/research/dbl-delft-biorobotics-lab/exoskeleton/
+
+https://mindwalker-project.eu/
+
+http://www.utwente.nl/ctw/bw/research/projects/MINDWALKER/
+http://tnsre.embs.org/2015/03/27/design-control-mindwalker-exoskeleton/
+
+HEIKA
+https://www.heika-research.de/26_166.php
+HEiKA-EXO - Optimization-based development and control of an exoskeleton
+for medical applications
+
+http://www.beyondhd.tv/exoskeleton/
+
+https://www.youtube.com/watch?t=3&v=myNRcDIgfjw
+www.livescience.com/51940-mind-controlled-exoskeleton-robot.html
+http://www.ibtimes.co.uk/scientists-develop-mind-controlled-robotic-exoskeleton-that-uses-leds-help-paraplegics-walk-1516834
+
+http://csl-ep.mech.ntua.gr/index.php/research/telerobotics-and-servohydraulic-simulators/emg-exoskeleton-control
+
+http://www.sarna.net/news/maxfas-exoskeleton-human-fire-control-supports-against-fatigue/
+MAXFAS Exoskeleton: Human Fire Control Supports against Fatigue
+
+Historical
+Cornell Aeronautical Labs with funding from the US Air Force. This
+resulted in the 1961-1962 Man-Amplifier suit that was more of an working
+model than a working prototype.
+The Cornell exo-suit was a mockup, and never included motors, servos, or
+power.
+
+GE's Hardiman I industrial exoskeleton project from 1965-1971 was the
+first working exo-suit.
+While a full mockup model was constructed, only pieces of Hardiman I
+exo-suit worked, namely the claw-like arms. While the arms worked, the
+leg-based frame work were an issue, especially with locomotion. By 1971,
+GE canceled the project.
+http://www.neatorama.com/2008/05/04/building-your-own-functional-iron-man-suit/
+
+the best of the 1980's exo-suits was the 1988 NASA AX-5 Hardshell space
+suit. For several decades, NASA's AMES had been working on a hadshelled
+space suit system that they called the "AX" series. The apex of this
+research was the 1988 AX-5.
+While bulky, the AX-5 possessed 95% maneuverable of the naked human form,
+and this suit was targeted for protection of astronauts in high-risk
+areas. It was envisioned that the AX-5 would be used in EVAs in Earth
+orbit and asteroid mining. In the end, it was determined that NASA did not
+need a suit like this and alone with some remaining technical issues, the
+AX hardsuits were shelved.
+\end{verbatim}
+
+\newpage
+
+\section{Appendix: References To Be Processed}
+
+Please suggest additional references.
+
+\begin{verbatim}
+
+Overviews ********************************
+
+Active Exoskeleton Control Systems: State of the Art
+http://www.sciencedirect.com/science/article/pii/S1877705812026732
+
+Control methodologies for upper limb exoskeleton robots
+http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6427387&url=http%3A%2F%2Fieeexplore.ieee.org%2Fiel5%2F6416132%2F6426928%2F06427387.pdf%3Farnumber%3D6427387
+
+A review of exoskeleton-type systems and their key technologies
+CJ Yang, JF Zhang, Y Chen, YM Dong
+http://pic.sagepub.com/content/222/8/1599.abstract
+
+D. P. Ferris, “The exoskeletons are here,” Journal of Neuroengineering
+and Rehabilitation, vol. 6, no. 17, pp. 1–3, 2009.
+
+G. S. Sawicki and D. P. Ferris, “Mechanics and energetics of level
+walking with powered ankle exoskeletons,” J. Exp. Biol., vol. 211, no.
+Pt. 9, pp. 1402–1413, 2008.
+
+http://www.bme.ncsu.edu/labs/hpl/SawickiDissertationFinal.pdf
+Mechanics and energetics of walking with powered exoskeletons
+
+Carry Payload *****************************
+
+The first autonomously powered exoskeleton device that experimentally
+demonstrated reduction in metabolic cost for human walking during
+load carriage
+L. M. Mooney, E. J. Rouse, and H. M. Herr, “Autonomous exoskeleton
+reduces metabolic cost of human walking during load carriage,”
+Journal of Neuroengineering and Rehabilitation, vol. 11, no. 80, 2014.
+
+H. Kazerooni and R. Steger, “Berkeley lower extremity exoskeleton,”
+ASME J. Dyn. Syst., Meas., Control, vol. 128, pp. 14–25, 2006.
+
+C. J. Walsh, K. Pasch, and H. Herr, “An autonomous, underactuated
+exoskeleton for load-carrying augmentation,” in Proc. IEEE/RSJ Int.
+Conf. Intelligent Robots and Systems (IROS), 2006, pp. 4110–1415.
+
+Impedance control **************************
+
+G. A.-Ollinger, J. E. Colgate, M. A. Peshkin, and A. Goswami,
+“Design of an active one-degree-of-freedom lower-limb exoskeleton
+with inertia compensation,” Int. J. Robotics Research, vol. 30, no. 4,
+pp. 486–499, 2011.
+
+Learning ************************************
+
+K. E. Gordon, C. R. Kinnaird, and D. P. Ferris, “Locomotor adaptation
+to a soleus emg-controlled antagonistic exoskeleton,” J. Neurophysiol.,
+vol. 109, no. 7, pp. 1804–1814, 2013.
+
+EMG control ********************************
+
+H. Kawamoto, S. Lee, S. Kanbe, and Y. Sankai, “Power assist method
+for hal-3 using emg-based feedback controller,” in Proc. IEEE Int.
+Conf. Syst., Man, Cybern., 2003, pp. 1648–1653.
+
+S. Lee and Y. Sankai, “The natural frequency-based power assist
+control for lower body with hal-3,” in Proc. IEEE Int. Conf. Sys. Man
+Cyber. (ICSMC), 2003, pp. 1642–1647.
+
+Not sorted ***********************************
+
+master thesis design and control of a robotic exoskeleton for ...
+digital.csic.es/.../Bortole_M_Design_Control_Robotic_Exoskeleton_Gait...
+by M Bortole - ‎2013 - ‎Cited by 1
+Control of a Robotic Exoskeleton for Gait Rehabilitation ” written by
+Magdo Bortole as a requirement to obtain the Degree in the official Master
+in Robotics and
+
+Active Impedance:
+A Novel Concept in Assistive Exoskeleton Control
+http://www.ambarish.com/exos.html
+
+http://gradworks.umi.com/33/86/3386362.html
+Active impedance control of a lower-limb assistive exoskeleton
+by Aguirre-Ollinger, Gabriel, Ph.D., NORTHWESTERN UNIVERSITY, 2009, 297
+pages; 3386362
+
+Active-impedance control of a lower-limb assistive exoskeleton
+G Aguirre-Ollinger, JE Colgate… - … , 2007. ICORR 2007. …, 2007 -
+ieeexplore.ieee.org
+
+Design of an active one-degree-of-freedom lower-limb exoskeleton with
+inertia compensation
+G Aguirre-Ollinger, JE Colgate… - … Journal of Robotics …, 2011 -
+ijr.sagepub.com
+
+http://www.scholars.northwestern.edu/pubDetail.asp?t=pm&id=84856481679&
+Inertia compensation control of a one-degree-of-freedom exoskeleton for
+lower-limb assistance: Initial experiments
+
+Power assist control for walking aid with HAL-3 based on EMG and impedance
+adjustment around knee joint
+S Lee, Y Sankai - Intelligent Robots and Systems, 2002. IEEE/ …, 2002 -
+ieeexplore.ieee.org
+
+http://www.intechopen.com/books/international_journal_of_advanced_robotic_syste\
+ms/design-and-control-of-a-powered-hip-exoskeleton-for-walking-assistance
+Design and Control of a Powered Hip Exoskeleton for Walking Assistance
+By Qingcong Wu, Xingsong Wang, Fengpo Du and Xiaobo Zhang
+
+http://www.jcomputers.us/vol9/jcp0901-29.pdf
+Carrying Lower Extreme Exoskeleton Rapid
+Terminal Sliding-Mode Robust Control
+
+http://h2t.anthropomatik.kit.edu/pdf/Beil2015.pdf
+Design and Control of the Lower Limb Exoskeleton KIT-EXO-1
+
+Reducing the energy cost of human walking using an unpowered exoskeleton
+http://www.nature.com/nature/journal/v522/n7555/fig_tab/nature14288_SF1.html
+
+Control of a lower extremity exoskeleton for human performance
+amplification
+JLC Racine - 2003 - dl.acm.org
+
+The RoboKnee: an exoskeleton for enhancing strength and endurance during
+walking
+JE Pratt, BT Krupp, CJ Morse… - … and Automation, 2004. …, 2004 -
+ieeexplore.ieee.org
+
+Locomotive control of a wearable lower exoskeleton for walking enhancement
+KH Low, X Liu, CH Goh, H Yu - Journal of Vibration and Control, 2006 -
+jvc.sagepub.com
+
+Exoskeleton robots for upper-limb rehabilitation: state of the art and
+future prospects
+HS Lo, SQ Xie - Medical engineering & physics, 2012 - Elsevier
+
+http://www.scielo.org.co/scielo.php?pid=S0123-30332014000100020&script=sci_arttext
+Design and Implementation of a control strategy for static balance of a
+lower limbs exoskeleton
+
+Implementation of Real Time Control Algorithm for Gait ...
+www.seipub.org/ABER/Download.aspx?ID=22038
+Control approach follows gait trajectory using feedback sensors and
+actuators for movement control. ... Exoskeleton Device; Real Time Control;
+Gait Phases.
+
+Exoskeleton control for lower-extremity assistance based on adaptive
+frequency oscillators: Adaptation of muscle activation and movement
+frequency
+http://pih.sagepub.com/content/229/1/52.abstract
+
+Control of a Lower Extremity Exoskeleton for Human ...
+202.28.199.34/multim/3121656.pdf
+The lower extremity exoskeleton is a wearable robotic device that should
+... The control law makes use of dynamic models of the exoskeleton to
+estimate the.
+
+http://labrob.mty.itesm.mx/proyectos/robotic-exoskeletons
+Robotic Exoskeletons
+
+http://info.scichina.com/sciFe/EN/abstract/abstract516165.shtml
+The relationship between physical human-exoskeleton interaction and
+dynamic factors: using a learning approach for control applications
+
+Online Assessment of Human-Robot Interaction for Hybrid Control of Walking
+http://www.mdpi.com/1424-8220/12/1/215
+
+
+\end{verbatim}
+
+\end{document}
+
+
