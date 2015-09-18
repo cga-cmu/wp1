@@ -78,9 +78,22 @@ We do not cover global energy storage such as batteries or liquid fuel.
 Can we build an exoskeleton allows the operator to behave naturally
 and exerts little or no force on the operator?
 
+This could be achieved through active control using feedback of the
+operator-exoskeleton forces. Additional gravity, friction, actuator, and
+inertial compensation (inverse dynamics) can improve performance.
+
 \subsection{``Natural'' exoskeleton}
 
 Can we build an exoskeleton allows the operator to behave naturally?
+The operator can feel the exoskeleton, but can overpower it when necessary.
+
+Bypass valves and clutches allow the operator to physically ``take over''
+and push the relatively lightweight leg mounted exoskeleton around.
+
+``Passive'' degrees of freedom can have physical or ``virtual'' springs
+applied to assist in support (all abduct/adduct DOF, rotational DOF).
+These aids can be clutched out or turned off when necessary.
+``Virtual'' sprintgs can be modulated.
 
 \subsection{``Symbiotic'' exoskeleton}
 
@@ -89,6 +102,12 @@ to be effective? The operator needs to learn to ``fly'' the suit,
 just as operators learn to operate parachutes,
 wing suits, diving equipment, high and low temperature protective
 suits, firefighting equipment, and high altitude flight suits.
+
+The exoskeleton can adapt its behavior to the task.
+For example, for jumping, the exoskeleton can operate like a pogo 
+stick \url{https://www.youtube.com/watch?v=lbp41vWP4o4}, 
+and for running it could act like jumping 
+stilts \url{https://www.youtube.com/watch?v=9ZOd7yEyhwI},
 
 \subsection{Physical Constraints}
 
@@ -258,6 +277,28 @@ FMG-[06913842]
 
 Bagnellian behavior modeling.
 
+{\bf EMG}
+Electrical activity was measured using surface electrodes,
+high-pass filtered at 20 Hz, rectified, low-pass filtered at 6 Hz,
+offset by a small value of -0.008, and amplified by a gain of 283
+to obtain the desired torque.~\cite{IEEE07139980}
+
+Electromyography (EMG)
+signals are extremely noisy and it is not easy to extract a
+meaningful data form the raw signal. In addition, it takes a long
+time to attach the EMG electrodes to the body and calibrate the
+sensors.
+\begin{verbatim}
+T. Hayashi, H. Kawamoto, and Y. Sankai, "Control method of robot
+suit HAL working as operator's muscle using biological and dynamical
+information," in Intelligent Robots and Systems, 2005.(IROS 2005).
+2005 IEEE/RSJ International Conference on, 2005, pp. 3063-3068.
+H. Kawamoto and Y. Sankai, "Power assist system HAL-3 for gait
+disorder person," in Computers helping people with special needs, ed:
+Springer, 2002, pp. 196-203.
+\end{verbatim}
+
+
 \subsubsection{How can the operator communicate with the exoskeleton}
 
 \begin{verbatim}
@@ -283,6 +324,8 @@ load and fatigue?
 
 \section{What are the specs?}
 
+Hip, knee, ankle: At least 200Nm, ideally >400Nm.
+
 \subsection{What speeds and forces are needed to walk?}
 
 \subsection{What speeds and forces are needed to run?}
@@ -291,10 +334,17 @@ load and fatigue?
 
 \section{What performance is currently available?}
 
-\subsection{Reference Design: linear hydraulic}
+\subsection{Reference Design: linear hydraulic with bypass valves}
 
 Survey state of the art using linear hydraulic actuators:
 Sarcos Primus Humanoid, Atlas(BDI), Cheetah(BDI)
+
+{\it 140 bar(2,050 psi) and 8 l pm in total. Hydraulic cylinders
+are designed to be double-acting at the hip pitch joint and
+the knee pitch joint. The hip and knee cylinders are designed
+for a maximum thrust of 4 kN and 2 kN, respectively. The
+four three-way servo valves(M 200, Star-Hydraulic)}~\cite{IEEE07222598}
+
 
 \subsection{Reference Design: linear electric}
 
@@ -313,17 +363,38 @@ sensing
  actuator length/angle
  actuator velocity
  actuator force/torque 
+n-line loadcells(31E-05KNO,
+Sensotec) are equipped on each cylinder tube end for the
+actuator force.~\cite{IEEE07222598}
  actuator sensing is pre-transmission
   joint backlash
   joint play
   structural flexibility
   actuator and transmission friction (10 Nm in Atlas)
  joint angle
+three high precision(17 bit) encoders(DS-25-16, Net-
+zer) are used to measure the robots joint angles(hip, knee,
+ankle pitch angle).~\cite{IEEE07222598}
  joint velocity
  joint torque
  IMUs all over
  cameras all over
 \end{verbatim}
+
+{\it foot sensors, which are comprised
+of four one-axis(normal force) loadcells(CBFSB-200, Bong-
+shin), are adopted to detect the gait phase. The placement
+of each loadcell is chosen from the analysis of GRF for
+level walking : Hallux(toe), first Metatarsal(inside), fourth
+Metatarsal(outside), and Heel similar to [20], as shown in
+Fig. 2(a). The Gait phase detection is simply classified
+into two phases by the threshold method using the sum
+of the load cells: Single Stance (Left Stance(LS) or Right
+Stance(RS)), Double Stance(DS). The result of gait detection
+while walking is shown in Fig. 2(b).}~\cite{IEEE07222598}
+20: Kong K, Tomizuka M. ”A gait monitoring system based on air pressure
+sensors embedded in a shoe,” IEEE/ASME Trans Mechatron, 358 - 370.
+2009.
 
 \section{Energy Storage}
 
@@ -347,8 +418,13 @@ in terms of control issues.
 
 \subsection{Joint-level/local energy storage (on joint or synergy)}
 
-Can we use energy storage to assist control: charging batteries,
+Can we use local energy storage to assist control: charging batteries,
 pressurizing accumulators, using springs, ... ?
+
+{\it incorporation of physical
+compliance is of importance when it comes to dependability,
+low mechanical impedance, locomotion efficiency, inherent
+safety and enhanced environmental interaction capabilities}~\cite{IEEE07139975}
 
 \begin{verbatim}
  accumulator (really an air spring)
@@ -409,6 +485,19 @@ system missing in current robots)? How do we switch from manipulation
 while standing, walking, running, other rapid movement (dodging), and
 power movements (jumping, moving through doors and walls)?
 
+stance leg requires a large torque and
+relatively low bandwidth during the support period. However,
+the swing leg undergoes a large motion, but it only supports
+its own weight during the swing period. Therefore, the swing
+leg requires a relatively small torque. Thus, a dual-mode
+approach is very useful for an exoskeleton robot control.
+In this paper, a dual-mode control method using a hydraulic
+system is proposed,~\cite{IEEE07222598}
+
+rise from squat, chair.
+push large objects out of the way (standing full body push
+or seated using legs to push)
+
 \subsection{Global Transmission}
 
 \begin{verbatim}
@@ -468,13 +557,36 @@ possible approaches to mobile manipulation and humanoid robot control?
 Role of phase estimation, behavioral clocks, and phase reset events
 such as impacts.
 
-Terms like impedance and admittance are used, but are often confusing,
-as there are two inputs into the exoskeleton (operator-exo forces and
-exo-world contact forces), and the output of the
-exoskeleton can be exoskeleton actuator forces and torques, or exoskeleton
-motion (position, velocity, and acceleration).
+One basic distinction is whether the actuators are thought of as position
+or force sources. Often this is revealed by the design of the ``low level''
+controller. Note that this is often somewhat confusing. Electric motors
+are torque sources (low impedance), but when a high gear ratio transmission
+is added (such as a harmonic drive) the whole system becomes high impedance
+and thus is best thought of as a position (or velocity) source. Therefore,
+position control is performed by the low level controller. Hydraulic actuators
+are high impedance, but when a force or load sensor is added (or piston differential
+oil pressure is used as a force sensor), the whole system becomes low impedance
+and is best thought of as a force source. Force (or joint torque) control is
+performed by the low level controller. Force or torque can be added to an
+electromechanical drive train (electric motor plus gears or motor plus ballscrew)
+to make it lower impedance and more like a force source as well.
+
+Terms like impedance and admittance control are used, but are often confusing,
+as in controller design one can choose from several possible
+inputs into the exoskeleton (exoskeleton positions,
+velocities, accelerations, operator-exo contact forces and
+exo-world contact forces), and choose from several possible exoskeleton
+outputs: exoskeleton actuator forces and torques, exoskeleton
+motion (position, velocity, and acceleration), as well as operator-exo
+contact forces or exo-world contact forces.
 
 Useful paper: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
+
+Variants of nonlinear feedback control such as feedback linearization or
+sliding mode control are largely ignored. Once the decision to use feedback control
+based on a set of observable quantities and with particular outputs is made,
+one can try out the various linear and nonlinear feedback control paradigms
+to see what works well.
 
 Stability proofs of any of these methods should be viewed extremely skeptically due
 to the unmodeled operator-exoskeleton and exoskeleton-world contact dynamics, 
@@ -546,6 +658,23 @@ positions or angles, or linear or angular velocities.
 The major drawback of impedance/ admittance control
 is that a predefined trajectory or a predefined point must be
 assigned as a desired value.[06990981] NOT REALLY TRUE, SEE INVERSE DYNAMICS.
+
+Although impedance control are extensively utilized in rehabilitation
+robotics [18], limited number of studies has been focused on
+this method for power augmentation [19, 20].
+\begin{verbatim}
+[18] R. Riener, L. Lunenburger, S. Jezernik, M. Anderschitz, G. Colombo,
+and V. Dietz, "Patient-cooperative strategies for robot-aided treadmill
+training: first experimental results," Neural Systems and Rehabilitation
+Engineering, IEEE Transactions on, vol. 13, pp. 380-394, 2005.
+[19] B.-K. Lee, H.-D. Lee, J.-y. Lee, K. Shin, J.-S. Han, and C.-S. Han,
+"Development of dynamic model-based controller for upper limb
+exoskeleton robot," in Robotics and Automation (ICRA), 2012 IEEE
+International Conference on, 2012, pp. 3173-3178.
+[20] W. Yu, J. Rosen, and X. Li, "PID admittance control for an upper limb
+exoskeleton," in American Control Conference (ACC), 2011, 2011, pp.
+1124-1129.
+\end{verbatim}
 
 \subsection{Operator-Exoskeleton Force Control/Admittance Control}
 
@@ -695,6 +824,8 @@ A key question is where does desired acceleration come from?
     - NMM replaces components of model-based optimization scheme
 \end{verbatim}
 
+Friction, actuator dynamics, exo-world contact forces.
+
 \subsection{Virtual model control}
 
 The goal here is to make the exoskeleton imitate a desired (usually nonlinear)
@@ -742,6 +873,98 @@ Sometimes there are intermediate levels of control.
 Exoskeleton control: Control the exoskeleton to generate the desired motions and
 desired contact forces, with the desired impedance or admittance.
 \end{enumerate}
+
+\subsection{Sensitive Amplicfication Control}
+
+BLEEX:
+Sensitivity amplification control (SAC) was firstly
+developed by Kazerooni [14]. In this method, the interaction
+force from human are regarded as disturbance. The control
+system has high sensitivity to disturbances and thus has fast
+motion response to the interaction forces. The main drawback
+of SAC is unwanted response to any disturbance regardless of
+being intentional or non-intentional disturbance. In addition,
+the highly accurate dynamic modelling is required in this
+method.
+\begin{verbatim}
+H. Kazerooni, J.-L. Racine, L. Huang, and R. Steger, "On the control of
+the berkeley lower extremity exoskeleton (BLEEX)," in Robotics and
+Automation, 2005. ICRA 2005. Proceedings of the 2005 IEEE
+International Conference on, 2005, pp. 4353-4360.
+\end{verbatim}
+
+\subsection{Dual Control Appproach}
+
+{\it The robot utilized the dual-mode control scheme, which is
+comprised of the active control for the stance phase and the
+passive control (using bypass valves) for the swing phase, to achieve high walking
+speed in the swing phase while supporting heavy loads in
+the stance phase. To reduce the sudden change of the torque
+command at the transition from the swing phase to the stance
+phase, a smoothing method is adopted. We also implemented
+a pre-transition method to take a foot off quickly for fast
+walking by predicting the change from the swing to the stance
+in advance.}~\cite{IEEE07222598}
+
+Bypass valves implement what Sarcos calls ``dangle''.
+
+stance: virtual joint torque control method Kazerooni et al.(2005)
+When contact location between the wearer and the
+exoskeleton is not fixed and difficult to estimate, this method
+has been shown to be an effective method to generate the
+locomotion for an exoskeleton robot.[3],[4],[21]
+H. Kazerooni , Z. Racine , L. Huang and R. Steger ”On the control of
+the Berkeley lower extremity exoskeleton (BLEEX),” Proc. IEEE Int.
+Conf. Robot. Autom., pp. 4364-4371, 2005.
+Racine Jean-Louis Charles ”Control of a Lower Extrmity Exoskeleton
+for Human Performance Amplification,” University of California,2003.
+582
+Xiuxia Yang, Hongchao Zhao, Yi Zhang, Xiaowei Liu ”Carrying
+Lower Extreme Exoskeleton Rapid Terminal Sliding-Mode Robust
+Control,” Journal of computers, vol.9, No.1,202-208. 2014.
+
+to reduce
+sudden changes(command jump) at the phase transitions, a
+smoothing method [5],[19] is introduced and a pre-transition
+method is used to solve the swing delay due to the internal
+pressure(approx 5 bar).
+H. Kazerooni , Ryan Steger, Lihua Huang ”Hybrid Control of the
+Berkeley Lower Extremity Exoskeleton (BLEEX),” Int. Journal of
+Robotics Research, pp. 561-573, 2006.
+oonbum Bae, Kyoungchul Kong, Masayoshi Tomizuka ”Gait Phase-
+Based Control for a Rotary Series Elastic Actuator Assisting the knee
+
+Transition Control
+
+1) Smoothing Method: During transitions of the gait
+phase, discontinuity of the control command torque are
+occurred by the different condition for the fixed coordinate
+which is on the backpack at the swing phase or the foot at
+the stance phase. In this paper, to reduce this sudden change
+due to gait phase changes, a smoothing method is proposed
+as shown in Fig. 7. An exponential function is considered
+as the weighting function for smoothing as shown in (6).
+In this case, the weighting is small at the initial stage but
+it exponentially converges to one for supporting the load
+quickly.
+
+2) Pre-transition Method: The pre-transition method is
+that the passive mode is executed in the pre-swing phase
+prior to toe off. This dramatically reduces the moving
+
+\subsection{Ground Reaction Force Control}
+
+The ground reaction
+forces (GRF) magnitude and direction is used to command the
+actuators. In some researches the GRF sensors are used
+together with other sensors in the control architectures [17],
+while in other researches the control system is based on the
+GRF merely [RoboKnee, Honda].
+\begin{verbatim}
+17: K. Suzuki, G. Mito, H. Kawamoto, Y. Hasegawa, and Y. Sankai,
+"Intention-based walking support for paraplegia patients with Robot
+Suit HAL," Advanced Robotics, vol. 21, pp. 1441-1469, 2007
+\end{verbatim}
 
 \subsection{Survey literature and current exoskeleton systems for other approaches}
 
@@ -827,6 +1050,11 @@ http://news.discovery.com/tech/robotics/exoskeleton-robots-top-5.htm
 http://blog.equipoisinc.com/new-technologies-emerging-aerospace-defense-manufacturing/
 http://nextbigfuture.com/2015/03/lower-body-exoskeleton-audi-chairless.html
 
+H. Lee, W. Kim, J. Han, and C. Han, ”The technical trend of the
+exoskeleton robot system for human power assistance, ” International
+Journal of Precision Engineering and Manufacturing, vol. 13, pp. 1491-
+1497, 2012.
+
 E. Guizzo and H. Goldstein, "The rise of the body bots [robotic
 exoskeletons]," Spectrum, IEEE, vol. 42, pp. 50-56, 2005.
 
@@ -835,11 +1063,22 @@ orthoses: challenges and state-of-the-art, IEEE
 Transactions on Robotics: 24 (2008) 144-158.
 (surveys exoskeletons)
 http://excedrin.media.mit.edu/wp-content/uploads/sites/3/2013/07/Dollar-2008_Lower-Extremity-Exoskeletons-and-Active-Orthoses-Challenges-and-State-of-the-Art.pdf
+
+Simone Cinquemani Federico Casolo and Matteo Cocetta. On
+active lower limb exoskeletons actuators. ISMA 08, 2008
 \end{verbatim}
 
 \subsection{Exoskeletons}
 
 \begin{verbatim}
+This is on the low end of the ballpark: 1.1m/s (4km/hr), 99lb (45kg) payload
+IEEE 07222598
+2015 IEEE International Conference on Advanced Intelligent Mechatronics (AIM)
+July 7-11, 2015. Busan, Korea
+Locomotion Control Strategy of Hydraulic Lower Extremity
+Exoskeleton Robot
+Hongchul Kim, Changhoon Seo, Young June Shin, Jung Kim, and Youn Sik Kang
+
 BLEEX: Berkeley Lower Extremity Exoskeleton
 
 Ekso Bionics
@@ -848,6 +1087,10 @@ http://www.bloomberg.com/bw/articles/2013-03-28/businesses-bet-on-iron-man-like-
 Sarcos XOS/WEAR
 http://www.army-technology.com/features/featuremilitary-exoskeletons-uncovered-ironman-suits-a-concrete-possibility
 http://www.robaid.com/bionics/raytheons-second-generation-exoskeleton-xos-2.htm
+http://www.raytheon.com/newsroom/technology/rtn08_exoskeleton/
+http://techcrunch.com/2010/09/27/sarcos-xos2-the-real-life-iron-man/
+S. Jacobsen, ”On the development of XOS, a powerful exoskeletal
+robot,” IEEEIRSJ IROS, Plenary Talk, 2007.
 
 Lockheed Martin HULC, FORTIS
 http://www.lockheedmartin.com/us/news/features/2014/mfc-103114-relief-daily-grind-industrial-exoskeletons-work.html
@@ -925,6 +1168,10 @@ NASA/IHMC
 http://www.nasa.gov/offices/oct/home/feature_exoskeleton.html#.VfHU72wVhBc
 http://www.dailymail.co.uk/sciencetech/article-2216748/Nasa-developing-exoskeleton-help-astronauts-exercise-zero-gravity-help-disabled-people-walk-Earth.html
 http://robots.ihmc.us/x1-mina-exoskeleton/
+
+P.D. Neuhaus, et al., “Design and evaluation of Mina: A robotic
+orthosis for paraple ics,” in Rehabilitation Robotics (ICORR), 2011
+IEEE International Conference on. 2011. IEEE.
 
 DARPA Warrior Web program
 http://gajitz.com/darpas-exoskeleton-can-help-soldiers-run-4-minute-miles/
@@ -1007,6 +1254,7 @@ points us to European work
 http://cordis.europa.eu/project/rcn/106854_en.html
 
 MINDWALKER
+key feature is actuation in lateral plane
 http://www.3me.tudelft.nl/en/about-the-faculty/departments/biomechanical-engineering/research/dbl-delft-biorobotics-lab/exoskeleton/
 
 https://mindwalker-project.eu/
@@ -1077,6 +1325,9 @@ Please suggest additional references.
 \begin{verbatim}
 
 Overviews ********************************
+
+”Lightening the Load”, U.S. Naval Research Advisory Committee
+(NRAC), 2007.
 
 Active Exoskeleton Control Systems: State of the Art
 http://www.sciencedirect.com/science/article/pii/S1877705812026732
