@@ -1,0 +1,156 @@
+% for LaTeX
+
+% Single and double spacing. {\single text} or {\double text}
+\newcommand{\single}{\def\baselinestretch{1.0}\large\normalsize}
+\newcommand{\double}{\def\baselinestretch{1.5}\large\normalsize}
+\newcommand{\triple}{\def\baselinestretch{2.0}\large\normalsize}
+
+\def \tilde{\raisebox{-0.7 ex}{\char`\~}}
+% or $\sim$
+
+% Margin notes. \note{note to myself.}
+%\newcommand{\note}[1]{\marginpar{\raggedright \small [#1]}}
+
+% BibTex fix so \"{o} does not screw things up.
+\newcommand{\dd}[1]{{\"{#1}}}
+
+% Abbreviations for greek letters
+\newcommand{\al}{{\alpha}}
+\newcommand{\ep}{{\epsilon}}
+\newcommand{\la}{{\lambda}}
+\newcommand{\ga}{{\gamma}}
+\newcommand{\om}{{\omega}}
+
+% vectors
+\newcommand{\va}{{\bf a}}
+\newcommand{\vb}{{\bf b}}
+\newcommand{\vc}{{\bf c}}
+\newcommand{\ve}{{\bf e}}
+\newcommand{\vf}{{\bf f}}
+\newcommand{\vg}{{\bf g}}
+\newcommand{\vh}{{\bf h}}
+\newcommand{\vi}{{\bf i}}
+\newcommand{\vk}{{\bf k}}
+\newcommand{\vl}{{\bf l}}
+\newcommand{\vm}{{\bf m}}
+\newcommand{\vn}{{\bf n}}
+\newcommand{\vp}{{\bf p}}
+\newcommand{\vq}{{\bf q}}
+\newcommand{\vr}{{\bf r}}
+\newcommand{\vs}{{\bf s}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\vu}{{\bf u}}
+\newcommand{\vv}{{\bf v}}
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vz}{{\bf z}}
+
+% Greek vectors
+% We get bold greek letters from:
+%\font\boldmathitalic=ambi10 at 12pt
+
+%\newcommand{\vomega}{\hbox{\boldmathitalic !}}
+%\newcommand{\vphi}{\hbox{\boldmathitalic \char'036}}
+%\newcommand{\vpsi}{\hbox{\boldmathitalic \char'040}}
+%\newcommand{\vtau}{\hbox{\boldmathitalic \char'034}}
+%\newcommand{\vtheta}{{\bf \theta}}
+
+% bkph's bold greek letter hack.
+\def\boldify#1{\hbox{\rlap{$#1$}\kern .4pt{$#1$}}} % attempt bold Greek letter
+% not needed for upper case Greek, which does come in bold! 0.6pt ?
+
+\newcommand{\valpha}{\boldify{\alpha}}
+\newcommand{\vepsilon}{\boldify{\epsilon}}
+\newcommand{\vomega}{\boldify{\omega}}
+\newcommand{\vpi}{\boldify{\pi}}
+\newcommand{\vphi}{\boldify{\phi}}
+\newcommand{\vpsi}{\boldify{\psi}}
+\newcommand{\vtau}{\boldify{\tau}}
+\newcommand{\vtheta}{\boldify{\theta}}
+
+% doesn't look bold to me
+% The bm package, which is part of the LaTeX tools distribution,
+% defines a command \bm which may be used anywhere in maths mode. 
+% \newcommand{\vpi}{{\bm \pi}}
+
+% did not work
+% this should be \boldmath \unboldmath p. 53, 201 
+% \newcommand{\valpha}{{\mbox{\boldmath $\alpha$}}}
+
+% did not work
+% \newcommand{\vpi}{{\mbox{\bf $\pi$}}}
+
+\newcommand{\vep}{{\vepsilon}}
+\newcommand{\vom}{\vomega}
+\newcommand{\vph}{\vphi}
+\newcommand{\vps}{\vpsi}
+\newcommand{\vta}{\vtau}
+\newcommand{\vth}{\vtheta}
+
+% matrices
+\newcommand{\mA}{{\bf A}}
+\newcommand{\mB}{{\bf B}}
+\newcommand{\mC}{{\bf C}}
+\newcommand{\mD}{{\bf D}}
+\newcommand{\mE}{{\bf E}}
+\newcommand{\mF}{{\bf F}}
+\newcommand{\mG}{{\bf G}}
+\newcommand{\mH}{{\bf H}}
+\newcommand{\mI}{{\bf I}}
+\newcommand{\mJ}{{\bf J}}
+\newcommand{\mK}{{\bf K}}
+\newcommand{\mL}{{\bf L}}
+\newcommand{\mM}{{\bf M}}
+\newcommand{\mP}{{\bf P}}
+\newcommand{\mQ}{{\bf Q}}
+\newcommand{\mR}{{\bf R}}
+\newcommand{\mS}{{\bf S}}
+\newcommand{\mT}{{\bf T}}
+\newcommand{\mU}{{\bf U}}
+\newcommand{\mV}{{\bf V}}
+\newcommand{\mW}{{\bf W}}
+\newcommand{\mX}{{\bf X}}
+\newcommand{\mZ}{{\bf Z}}
+
+\newcommand{\mOmega}{{\bf \Omega}}
+\newcommand{\mPi}{{\bf \Pi}}
+
+\newcommand{\mSigma}{\hbox{\bf \char'006}}
+
+\newcommand{\Ep}{{E}}
+
+\newcommand{\id}{{\bf 1}}
+
+% transpose
+\newcommand{\tr}{{\rm T}}
+
+% probability
+\newcommand{\prob}{{\mbox p}}
+
+% variance
+\newcommand{\var}{{\mbox {Var}}}
+
+% trace
+\newcommand{\trace}{{\mbox {trace}}}
+
+% expectation
+\newcommand{\E}{{\mbox {E}}}
+
+% and, or
+\newcommand{\aand}{{\mbox {and}}}
+\newcommand{\oor}{{\mbox {or}}}
+
+% argmin
+%\newcommand{\argmin}{{\mbox {argmin}}}
+
+% time handling (stolen from YTEX)
+\newcount\hour
+\newcount\minute
+\hour=\the\time \minute=\the\time
+\divide\hour by 60 \multiply\hour by 60%
+\advance\minute by -\hour \divide\hour by 60%
+\newcommand{\thetime}{\number\hour:\ifnum \minute<10 0\fi\number\minute}%
+
+\newcommand{\mypsfig}[2]{\centerline{\psfig{file=#1,height=#2}}}
+\newcommand{\vwhat}{\widehat{\vw}}
