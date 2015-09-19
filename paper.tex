@@ -26,9 +26,8 @@
 
 \input latex-commands
 
-\newcommand{\T}{{\mbox {T}}}
-
 \newcommand{\gc}{{\mbox {GravityCompensation}}}
+\newcommand{\invdyn}{{\mbox {\tiny ID}}}
 
 \newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
 \newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
@@ -66,7 +65,7 @@ A substantial investment in capturing the operators normal behavior,
 operator training and learning, and controller customization can be made.
 
 We do not survey exoskeleton technology for human arms. 
-We treat a torso and helmet of the exoskeleton as the payload,
+We treat the torso and helmet of the exoskeleton as the payload,
 and focus on a lower body exoskeleton to support any payloads that
 are on the torso or head.
 We do not cover global energy storage such as batteries or liquid fuel.
@@ -238,15 +237,15 @@ reflex travel times.
 Foot tactile event to gastrocnemius EMG:
 \begin{itemize}
 \item
-traveling time in neural system: 10ms foot sensors->spinal cord +
-10ms spinal cord->muscle�
+traveling time in neural system: 10ms foot sensors to spinal cord +
+10ms spinal cord to muscle�
 \item
 mechanical delay foot to foot sensory cells: 5-10ms
 \item
 electrical delay muscle activation to EMG: 5-10ms
 \item
 total: 30-40ms (which is consistent with reported EMG activities
-after mechanical disturbance at ankle joint with bowden cable jerk:
+after mechanical disturbance at ankle joint with Bowden cable jerk:
 \url{http://jn.physiology.org/content/76/2/1112.short�reports 42ms)}
 \end{itemize}
 
@@ -350,7 +349,7 @@ Interactive Communication, pp. 491–496, 2004.
 
 \section{What are the specs?}
 
-Hip, knee, ankle: At least 200Nm, ideally >400Nm.
+Hip, knee, ankle: At least 200Nm, ideally $>$ 400Nm.
 
 \subsection{What speeds and forces are needed to walk?}
 
@@ -365,7 +364,7 @@ Hip, knee, ankle: At least 200Nm, ideally >400Nm.
 Survey state of the art using linear hydraulic actuators:
 Sarcos Primus Humanoid, Atlas(BDI), Cheetah(BDI)
 
-{\it 140 bar(2,050 psi) and 8 l pm in total. Hydraulic cylinders
+{\it 140 bar(2,050 psi) and 8 lpm in total. Hydraulic cylinders
 are designed to be double-acting at the hip pitch joint and
 the knee pitch joint. The hip and knee cylinders are designed
 for a maximum thrust of 4 kN and 2 kN, respectively. The
@@ -684,10 +683,12 @@ joint torques,
 and $\mJ_o^{\tr}(\vq) \vf_o$
 are the operator-exoskelton forces expressed
 as exoskeleton joint torques,
+$\vtau$ is augmented with zeros corresponding to the dimensions of $\dot{\vq}$
+that correspond to root velocities, since those dimensions are not actuated.
 
 To understand these equations better, it is useful to have all Jacobians equal
 to the identity matrix. This means the operator is directly applying torques
-at the exoskeleton joints, and so is the world. In this case:
+at the exoskeleton joints ($\vtau_o$), and so is the world ($\vtau_w$). In this case:
 \begin{equation}
 \mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
 + \vtau_w = \vtau + \vtau_o
@@ -772,8 +773,8 @@ It relies on estimated dynamic models and their parameters.
 If there are actuator dynamics or other dynamics, we can include those
 dynamics as well.
 \begin{equation}
-\vtau = \vtau_{ID}
-\hat{\mM}(\hat{\vq}) \ddot{\vq}_d
+\vtau = \vtau_{\invdyn} 
+= \hat{\mM}(\hat{\vq}) \ddot{\vq}_d
 + \hat{\mC}(\hat{\vq},\hat{\dot{\vq}})
 + \hat{\mG}(\hat{\vq})
 + \hat{\mF}(\hat{\vq},\hat{\dot{\vq}})
@@ -788,19 +789,57 @@ If $\ddot{\vq}_d$ is set to zero, the operator directly drives the acceleration
 of the exoskeleton with an effective inertia of $(\mM^{-1}(\vq) \mJ_o^{\tr}(\vq))^{-1}$
 \begin{equation}
 \ddot{\vq} = \mM^{-1}(\vq) \mJ_o^{\tr}(\vq) \vf_o
+\label{eq:cancel}
 \end{equation}
 $\ddot{\vq}_d$ can be used to drive the exoskeleton along trajectories, and
 the operator can directly modify the trajectory.
 
-Simplifying Equation X by assuming the operator directly applies torques at the
+Simplifying equation~\ref{eq:cancel} by 
+assuming the operator directly applies torques at the
 exoskeleton joints we get:
 \begin{equation}
 \mM (\vq) \ddot{\vq} = \vtau_o
 \end{equation}
 The operator sees the true inertia of the exoskeleton, but no gravitational
 loads and no other dynamics (Coriolis, centripetal, or frictional).
+
 Note that we cannot change the apparent inertia of the exoskeleton without
 some form of acceleration or force feedback.
+With acceleration feedback we can make the exoskeleton have a different inertia.
+Setting $\ddot{\vq}_d$ to zero and adding acceleration feedback:
+\begin{equation}
+\vtau = \vtau_{\invdyn} - (\mM_d(\hat{\vq}) - \hat{\mM}(\hat{\vq})) \hat{\ddot{\vq}}
+\label{eq:change-inertia1}
+\end{equation}
+sets the apparent inertia to $\mM_d$ if the dynamic models are perfect, and
+the state estimation produces not only perfect positions and velocities but
+also perfect acceleration estimates. In the case 
+where the operator directly applies torques at the
+exoskeleton joints we get:
+\begin{equation}
+\mM_d (\vq) \ddot{\vq} = \vtau_o
+\end{equation}
+In robotics this is usually considered a bad idea if $\mM_d$ is smaller (a complex
+issue for a matrix) than $\mM$ at any $\vq$. This type of control is vulnerable
+to unmodeled dynamics. However, in an exoskeleton, since we have not tried to
+cancel the human's dynamics, the human stabilizes a possible unstable exoskeleton
+(if the straps are tight enough).
+
+With force feedback we can also make the exoskeleton have a different inertia.
+Setting $\ddot{\vq}_d$ to zero and adding force feedback:
+\begin{equation}
+\vtau = \vtau_{\invdyn} + \mK \hat{\vf}_o
+\end{equation}
+In the case where the force measurements are perfect and 
+the operator directly applies torques at the
+exoskeleton joints we get:
+\begin{equation}
+(\mK + \mI)^{-1} \mM (\vq) \ddot{\vq} = \vtau_o
+\end{equation}
+By setting $\mK = \mM^{-1}_d (\vq) \mM (\vq) - \mI$ we can achieve
+\begin{equation}
+\mM_d (\vq) \ddot{\vq} = \vtau_o
+\end{equation}
 
 Online inverse dynamics control is a generalization of active gravity compensation to include
 inertial, Coriolis, and centripetal forces (forces due to acceleration and
@@ -854,7 +893,8 @@ the outside world in some coordinate system.
 To make the exoskeleton appear as a locally linear impedance in joint
 coordinates to the operator, we add position and velocity feedback to $\vtau$:
 \begin{equation}
-\vtau = \vtau_{ID} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\vtau = \vtau_{\invdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\label{eq:impedance}
 \end{equation}
 so if the dynamic models and state estimation are perfect we get this impedance:
 \begin{equation}
@@ -896,12 +936,12 @@ as they map force and torques to kinematic variables (position, velocity, and
 acceleration). 
 
 We can implement force control 
-if measurements of the contact forces 
+if measurements of the contact forces with
 the exoskeleton are available.
 The exoskeleton moves as to create as little force as possible 
 assuming the actuators are torque sources.
 \begin{equation}
-\vtau = \vtau_{ID} - \mK_{\vf} \mJ^{\tr} ( \hat{\vf} - \vf_d )
+\vtau = \vtau_{\invdyn} - \mK_{\vf} \mJ^{\tr} ( \hat{\vf} - \vf_d )
 \end{equation}
 $\mK_{\vf}$ is a gain matrix, $\mJ$ is the appropriate Jacobian matrix for
 force $\vf$
@@ -911,7 +951,7 @@ We will see that the position control version does invert the Jacobian matrix.
 Applying this to force between the operator and the exoskeleton, and assuming
 that the operator directly applies exoskeleton joint torques,
 \begin{equation}
-\vtau = \vtau_{ID} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\vtau = \vtau_{\invdyn} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
 \end{equation}
 So if our dynamic models and state estimation are perfect, we get:
 \begin{equation}
@@ -920,7 +960,7 @@ So if our dynamic models and state estimation are perfect, we get:
 
 One can add force damping terms, which sometimes help:
 \begin{equation}
-\vtau = \vtau_{ID} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\vtau = \vtau_{\invdyn} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
 - \mK_{\dot{\vtau}_o} \hat{\dot{\vtau}}_o
 \end{equation}
 
@@ -930,7 +970,7 @@ by setting:
 {\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 in addition to directly including the stiffness and damping terms in
-equation YYY. 
+equation~\ref{eq:impedance}. 
 
 \subsection{Operator-Exoskeleton Force Control using position controlled actuation}
 
@@ -941,25 +981,26 @@ are assuming the actuators are now position rather than torque sources.
 
 The exoskeleton moves as to create as little force as possible between the
 operator and the exoskeleton. The actuators in this case may be position sources or
-forces sources with a high servo gains,
+force sources with high servo gains,
 but ultimately operator-exoskeleton forces are mapped
 to exoskeleton velocities or angular velocities.
 
 \begin{equation}
 \dot{\vq}_d = \mJ^{-1} (\mK_1 \vf)
+\label{eq:gootwcps}
 \end{equation}
 where $\dot{\vq}_d$ are the commanded exoskeleton joint velocities,
 $\mJ$ is an appropriate Jacobian matrix, $\mK_1$ is a gain matrix,
-$\vf$ is the force vector to be controlled.
-[06990981]
+and $\vf$ is the force vector to be controlled~\cite{IEEE06990981}.
 
-Inverting a Jacobian matrix is problematic when the Jacobian matrices are
-near singular.
+Inverting a Jacobian matrix is problematic when the matrix is
+nearly singular.
 Using a fixed or gain scheduled gain matrix may make more sense.
 \begin{equation}
 \dot{\vq}_d = \mK_3 \vf
 \end{equation}
-Simplifying Equation Z by assuming the forces to be controlled
+Simplifying equation~\ref{eq:gootwcps}
+by assuming the forces to be controlled
 are directly applied to the exoskeleton joints, and thus the Jacobian matrix
 is the identity matrix, gives us a similar equation:
 \begin{equation}
@@ -1101,7 +1142,8 @@ desired contact forces, with the desired impedance or admittance.
 \subsection{Sensitivity Amplification Control}
 
 Sensitivity Amplification Control (SAC) is a dynamic cancellation technique (a.k.a.
-inverse dynamics, computed torque, or feedback linearization).
+inverse dynamics, computed torque, or feedback linearization) that also tries
+to adjust the apparent inertia of the exoskeleton (equation~\ref{eq:change-inertia1})
 
 BLEEX:
 Sensitivity amplification control (SAC) was
@@ -1219,8 +1261,9 @@ Position control.
 Pure force or torque control.
 \item
 Impedance control: specify desired position (for spring), and generate
-stiffness, damping, and potentially a modified mass/iinertia/moment of inertia.
-Modifying inertia is very difficult.
+stiffness, damping, and potentially a modified inertia or moment of inertia.
+Modifying inertia is more dangerous than providing active stiffness
+or damping.
 Or (almost equivalently),
 specify a desired force and change the force according to position, velocity,
 and acceleration.
@@ -1233,8 +1276,8 @@ compensation is implemented at this level, as well as any inverse dynamics
 or other types of feedforward reference tracking control.
 Disturbance observers for model errors and contact/wind forces
 are implemented at this level.
-Typically this is done by a high rate global servo~\cite{Atlas-robot}
-or local limb or joint-level servos~\cite{Sarcos-robot}.
+Typically this is done by a high sampling rate global servo~\cite{Atlas-robot}
+or local limb or joint-level high sampling rate servos~\cite{Sarcos-robot}.
 
 {\bf ``Phoneme'' Control:} mid-level controllers
 for relatively constant phases of behavior.
