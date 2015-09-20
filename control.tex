@@ -36,7 +36,7 @@
 
 \title{A Survey of Possible Exoskeleton Control Architectures and
 Algorithms\\
-(Draft 2.0)}
+(Draft 2.1)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -669,13 +669,46 @@ and the inversion of a Jacobian matrix is unnecessary.
 This would provide a way of enabling the operator to perceive and control
 external contact forces.
 
-\section{Autonomous exoskeleton-world control}
+\section{Autonomous exoskeleton control}
 
-\subsection{Autonomous exoskeleton-world position/velocity control}
+\subsection{Autonomous exoskeleton position/velocity control}
 
-A control objective could be to have the exoskeleton to move autonomously.
+A control objective could be to have the exoskeleton to move autonomously,
+which is useful if the operator would like to rest, is attending to some other
+task, or is disabled.
 
-To be written.
+This is usually done by using stored trajectories or trajectories generated
+online that specify desired position $\vq_d$, 
+desired velocity $\dot{\vq}_d$, and
+desired acceleration $\ddot{\vq}_d$.
+The feedforward method is to compute the needed torques (potentially offline)
+using inverse
+dynamics (including the operator link inertias, link centers of mass, and link
+moments of inertia in the dynamic model) based on only the desired postion, 
+desired velocity, and desired acceleration. Trajectory tracking errors are compensated
+for by feedback control designed using some other method. In most robotics
+fixed gain independent joint linear control is used.
+This method is safest in the sense that the feedback controller can be tested
+and verified independently of the desired trajectories and dynamic models.
+
+Computed torque approaches use online inverse dynamics computed from the estimated
+position, estimated velocity, and desired acceleration.
+In this case the feedback control to compensate for trajectory tracking errors can
+be independent of the inverse dynamics and its modeling errors, or the desired
+acceleration can be modified with feedback terms.
+\begin{equation}
+\ddot{\vq}_d^* = \ddot{\vq}_{d} + \mK_{\vq}^{\ddot{\vq}} ( \hat{\vq} - \vq_d ) 
++ \mK_{\dot{\vq}}^{\ddot{\vq}} ( \hat{\dot{\vq}} - \dot{\vq_d} )
+\end{equation}
+The problem with putting the inverse dynamics in the feedback loop is that the
+effective gains of this control vary widely with the configuration $\vq$.
+Unmodeled dynamics (that also vary with $\vq$) limit the size of the gain matrices
+$\mK_{\vq}^{\ddot{\vq}}$ and $\mK_{\dot{\vq}}^{\ddot{\vq}}$. Because so many quantities
+are varying quite a bit, constant gain matrices may be quite low for a worst case
+design. It is also very difficult to verify this type of nonlinear feedback controller.
+For this reason most current approaches to humanoid
+robots design the feedback controller
+separately and use constant gain independent joint linear feedback control.
 
 \subsection{Autonomous exoskeleton-world force control}
 
@@ -683,12 +716,25 @@ A control objective could be to have the exoskeleton to apply a desired force.
 
 To be written.
 
+\begin{verbatim}
+include J' term
+\end{verbatim}
+
+Why isn't this identical to operator force control?
+
 \subsection{Autonomous exoskeleton-world impedance control}
 
 Another control objective would be to allow the exoskeleton-world contact to
 be compliant or have an assigned impedance.
 
 To be written.
+
+\begin{verbatim}
+Cartesis version - j-1
+joint version, w jKj =k
+\end{verbatim}
+
+Why isn't this identical to operator impedance control?
 
 \section{Using Online Optimization: Quadratic Programming}
 
