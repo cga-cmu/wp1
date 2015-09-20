@@ -188,6 +188,7 @@ electromechanical drive train (electric motor plus gears or motor plus ballscrew
 to make it lower impedance and more like a force source as well.
 
 \section{Recommended Control Architecture}
+\label{sec:architecture}
 
 We recommend the following hierarchical control architecture~\cite{IEEE06907051}:
 
@@ -334,6 +335,8 @@ we won't ???).
 
 We are also ignoring actuator dynamics, which we can handle by augmenting 
 the state vector.
+
+[SOMETHING ABOUT MODELING HUMAN + EXOSKELETON + WORLD ]
 
 \section{Passive control with no active control}
 
@@ -1083,9 +1086,35 @@ Discussion to be written.
 
 Conclusions and Recommendations to be written.
 
+1) We recommend a particular control 
+overall architecture in Section~\ref{sec:architecture}.
+
+2) We recommend the use of dynamic models of the exoskeleton, as has been done
+for the last decade starting with the BLEEX exoskeleton.
+
+3) We recommend using online optimization as part of the Lowest Level Controller
+in the form of Quadratic Programming. This was tested by the top biped robot
+teams in the DARPA Robotics Challenge, and worked well.
+
+4) We recommend applying as many sensors as possible, and asking the performers
+to make it easy to add more by making the sensor network available in the design.
+This maximizes the probability of success
+with respect to control architectures and algorithms by enabling multiple control
+approaches to be implemented, refined, and support each other.
+In particular, we would like to see force sensing between the operator and the
+exoskeleton, including at the feet, as much force sensing between the exoskeleton 
+and the world as possible, but minimally full six-axis force/torque sensing at
+the exoskeleton feet (where they touch the ground). We would like to see multiple MEMs
+IMUs (measuring linear acceleration and angular velocity) installed across 
+the exoskeleton. We would like to see high quality direct velocity sensing
+such as high count (100,000 counts/revolution) rotary encoders and 
+analog linear tachometers.
+
+5) {\bf Controversial:} We recommend a ``symbiotic'' control system design,
+which expects the operator to adapt to the exoskeleton and its control,
+and which has the control customized for the operator.
+
 \bibliographystyle{plain}
 \bibliography{exo}
 
 \end{document}
-
-
