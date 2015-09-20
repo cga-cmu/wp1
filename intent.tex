@@ -1,0 +1,301 @@
+\documentclass[letterpaper,12pt,fullpage]{article}
+
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{cite}
+\usepackage{graphicx}
+% \usepackage[dvips]{graphicx}
+% \usepackage{epsfig} % for postscript graphics files
+  % \graphicspath{{../eps/}}
+% \DeclareGraphicsExtensions{.eps}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage[cmex10]{amsmath}
+%\usepackage{array}
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+%\usepackage{eqparbox}
+\usepackage[tight,footnotesize]{subfigure}
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+%\usepackage{fixltx2e}
+%\usepackage{stfloats}
+\usepackage{hyperref}
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+\input latex-commands
+
+\newcommand{\gc}{{\mbox {GravityCompensation}}}
+\newcommand{\invdyn}{{\mbox {\tiny ID}}}
+
+\newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
+\newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
+
+\begin{document}
+
+\title{Estimating Operator Intent\\
+(Draft 2.0)}
+
+\author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
+Carnegie Mellon University}
+
+\maketitle
+
+\begin{abstract}
+Abstract to be written.
+\end{abstract}
+
+\section{Executive Summary}
+
+Executive Summary to be written.
+
+\section{Scope: What is this paper about?}
+
+This paper surveys state of the art technology to recognize
+and predict exoskeleton
+operator intent.
+A companion paper surveys current operator/exoskeleton interfaces~\cite{}.
+
+The focus is on intent estimation that allows a
+highly trained and top percentile athletic 
+operator to carry a payload that weighs approximately the same amount
+as the operator. We envisage these types of exoskeletons to be useful
+in carrying protective and safety equipment for SWAT teams, police,
+firefighters, and soldiers. 
+
+We focus this survey on intent estimation for lower body tasks (standing, walking,
+running, jumping, kicking, dodging, ...).
+We do not survey intent estimation for manipulation. 
+
+A future white paper will discuss how intent estimation could be 
+made easier with superhuman perception (sensing beyond human capabilities
+or modalities).
+
+A future white paper will discuss how intent estimation could be 
+made easier with implanted markers and devices, as well as continuous
+operator imaging such as ultrasound.
+
+Predictive models of human motion, a major topic of robot learning from\\
+observation/demonstration/imitation and computer animation,
+will be the subject of a future white
+paper~\cite{IEEE06913830,Bagnell}
+
+\section{Introduction: Our Point of View}
+
+{\bf What is intent estimation?}
+The further in the future the control system can predict what the operator
+is going to do, the easier it is to control the exoskeleton. One way
+to think about estimating operator intent is to imagine you are in
+a hand-to-hand fight and you want to predict your opponent's next move.
+You can also think about playing poker. What ``tells'' does the opponent
+have?
+You are allowed to instrument your opponent. What sensors would you use?
+How would you interpret the sensors?
+
+Here is an example of a robot seeing and moving faster than a human, and
+consistantly beating a human opponent in rock-paper-scissors.
+\url{https://www.youtube.com/watch?v=Qb5UIPeFClM&feature=player_embedded}
+
+{\bf Individualization of Intent Estimation:}
+We expect each exoskeleton controller
+to be used by and optimized for a single operator.
+A substantial investment in capturing the operators normal behavior,
+operator training and learning, and controller customization can be made.
+
+\section{Intent time scales}
+
+What time scales does intent operate on, and what might we use
+to estimate intent on different time scales?
+
+\begin{verbatim}
+10 sec - rely on perceiving situation and thinking like your opponent.
+         What are the probabilities of various attacks? Responses?
+1 sec - measure set/tells to estimate probability of particular behaviors.
+100 msec - EMG, muscle state, force helpful here
+10 msec - EMG, muscle state, force helpful here and
+         immediate sensors: joint pos,vel, IMU, contact forces
+1 msec - immediate sensors: joint pos,vel, IMU, contact forces
+\end{verbatim}
+
+\section{What signals are there?}
+
+To what extent can we use brain, neural, and muscle electrical signals
+(EMG) to anticipate what the operator will do and increase performance?
+
+\begin{verbatim}
+- perceive what user sees, hears, feels, smells, tastes.
+- superhuman perception (RF signals, UV, IR, ultrasound, ...)
+- brain signals
+- spinal signals (motorneuron pools)
+- motor nerve signals
+- muscle electrical signals (EMG)
+- muscle force signals (FMG), muscle force at tendons, muscle internal pressure
+- sensory nerve signals
+- implanted tissue markers, other implanted sensors
+- tissue imaging (ultrasound, optical)
+- human/exo contact force
+- contact strain, deformation rate
+- exo joint/IMU sensing
+- train user to emit special signals (play a videogame with their body,
+  hands, eyes, neural signals, muscle signals, ...)
+\end{verbatim}
+
+\section{Signal timing?}
+
+{\it So for inferring the ``intent'' of a human operator of an
+exoskeleton,
+I would like to put a timeline together of events.
+When I say leg EMG or leg muscle I mean
+gastrocneumius or vastus lateralis (``fast'' muscles).
+What are delays between:
+\begin{verbatim}
+visual event to leg EMG start
+auditory event to leg EMG start
+vestibular event to leg EMG start
+foot tactile event to leg EMG start
+EMG start to 10% leg muscle
+EMG start to peak leg muscle
+\end{verbatim}
+What are your guesses for motorneuron activation to leg EMG activation?
+}
+
+{\bf From Hartmut Geyer:}
+
+The traveling time for neural signals is roughly 100m/s in humans.
+Thus, to go from any sensory system in the head (vestibular, ocular,
+auditory) to the leg muscles will take between 50ms (hip muscles) and
+100ms (foot muscles). Once the signal reaches the muscle, it takes
+another 5-10ms to be recognized by the surface EMG sensor (electrical
+field propagation in muscle tissue is about 0.4m/s).
+
+With that calculation:\\
+vis/aud/vestib to EMG: 50-70ms for vastus and about 80-100ms for
+gastroc
+
+example: paper on vestibular reflexes reporting 60ms to
+90ms:�\url{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4288134/}
+��
+If the motor cortex is involved with active calculations, times can
+take longer (I don't know numbers for this, but would guess adding
+50-100ms). I've heard that in combat soldiers, the motor cortex is
+getting by-passed, and they act far more reflexively from sensory
+systems directly through the lower brain. So if this is for military
+applications, I'd expect to see responses mainly determined by
+reflex travel times.
+
+Foot tactile event to gastrocnemius EMG:
+\begin{itemize}
+\item
+traveling time in neural system: 10ms foot sensors to spinal cord +
+10ms spinal cord to muscle�
+\item
+mechanical delay foot to foot sensory cells: 5-10ms
+\item
+electrical delay muscle activation to EMG: 5-10ms
+\item
+total: 30-40ms (which is consistent with reported EMG activities
+after mechanical disturbance at ankle joint with Bowden cable jerk:
+\url{http://jn.physiology.org/content/76/2/1112.short�reports 42ms)}
+\end{itemize}
+
+Foot tactile event to vastus EMG:\\�
+- same as gastrocnemius less about 5ms for shorter travel time down
+the spinal cord to the muscle.
+
+EMG start to 10\% leg muscle force:\\
+- this gets tricky: EMG has fixed delay from muscle activation due to
+travel of electrical field to muscle surface (5-10ms, see top). Delay
+of muscle force production follows low pass filter function (calcium
+ion dynamics), often modeled as single pole filter with 10ms
+characteristic time. At 10\% force, both EMG and leg force could
+actually occur at the same time.�
+
+EMG start to peak muscle force:\\
+typically, (full) force production trails EMG by about 30ms in fast
+muscles (electromechanical delay, due to calcium ion dynamics
+traveling from sarkoplasmatic reticulum to cross bridge binding
+sites, \url{http://www.ncbi.nlm.nih.gov/pubmed/527577})
+
+alpha motoneuron activation to leg EMG:\\
+- travel time spinal cord to muscle (5ms for vastus, 10ms for
+gastocnemius) plus 5-10ms before muscle activation gets recognized in
+surface EMG:\\
+net vastus: 10-15ms\\
+net gastrocnemius: 15-20ms
+
+\section{What can be measured or estimated?}
+
+{\bf EMG:}
+Electrical activity was measured using surface electrodes,
+high-pass filtered at 20 Hz, rectified, low-pass filtered at 6 Hz,
+offset by a small value of -0.008, and amplified by a gain of 283
+to obtain the desired torque.~\cite{IEEE07139980}
+
+Electromyography (EMG)
+signals are extremely noisy and it is not easy to extract a
+meaningful data form the raw signal. In addition, it takes a long
+time to attach the EMG electrodes to the body and calibrate the
+sensors.
+\begin{verbatim}
+T. Hayashi, H. Kawamoto, and Y. Sankai, "Control method of robot
+suit HAL working as operator's muscle using biological and dynamical
+information," in Intelligent Robots and Systems, 2005.(IROS 2005).
+2005 IEEE/RSJ International Conference on, 2005, pp. 3063-3068.
+H. Kawamoto and Y. Sankai, "Power assist system HAL-3 for gait
+disorder person," in Computers helping people with special needs, ed:
+Springer, 2002, pp. 196-203.
+\end{verbatim}
+
+Muscle movement leads to surface electrodes losing good contact, fully detaching, or
+even ripping off (especially for large fast
+movements, the worst time).
+Perspiration changes measurement. EMG measurement
+needs to be calibrated for each electrode application and periodically during use.
+
+FMG-[06913842]
+
+{\bf Foot contact and force/torque sensing:}
+\begin{verbatim}
+[8] K. Kong and M. Tomizuka, “A Gait Monitoring System Based on Air
+Pressure Sensors Embedded in a Shoe,” IEEE/ASME Transactions on
+Mechatronics, vol. 14, pp. 358–370, 2009.
+\end{verbatim}
+
+\section{How can the operator communicate with the exoskeleton}
+
+\begin{verbatim}
+Operator uses high frequency range or patterns of output to
+signal what to do
+ - selection
+ - parameterization (how far, how high, how fast)
+\end{verbatim}
+
+The operator controls more than the pose and motion of the
+exoskeleton. What if there are "pointing" sensors or communication
+devices that need to be aimed at or track an area of interest? What if
+there are additional (physical or virtual) pan/tilt/zoom cameras
+pointing to the side and rear or line of sight secure communications,
+for example. What about other controls, such as power assist level or
+thermal control? How can an operator naturally express intent and
+control these additional degress of freedom?
+
+\section{Operator load and fatigue}
+
+To what extent can task recognition and "autonomy" reduce operator
+load and fatigue?
+
+\section{Discussion}
+
+Discussion to be written.
+
+\section{Conclusions and Recommendations}
+
+Conclusions and Recommendations to be written.
+
+\bibliographystyle{plain}
+\bibliography{exo}
+
+\end{document}
+
+

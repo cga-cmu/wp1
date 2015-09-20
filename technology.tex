@@ -1,0 +1,412 @@
+\documentclass[letterpaper,12pt,fullpage]{article}
+
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{cite}
+\usepackage{graphicx}
+% \usepackage[dvips]{graphicx}
+% \usepackage{epsfig} % for postscript graphics files
+  % \graphicspath{{../eps/}}
+% \DeclareGraphicsExtensions{.eps}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage[cmex10]{amsmath}
+%\usepackage{array}
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+%\usepackage{eqparbox}
+\usepackage[tight,footnotesize]{subfigure}
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+%\usepackage{fixltx2e}
+%\usepackage{stfloats}
+\usepackage{hyperref}
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+\input latex-commands
+
+\newcommand{\gc}{{\mbox {GravityCompensation}}}
+\newcommand{\invdyn}{{\mbox {\tiny ID}}}
+
+\newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
+\newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
+
+\begin{document}
+
+\title{A Survey of Near-Term Exoskeleton Technology\\
+(Draft 2.0)}
+
+\author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
+Carnegie Mellon University}
+
+\maketitle
+
+\begin{abstract}
+Abstract to be written.
+\end{abstract}
+
+\section{Executive Summary}
+
+Executive Summary to be written.
+
+\section{Scope: What is this paper about?}
+
+This paper surveys near-term exoskeleton technology with an
+emphasis on control.
+A companion paper surveys implemented exoskeleton technology~\cite{}.
+
+The focus is on near-term exoskeleton technologies that allow a
+highly trained and top percentile athletic 
+operator to carry a payload that weighs approximately the same amount
+as the operator. We envisage these types of exoskeletons to be useful
+in carrying protective and safety equipment for SWAT teams, police,
+firefighters, and soldiers. 
+
+We do not survey exoskeleton technology for human arms. 
+We treat the torso and helmet of the exoskeleton as the payload,
+and focus on a lower body exoskeleton to support any payloads that
+are on the torso or head.
+We do not cover global energy storage such as batteries or liquid fuel
+or other global power system issues.
+
+A later white paper will discuss the use of propulsive forces other
+than foot contacts, as well as additional actuation at the contacts (air
+bags, springs, other ways to rapidly apply stored energy) for
+operator safety (dodging threats, ...) and high performance (jumping, ...).
+
+A future white paper will discuss near term soft robotics technology
+for exoskeletons.
+
+\section{What are the specs?}
+
+Hip, knee, ankle: At least 200Nm, ideally $>$ 400Nm.
+
+\subsection{What speeds and forces are needed to walk?}
+
+\subsection{What speeds and forces are needed to run?}
+
+\subsection{What operator-exoskeleton contact forces are acceptable?}
+
+\section{What performance is currently available?}
+
+\subsection{Reference Design: linear hydraulic with bypass valves}
+
+Survey state of the art using linear hydraulic actuators:
+Sarcos Primus Humanoid, Atlas(BDI), Cheetah(BDI)
+
+{\it 140 bar(2,050 psi) and 8 lpm in total. Hydraulic cylinders
+are designed to be double-acting at the hip pitch joint and
+the knee pitch joint. The hip and knee cylinders are designed
+for a maximum thrust of 4 kN and 2 kN, respectively. The
+four three-way servo valves(M 200, Star-Hydraulic)}~\cite{IEEE07222598}
+
+BLEEX: carries
+up to a 34 kg (75 lb) payload for the pilot and allows the pilot to
+walk at up to 1.3 m/s (2.9 mph).
+
+{\bf HyQ:}
+We normally operate at 180-200 bar. The maximum speed for the HyQ
+linear actuators with no load is 1.1m/s, I don't know about HyQ2Max.
+The maximum force for the HyQ actuators is 4000 N, and for HyQ2Max is
+6000 N.
+
+{\bf Integrated Moog hydraulic actuator:}
+The integrated Moog system is still very experimental,� there are
+only two working prototypes right now.� Our lab is working closely
+with Moog to develop the firmware for the builtin controllers. I
+think it is a little early to say how well they work, but it looks
+promising.
+
+
+\subsection{Reference Design: linear electric}
+
+Survey state of the art using linear electric actuators (typically ballscrews):
+Roboray (Samsung)
+
+\subsection{Reference Design: rotary electric}
+
+Survey state of the art using rotary electric actuators:
+Schaft~\cite{shaft_foot_placement,shaft_push_recov}, Cheetah(MIT)
+
+Maxon dc flat brushless motor EC45 and servo controller
+Elmo. The servomotor emulates the kinematic profile of every
+joint and sends a digital signal to the Elmo to form feedbacks.
+In order to enhance the impedance capability, harmonic trans-
+mission drivers are implemented (model SHD-17-100-2SH
+for joints 1 and 2, model SHD-14-100-2SH for joints 3 and 4,
+and CSF-32-50-2A-GR for joint 5).~\cite{IEEE07128705}
+
+\subsection{Reference Design: linear pneumatic}
+
+Survey state of the art using linear pneumatic actuators:
+
+\begin{verbatim}
+07139975, 07131568
+2015 IEEE International Conference on Robotics and Automation (ICRA)
+Towards Balance Recovery Control for Lower Body Exoskeleton Robots
+with Variable Stiffness Actuators: Spring-Loaded Flywheel Model
+Corinne Doppmann, Barkan Ugurlu, Masashi Hamaya, Tatsuya Teramae,
+Tomoyuki Noda, and Jun Morimoto
+\end{verbatim}
+
+\section{Sensing}
+
+\begin{verbatim}
+sensing
+ actuator length/angle
+ actuator velocity
+ actuator force/torque 
+n-line loadcells(31E-05KNO,
+Sensotec) are equipped on each cylinder tube end for the
+actuator force.~\cite{IEEE07222598}
+ actuator sensing is pre-transmission
+  joint backlash
+  joint play
+  structural flexibility
+  actuator and transmission friction (10 Nm in Atlas)
+ joint angle
+three high precision(17 bit) encoders(DS-25-16, Net-
+zer) are used to measure the robots joint angles(hip, knee,
+ankle pitch angle).~\cite{IEEE07222598}
+ joint velocity
+ joint torque
+ IMUs all over
+ cameras all over
+\end{verbatim}
+
+{\it foot sensors, which are comprised
+of four one-axis(normal force) loadcells(CBFSB-200, Bong-
+shin), are adopted to detect the gait phase. The placement
+of each loadcell is chosen from the analysis of GRF for
+level walking : Hallux(toe), first Metatarsal(inside), fourth
+Metatarsal(outside), and Heel similar to [20], as shown in
+Fig. 2(a). The Gait phase detection is simply classified
+into two phases by the threshold method using the sum
+of the load cells: Single Stance (Left Stance(LS) or Right
+Stance(RS)), Double Stance(DS). The result of gait detection
+while walking is shown in Fig. 2(b).}~\cite{IEEE07222598}
+20: Kong K, Tomizuka M. ”A gait monitoring system based on air pressure
+sensors embedded in a shoe,” IEEE/ASME Trans Mechatron, 358 - 370.
+2009.
+
+\section{Energy Storage}
+
+We will only address energy storage
+in terms of control issues.
+
+\subsection{Global energy storage}
+
+\begin{verbatim}
+ battery
+ gasoline/jet fuel/diesel
+ chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
+ pressurized gas
+ other?
+ energy boost systems (jump, escape response in biology)
+  chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
+  pressurized gas
+  spring
+  other?
+\end{verbatim}
+
+\subsection{Joint-level/local energy storage (on joint or synergy)}
+
+Can we use local energy storage to assist control: charging batteries,
+pressurizing accumulators, using springs, ... ?
+
+{\it incorporation of physical
+compliance is of importance when it comes to dependability,
+low mechanical impedance, locomotion efficiency, inherent
+safety and enhanced environmental interaction capabilities}~\cite{IEEE07139975}
+
+\begin{verbatim}
+ accumulator (really an air spring)
+ physical springs/damping
+ supercapacitor/battery/electrical for local electric braking
+\end{verbatim}
+
+\section{Actuation}
+
+Survey possible actuation systems.
+
+What role do physical properties of actuation play in control? Highly
+geared electric systems and hydraulic systems are inherently very
+stiff and go where you want, but must be made compliant/backdrivable
+using high performance (expensive and fragile) force control.
+Pneumatics and Series Elastic Actuation (SEA) are inherently
+compliant/backdrivable, which may reduce the performance
+needed from the sensors and control system, but may not be able to
+produce needed forces and speeds.
+
+\subsection{Global actuation}
+
+\begin{verbatim}
+ hydraulic pump 
+ gas (air) pump
+\end{verbatim}
+
+\subsection{Joint-level/synergy/local actuation}
+
+\begin{verbatim}
+ rotary electric
+  motor
+ linear electric
+  ball screw (both motor and transmission)
+ linear hydraulic
+  moog thing
+ rotary hydraulic
+ linear pneumatic
+ rotary pneumatic
+ linear or rotary impulsive actuation (IC engine style actuation)
+ energy boost systems (jump, escape response in biology)
+  chemical (air bag style: explosive actuation: solid/liquid fuel rocket)
+  pressurized gas
+  spring
+  other?
+\end{verbatim}
+
+\subsection{Flywheels}
+
+Energy storage and actuation for high manueverability.
+
+\subsection{Hybrid actuation}
+
+Different types of actuation can be combined: springs and electric motors,
+for example. This combination can also be viewed as combining energy
+storage and actuation. Slow pneumatics and fast electric motors~\cite{Morimoto,UCLA}.
+Mini/Macro~\cite{Stanford}. In this view, the human operator is just
+one more set of actuators to be added to the combined system.
+
+\begin{verbatim}
+parallel combinations - weak fast actuator needs to hit joint limit and then be strong.
+ (leads to chattering) or just lock in position to exert big force
+series combination - strong actuator needs to clutch out of circuit to move fast
+\end{verbatim}
+
+\section{Transmissions and Drive Trains}
+
+\subsection{How can clutches and gear shifts help?}
+
+How can we implement a gear shifting system (the crucial mechanical
+system missing in current robots)? How do we switch from manipulation
+while standing, walking, running, other rapid movement (dodging), and
+power movements (jumping, moving through doors and walls)?
+
+Stance leg requires a large torque and
+relatively low bandwidth during the support period. However,
+the swing leg undergoes a large motion, but it only supports
+its own weight during the swing period. Therefore, the swing
+leg requires a relatively small torque. Thus, a dual-mode
+approach is very useful for an exoskeleton robot control.
+In this paper, a dual-mode control method using a hydraulic
+system is proposed,~\cite{IEEE07222598}
+
+Rise from squat, chair.
+push large objects out of the way (standing full body push
+or seated using legs to push)
+
+\subsection{Global Transmission}
+
+\begin{verbatim}
+ electric circuit
+ hydraulic circuit
+ gas (air) circuit
+\end{verbatim}
+
+\subsection{Joint-level/synergy/local transmission}
+
+\begin{verbatim}
+ rigid
+  gears
+   planetary
+   other
+  harmonic drive
+  ball screw
+  cosine attachment
+  Sarcos Primus Humanoid knee - to reduce moment arm variation with angle
+ Bowden cable
+ tendon drives (can go slack)
+ hydraulic/pneumatic circuit
+ variable
+  belts
+  cones
+  fluid
+  adjustable moment arm
+   linear slider
+   XY slider for actuation and ``joint'' on foot.
+ series elastic actuation
+\end{verbatim}
+
+\section{System issues}
+
+Things that don't fit well elsewhere.
+
+\begin{verbatim}
+ bearing play, structural flexibility: +/- 2cm COM uncertainty
+ how attached to human (exoskeleton)
+ air bags
+\end{verbatim}
+
+The human and exoskeleton limbs are typically connected to each
+other with straps or padding. These connections typically have substantial
+compliance and play, and may or may not have appropriate damping.
+Typically the human and the exoskeleton do not move the same way:
+pose, and linear and angular velocities and accelerations are not the same.
+
+Heat exhaust. Heatsink cooling, Force air cooling, Water cooling.
+Will housing and structure get too hot and fry operator?
+
+\section{Discussion}
+
+{\bf Weight distribution:}
+There is a weight distribution issue. Ideally the exoskeleton should
+have a center of mass at the same location as the operator. Otherwise,
+operator movements can be degraded and substantial forces occur between
+the operator and the exoskeleton.
+This constraint can be reduced with the use of propulsive forces other
+than foot contacts: rockets (solid or liquid fuel), jets, exploding armor,
+ducted fan air flow, ...
+
+{\bf One Time Use:}
+What happens if the suit is "one time use"? For example, ablative armor,
+armor that reacts to incoming projectiles before they hit,
+or explosive shielding could be used. Could the armor weight be decreased?
+The expensive parts of the suit could be re-usable, and even autonomously
+return to safe areas.
+
+{\bf Do we need physical contact?}
+Current exoskeletons use physical contact with the operator to control
+the exoskeleton. Can we make an exoskeleton that does not touch or
+minimally touches the operator, and in which there is no power
+transfer between the operator and the exoskeleton? These types of
+systems might allow an operator to behave more normally, have a
+greater range of movement, be less tiring, and for non-enclosing
+systems, allow the operator to move independently of the system (such
+as aim and fire standard weapons or dive for cover) for additional
+operator performance and safety.
+\begin{enumerate}
+\item
+A "fat suit" or "sumo suit" could fully enclose the operator, but
+use distance sensing to move with the operator.
+\item
+A "shield" could enclose the front of an operator (or whatever
+portion of the operator is threatened) and move with the operator,
+\item
+A "human shield" (actually a machine shield) could move ahead of
+an operator, mimicking the operators movement.
+\item
+An "angel" could walk, jump, or fly between an operator and potential
+hostile sites, and deflect or disable projectiles.
+\end{enumerate}
+
+\section{Conclusions and Recommendations}
+
+Conclusions and Recommendations to be written.
+
+\bibliographystyle{plain}
+\bibliography{exo}
+
+\end{document}
+
+
