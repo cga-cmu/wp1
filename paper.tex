@@ -374,6 +374,20 @@ BLEEX: carries
 up to a 34 kg (75 lb) payload for the pilot and allows the pilot to
 walk at up to 1.3 m/s (2.9 mph).
 
+{\bf HyQ:}
+We normally operate at 180-200 bar. The maximum speed for the HyQ
+linear actuators with no load is 1.1m/s, I don't know about HyQ2Max.
+The maximum force for the HyQ actuators is 4000 N, and for HyQ2Max is
+6000 N.
+
+{\bf Integrated Moog hydraulic actuator:}
+The integrated Moog system is still very experimental,� there are
+only two working prototypes right now.� Our lab is working closely
+with Moog to develop the firmware for the builtin controllers. I
+think it is a little early to say how well they work, but it looks
+promising.
+
+
 \subsection{Reference Design: linear electric}
 
 Survey state of the art using linear electric actuators (typically ballscrews):
@@ -672,6 +686,7 @@ The dynamics of a revolute exoskeleton are:
 \begin{equation}
 \mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
 + \mJ_w^{\tr}(\vq) \vf_w = \vtau + \mJ_o^{\tr}(\vq) \vf_o
+\label{eq:dynamics}
 \end{equation}
 where $\vq$ are the joint angles and position and velocity of the ``root'' of
 the exoskeleton, $\mM$ is the inertia matrix, $\mC()$ are the Coriolis and
@@ -976,6 +991,77 @@ by setting:
 \end{equation}
 in addition to directly including the stiffness and damping terms in
 equation~\ref{eq:impedance}. 
+
+\subsection{Mapping External Forces To Operator Forces}
+
+\subsection{Creating An External Impedance}
+
+\subsection{Mapping External Impedances To Operator Impedance}
+
+\subsection{Constrained Inverse Dynamics: Quadratic Programming}
+
+The dominant paradigm in force controlled (typically
+hydraulic) full size humanoid robots is to handle constraints in inverse dynamics
+such as torque and center of pressure limits using online quadratic programming
+to solve the inverse dynamics equations.
+
+Quadratic programming~\cite{Wikipedia} solves the following problem:
+Minimize
+\begin{equation}
+\vx^{\tr} \mQ \vx + c^{\tr} \vx
+\end{equation}
+with inequality constraints
+\begin{equation}
+\mA_1 \vx \le \vb_1
+\end{equation}
+and equality constraints
+\begin{equation}
+\mA_2 \vx = \vb_2
+\end{equation}
+The optimization variable $\vx$ includes accelerations $\ddot{\vq}$, joint
+torques $\vtau$, and contact forces $\vf$.
+For robots the discrepancy between actual and desired accelerations, joint
+torques, and contact forces are all minimized:
+\begin{equation}
+C_r(\vx) = (\vq - \vq_d)^{\tr} \mW_{\vq} (\vq - \vq_d) + \vtau^{\tr} \mW_{\vtau} \vtau
++ \vf^{\tr} \mW_{\vf} \vf
+\end{equation}
+The dynamics (equation~\ref{eq:dynamics}) are enforced as an equality constraint.
+Torque limits, friction limits, center of pressure location constraints,
+and unidirectional contact constraints are all
+enforced as inequality constraints.
+These optimizations were performed every 1-2ms by various teams to control the
+Atlas robots in the DARPA Robotics Challenge.
+
+This approach can be used to achieve desired joint or synergy (such as center
+of mass) accelerations, center of mass dynamic behavior, center of pressure location,
+weight distribution, maintenance of a desired body part position, orientation,
+velocity, or trajectory. and joint/actuator position and velocity limits (indirectly).
+
+In the case of exoskeletons, part of the optimization criterion could be to
+minimize contact forces on the operator:
+\begin{equation}
+C_e(\vx) = C_r(\vx) + \vf^{\tr}_o \mW_{\vf_o} \vf_o
+\end{equation}
+Operator force feedback and impedance control could be implemented by specifying a
+desired operator force ${\vf_o}_d$:
+\begin{equation}
+C_e(\vx) = C_r(\vx) + (\vf_o - {\vf_o}_d)^{\tr} \mW_{\vf_o} (\vf_o - {\vf_o}_d)
+\end{equation}
+
+To implement operator impedance control we set the desired operator contact force to:
+\begin{equation}
+{\vf_o}_d = \mJ_o^{-1} ( \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}} )
+\end{equation}
+Assuming that the operator directly applies exoskeleton joint torques,
+\begin{equation}
+C_e(\vx) = C_r(\vx) 
++ (\vtau_o - {\vtau_o}_d)^{\tr} \mW_{\vtau_o} (\vtau_o - {\vtau_o}_d)
+\end{equation}
+and
+\begin{equation}
+{\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\end{equation}
 
 \subsection{Operator-Exoskeleton Force Control using position controlled actuation}
 
