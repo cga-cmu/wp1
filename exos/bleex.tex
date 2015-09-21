@@ -1,0 +1,78 @@
+% \documentclass[letterpaper,12pt,fullpage]{article}
+
+% \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+% \usepackage{cite}
+% \usepackage{graphicx}
+% % \usepackage[dvips]{graphicx}
+% % \usepackage{epsfig} % for postscript graphics files
+%   % \graphicspath{{../eps/}}
+% % \DeclareGraphicsExtensions{.eps}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% %\usepackage[cmex10]{amsmath}
+% %\usepackage{array}
+% %\usepackage{mdwmath}
+% %\usepackage{mdwtab}
+% %\usepackage{eqparbox}
+% \usepackage[tight,footnotesize]{subfigure}
+% %\usepackage[caption=false]{caption}
+% %\usepackage[font=footnotesize]{subfig}
+% %\usepackage{fixltx2e}
+% %\usepackage{stfloats}
+% \usepackage{hyperref}
+
+% % correct bad hyphenation here
+% %\hyphenation{op-tical net-works semi-conduc-tor}
+
+% % \input latex-commands
+
+% \newcommand{\T}{{\mbox {T}}}
+
+% \newcommand{\gc}{{\mbox {GravityCompensation}}}
+
+% \newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
+% \newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
+
+% \begin{document}
+
+
+\subsection{BLEEX}
+
+keywords: sensitivity amplification; strength augmentation;\\
+
+The Berkeley lower extremity exoskeleton (BLEEX) is an anthropomorphic, powered exoskeleton designed for human strength augmentation.  It is described as the first field-operational robotic system to allow its operator to carry significant loads over unstructured terrain without external power \cite{bleex_design_2006}.
+
+The BLEEX system includes two 7 DOF, three-segment legs with thigh, shank, and foot links, on-board power supply, and a backpack-like frame.  The human wearer is rigidly connected at the feet and torso such that the frame shelters the user by transferring load forces to the ground.  The leg segments are connected by rotational joints including 3 DOF (2 actuated) at the hip, 1 DOF (actuated) at each knee, and 3 DOF (1 actuated f/e in sagittal 
+plane; 2 passive) at the ankles.  Joint angles, torque, and power requirements are determined from human motion analysis based on a 75-kg human walking on flat ground at roughly 1.3 m/s (the average military male's maximum reported joint limits are also used to derive joint range of motion targets).  During design, joint motion was intended to be slightly less than the maximum human range of motion for safety; however, some joint ranges had to be reduced to avoid singularities.
+% Ideally, joint motion would provide the maximum human range of motion for safety
+
+Due to its high power to weight ratio (twice that of electric motors), BLEEX uses a hydraulic actuation system.  An on-board internal combustion engine provides both electric and hydraulic power.  The joints are driven by commercial small bore (2cm) dual action hydraulic actuators operating at 6.9 MPa. Though the operating pressure is relatively low, the hydraulic actuation system exhibits significant pressures losses across servo valves when less pressure is required than this system pressure.  Table~\ref{tab:bleex_joints} provides details regarding the range of motion and torque capabilities of BLEEX's joints.  As reported in \cite{bleex_design_2006}, BLEEX requires 1,143 W for walking relative to 165 W for human walking (14\% efficient compared to a human of the same size).  Altogether the suit needs 2.27 kW of hydraulic power and 220 W of electric power to accommodate climbing (540 W) and remaining electrical loads including 240 W to power the second stages on servo vales.
+
+%
+\begin{table}
+\centering
+\begin{tabular}{|l|*{3}{c|}}  % repeats {c|} 6 times
+\hline
+& BLEEX & human max & BLEEX \\
+& ROM & torque \& power & max torque \\ \hline
+Ankle flexion / extension & $\pm 45^\circ$ & $-120$ N-m; 250 W & $-200 / 155$ N-m\\ \hline
+Ankle abduction / adduction & $\pm 20^\circ$ & N/A & N/A \\ \hline
+Knee flexion & $121^\circ$ & $-35 / 60$ N-m; $-150 / 50$ W & $-100 / 140$ N-m \\ \hline
+Hip flexion / extension & $\pm 121^\circ / 10^\circ$ & $-80 / 60$ N-m; $-60 / 115$ W & $-150 / 130$ N-m \\ \hline
+Hip abduction / adduction & $\pm 16^\circ$ & N/A & N/A\\ \hline
+total rotation external & $35^\circ$ & N/A & N/A \\ \hline
+total rotation internal & $35^\circ$ & N/A & N/A \\ \hline
+\end{tabular}
+\caption{BLEEX joint range of motion (ROM) is near anthropomorphic.  The max torques are designed to meet the torque / power requirements of similarly sized human walking at 1.3 m/s \cite{bleex_design_2006}.}\label{tab:bleex_joints}
+\end{table}
+%
+
+\subsubsection{Control}
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{exos/bleex}
+
+% \end{document}
