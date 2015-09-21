@@ -35,7 +35,7 @@
 \begin{document}
 
 \title{A Survey of Near-Term Exoskeleton Technology\\
-(Draft 2.0)}
+(Draft 2.1)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -80,7 +80,7 @@ for exoskeletons.
 
 \section{What are the specs?}
 
-Hip, knee, ankle: At least 200Nm, ideally $>$ 400Nm.
+Hip, knee, ankle: At least 100Nm, more is better.
 
 \subsection{What speeds and forces are needed to walk?}
 
@@ -402,7 +402,60 @@ hostile sites, and deflect or disable projectiles.
 
 \section{Conclusions and Recommendations}
 
-Conclusions and Recommendations to be written.
+1) We recommend the exploration of how to implement and utilize practical
+gear shifts and clutches (or equivalents). For hydraulics and air, this might mean
+bypass or other special valve features.
+For electric motors and gears, this might mean special purpose clutch mechanisms
+built into gearing or harmonic drives. For linear actuators, antagonistic actuation
+combined with tendons that can go slack can be used for clutching.
+
+2) We recommend exploring the combination of passive energy storage (springs,
+accumulators, supercapacitors, ...) with active actuation. One form of this
+is series elastic actuation. 
+
+3) We also recommend exploring storing energy with
+a ``catch'' and ``explosive release'' for overdrive capabilities. 
+
+4) We recommend the exploration of hybrid actuation, where slow and strong actuators
+are combined with fast but weak actuators either in parallel or serial.
+
+5) We recommend the exploration of multi-joint or synergy actuation, where an actuator
+might cross two or more joints.
+
+6) We recommend the exploration of integrated actuation units using 3D printing
+or other rapid prototyping techniques, such as the integrated Moog hydraulic
+actuator for HyQ.
+
+7) We recommend applying as many sensors as possible, and asking the performers
+to make it easy to add more by making the sensor network available in the design.
+This maximizes the probability of success
+by enabling multiple control
+approaches to be implemented, refined, and support each other.
+In particular, we would like to see force sensing between the operator and the
+exoskeleton, including at the feet, as much force sensing between the exoskeleton 
+and the world as possible, but minimally full six-axis force/torque sensing at
+the exoskeleton feet (where they touch the ground). We would like to see multiple MEMs
+IMUs (measuring linear acceleration and angular velocity) installed across 
+the exoskeleton and at least one high quality fiber optic gyro IMU.
+We would like to see high quality direct velocity sensing
+such as high count (100,000 counts/revolution) encoders and/or 
+analog rotary or linear tachometers on actuators and joints. 
+We would like to see actuator force or torque sensors
+(load cells or equivalents) with the measurement on the link side (rather than
+the actuator side) of any transmission. Electric current in motors and oil
+pressure in hydraulic pistons can also be used for actuator force estimation,
+but because these measurements are on the actuator side before the transmission
+and in the case of hydraulics before the oil seals on the piston, these measurements
+are greatly contaminated by friction. On the Atlas humanoid we typically saw 10Nm
+joint torque estimation errors for a system that estimated actuator output using
+oil pressure on each side of the piston head.
+A possible objection to this is additional cost. We feel it is a false
+economy to skimp on sensing. Leaving practical sensing out greatly increases
+the risk of poor performance.
+
+8) Do we recommend flywheels?
+
+More Conclusions and Recommendations to be written.
 
 \bibliographystyle{plain}
 \bibliography{exo}

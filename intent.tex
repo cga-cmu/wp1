@@ -35,7 +35,7 @@
 \begin{document}
 
 \title{Estimating Operator Intent\\
-(Draft 2.0)}
+(Draft 2.1)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -98,10 +98,10 @@ consistantly beating a human opponent in rock-paper-scissors.
 \url{https://www.youtube.com/watch?v=Qb5UIPeFClM&feature=player_embedded}
 
 {\bf Individualization of Intent Estimation:}
-We expect each exoskeleton controller
+We recommend each exoskeleton controller
 to be used by and optimized for a single operator.
 A substantial investment in capturing the operators normal behavior,
-operator training and learning, and controller customization can be made.
+operator training and learning, and controller customization should be made.
 
 \section{Intent time scales}
 
@@ -291,7 +291,30 @@ Discussion to be written.
 
 \section{Conclusions and Recommendations}
 
-Conclusions and Recommendations to be written.
+1) We recommend using a Bayesian (probabilistic) framework for intent recognition
+and prediction. This is similar to using an extended
+Kalman filter and predictor for intent.
+A classifying filter that tracks probabilities of different behavior selections
+and their parameter selections can be implemented with a multiple model Kalman
+filter or a particle filter.
+
+2) We recommend developing an intent prediction system that can use
+as many sensors and measurements of the operator as are possible within cost limits,
+including at least external computer vision and audition, exoskeleton-world contact
+force,
+EMG, muscle pressure, force between the operator and the
+exoskeleton,
+speech acquisition, keyboards built into the exoskeleton handles or gloves,
+and accelerometers/microphones/vibration-sensors attached to the operator skin.
+This will enable the implementation of a variety of intent prediction approaches,
+and avoid ``putting all our eggs in one basket.''
+
+3) We recommend each exoskeleton controller
+to be used by and optimized for a single operator.
+A substantial investment in capturing the operators normal behavior,
+operator training and learning, and controller customization should be made.
+
+More Conclusions and Recommendations to be written.
 
 \bibliographystyle{plain}
 \bibliography{exo}

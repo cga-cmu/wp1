@@ -95,8 +95,8 @@ execution (operator/exoskeleton symbiosis with multi-tasking)?
 Terms like impedance and admittance control are used, but are often confusing,
 as in controller design one can choose from several possible
 inputs into the exoskeleton (exoskeleton positions,
-velocities, accelerations, operator-exo contact forces and
-exo-world contact forces), and choose from several possible exoskeleton
+velocities, accelerations, operator-exoskeleton contact forces and
+exoskeleton-world contact forces), and choose from several possible exoskeleton
 outputs: exoskeleton actuator forces and torques, exoskeleton
 motion (position, velocity, and acceleration), as well as operator-exo
 contact forces or exo-world contact forces.
@@ -208,6 +208,9 @@ or damping.
 Or (almost equivalently),
 specify a desired force and change the force according to position, velocity,
 and acceleration.
+\item
+Online optimization of accelerations, actuator forces and torques, and contact forces
+using quadratic programming.
 \end{itemize} 
 One important synergy is coordinated control of the center of mass location and
 velocity for balance.
@@ -242,8 +245,8 @@ This level often provides the behavioral primitives or ``verbs'' for robot progr
 units.
 Often involves finite state machines, timers, if-then condition testing, gain
 scheduling, ...
-Examples: walk-to-location( x=7.8m, y=2.3m ), run-to-location( speed=3.7m/s ),
-horizontal-jump( height= 2m, length= 5m ).
+Examples: walk-to-location(x=7.8m, y=2.3m), run-to-location(speed=3.7m/s),
+horizontal-jump(height= 2m, length= 5m).
 Global inverse kinematics (selection of solution branch) is performed at this level.
 This level often determines the control flow of a behavior.
 
@@ -289,7 +292,7 @@ with a subscript $o$ as in $\vf_o$) and exoskeleton-world (which we denote
 with a subscript $w$ as in $\vf_w$). If the operator is tightly strapped or
 rigidly held by other types of physical constraints, we can lump the operator
 body parts with the exoskelton parts which they are attached to in terms
-of link inertias, location of center of mass, and moments of inertia,
+of link inertias, locations of center of mass, and moments of inertia,
 and just think of the whole system as one robot.
 We can also separate out the operator dynamics if this is more convenient
 (we separate them out and ignore them in what follows).
@@ -323,7 +326,7 @@ that correspond to root velocities, since those dimensions are not actuated.
 To understand these equations better, it is useful to have all Jacobians equal
 to the identity matrix. This means the operator is directly applying torques
 at the exoskeleton joints ($\vtau_o$) (a realistic assumption), 
-and so is the world ($\vtau_w$) (very unrealistic assumption). In this case:
+and so is the world ($\vtau_w$) (a very unrealistic assumption). In this case:
 \begin{equation}
 \mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
 + \vtau_w = \vtau + \vtau_o
@@ -401,11 +404,10 @@ and $\hat{\vq}$ is the estimated configuration of the exoskeleton,
 The operator relies on mechanical backdrivability to drive
 the exokeleton to do tasks.
 
-Sarcos Primus Humanoid (ATR) video of active gravity compenstation applied
+Sarcos Primus Humanoid videos of active gravity compensation applied
 to a humanoid robot:\\
-\url{https://www.youtube.com/watch?v=KNxxLm4sPys}
-
-[Bentivegna video as well.]
+CMU: cancel gravity and friction: \url{https://www.youtube.com/watch?v=Ac5cowTwOPw}\\
+ATR: cancel gravity only: \url{https://www.youtube.com/watch?v=KNxxLm4sPys}
 
 A simple approximation for a lower body exoskeleton with a heavy payload at the
 torso is:
@@ -428,6 +430,10 @@ are the estimated friction torques at the estimated exoskeleton configuration
 and velocity.
 Note that these may be load dependent, and may require additional state to
 correctly handle stiction and hysteresis effects.
+
+Sarcos Primus Humanoid video of friction compensation applied
+to a humanoid robot:\\
+CMU: cancel gravity and friction: \url{https://www.youtube.com/watch?v=Ac5cowTwOPw}\\
 
 \section{Online inverse dynamics control}
 
@@ -704,16 +710,21 @@ acceleration can be modified with feedback terms.
 \begin{equation}
 \ddot{\vq}_d^* = \ddot{\vq}_{d} + \mK_{\vq}^{\ddot{\vq}} ( \hat{\vq} - \vq_d ) 
 + \mK_{\dot{\vq}}^{\ddot{\vq}} ( \hat{\dot{\vq}} - \dot{\vq_d} )
+\label{eq:computed-torque-control}
 \end{equation}
-The problem with putting the inverse dynamics in the feedback loop is that the
+The problem with putting the inverse dynamics in the feedback loop 
+(equation~\ref{eq:computed-torque-control})
+is that the
 effective gains of this control vary widely with the configuration $\vq$.
 Unmodeled dynamics (that also vary with $\vq$) limit the size of the gain matrices
 $\mK_{\vq}^{\ddot{\vq}}$ and $\mK_{\dot{\vq}}^{\ddot{\vq}}$. Because so many quantities
-are varying quite a bit, constant gain matrices may be quite low for a worst case
-design. It is also very difficult to verify this type of nonlinear feedback controller.
-For this reason most current approaches to humanoid
+are varying quite a bit, constant gain matrices may be quite small for a worst case
+design. It is also very difficult to evaluate and 
+verify this type of nonlinear feedback controller.
+For these reasons most current approaches to humanoid
 robots design the feedback controller
-separately and use constant gain independent joint linear feedback control.
+separately (and manually) 
+and use constant gain independent joint linear feedback control.
 
 \subsection{Autonomous exoskeleton-world force control}
 
@@ -740,6 +751,10 @@ joint version, w jKj =k
 \end{verbatim}
 
 Why isn't this identical to operator impedance control?
+
+\subsection{How can the operator share control with autonomous control?}
+
+To be written.
 
 \section{Using Online Optimization: Quadratic Programming}
 
@@ -798,7 +813,7 @@ To implement operator impedance control we set the desired operator contact forc
 \begin{equation}
 {\vf_o}_d = \mJ_o^{-1} ( \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}} )
 \end{equation}
-Assuming that the operator directly applies exoskeleton joint torques,
+Assuming that the operator directly applies exoskeleton joint torques, this becomes:
 \begin{equation}
 C_e(\vx) = C_r(\vx) 
 + (\vtau_o - {\vtau_o}_d)^{\tr} \mW_{\vtau_o} (\vtau_o - {\vtau_o}_d)
@@ -1004,7 +1019,7 @@ prior to toe off. This dramatically reduces the moving
 {\it
 The ground reaction
 forces (GRF) magnitude and direction is used to command the
-actuators. In some researches the GRF sensors are used
+actuators. In some research the GRF sensors are used
 together with other sensors in the control architectures [17],
 while in other exoskeleton the control system is based on the
 GRF merely [RoboKnee, Honda].
@@ -1065,20 +1080,21 @@ desired contact forces, with the desired impedance or admittance.
 
 \section{State Estimation}
 
-We are surprised that acceleration feedback based on double differentiation
-works well on real systems (even low pass filtered acceleration
-estimated by a Kalman filter).
-Impacts, shock waves, and the fact that neither
+Estimating acceleration using double differentiation with low pass filtering
+currently works well on real exoskeletons.
+However, impacts, shock waves, and the fact that neither
 the operator's body parts or the exoskeletons parts are rigid bodies and the
-joints are not well defined suggest this approach would be fragile to modeling
-error and unmodeled dynamics.
-It is not possible to distribute MEMs IMUs throughout the exoskeleton to
+joints are not well defined suggest this approach can be improved with actual
+acceleration measurements.
+It is now possible to distribute MEMs IMUs throughout the exoskeleton to
 improve both velocity and 
 acceleration estimation~\cite{Xinjilefu-thesis}, which should improve
 Sensitivity Amplification Control.
 
 Role of phase estimation, behavioral clocks, and phase reset events
 such as impacts.
+
+Disturbance observers~\cite{IEEE06197032}.
 
 \section{Discussion}
 
@@ -1090,15 +1106,29 @@ Conclusions and Recommendations to be written.
 
 1) We recommend a particular control 
 overall architecture in Section~\ref{sec:architecture}.
+We do not expect this to be controversial.
 
-2) We recommend the use of dynamic models of the exoskeleton, as has been done
+2) We recommend actuation that can be treated as force or torque sources.
+This is a potentual problem for revolute electric actuation, as it
+is difficult to get necessary performance at low gear ratios (20-50)
+and fit the necessary torque sensing,
+
+3) We recommend the use of dynamic models of the exoskeleton, as has been done
 for the last decade starting with the BLEEX exoskeleton.
+We do not expect this to be controversial.
 
-3) We recommend using online optimization as part of the Lowest Level Controller
-in the form of Quadratic Programming. This was tested by the top biped robot
+4) We recommend using online optimization as part of the Lowest Level Controller
+in the form of quadratic programming. Online optimization
+was tested by the top biped robot
 teams in the DARPA Robotics Challenge, and worked well.
+A possible objection to online optimization
+is that it requires more substantial computing
+resources than current exoskeleton control methods. We feel the feasibility
+of this approach has been demonstrated and is easily achievable. Perceptual
+computing costs will dwarf computing costs for control, 
+so the computation cost is a non-issue.
 
-4) We recommend applying as many sensors as possible, and asking the performers
+5) We recommend applying as many sensors as possible, and asking the performers
 to make it easy to add more by making the sensor network available in the design.
 This maximizes the probability of success
 with respect to control architectures and algorithms by enabling multiple control
@@ -1108,16 +1138,34 @@ exoskeleton, including at the feet, as much force sensing between the exoskeleto
 and the world as possible, but minimally full six-axis force/torque sensing at
 the exoskeleton feet (where they touch the ground). We would like to see multiple MEMs
 IMUs (measuring linear acceleration and angular velocity) installed across 
-the exoskeleton. We would like to see high quality direct velocity sensing
-such as high count (100,000 counts/revolution) rotary encoders and 
-analog linear tachometers.
+the exoskeleton and at least one high quality fiber optic gyro IMU. 
+We would like to see high quality direct velocity sensing
+such as high count (100,000 counts/revolution) encoders and/or 
+analog rotary or linear tachometers on actuators and joints. 
+We would like to see actuator force or torque sensors
+(load cells or equivalents) with the measurement on the link side (rather than
+the actuator side) of any transmission. Electric current in motors and oil
+pressure in hydraulic pistons can also be used for actuator force estimation,
+but because these measurements are on the actuator side before the transmission
+and in the case of hydraulics before the oil seals on the piston, these measurements
+are greatly contaminated by friction. On the Atlas humanoid we typically saw 10Nm
+joint torque estimation errors for a system that estimated actuator output using
+oil pressure on each side of the piston head.
+A possible objection to this is additional cost. We feel it is a false
+economy to skimp on sensing. Leaving practical sensing out greatly increases
+the risk of poor performance.
 
-5) {\bf Controversial:} We recommend a ``symbiotic'' control system design,
-which expects the operator to adapt to the exoskeleton and its control,
-and which has the control customized for the operator.
+6) We recommend a ``symbiotic'' control system design should be used as a backup,
+in case more aggressive design philosophies such as ``invisible'' and ``natural''
+control system designs are not achievable.,
+The ``symbiotic'' control system design
+expects the operator to adapt to the exoskeleton and its control,
+and has the control customized for the operator.
 
-6) {\bf Controversial:} We recommend making use of virtual model control specialize
-for the various tasks.
+7) We recommend making use of virtual model control specialize
+for the various tasks. This can greatly increase operator/exoskeleton system
+performance over an exoskeleton that just carries a load and is otherwise
+``invisible''.
 
 \bibliographystyle{plain}
 \bibliography{exo}
