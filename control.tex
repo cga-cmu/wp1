@@ -90,6 +90,10 @@ doorknob, button, or light switch); superhuman response to external
 perturbations such as projectiles and explosions; and autonomous
 execution (operator/exoskeleton symbiosis with multi-tasking)?
 
+A later white paper will discuss how to handle malfunctions and damage to the
+system. Basically this boils down to fault detection, and switchover to
+an approapriate safe mode of operation.
+
 \subsection{Let's keep it simple}
 
 Terms like impedance and admittance control are used, but are often confusing,
@@ -101,7 +105,7 @@ outputs: exoskeleton actuator forces and torques, exoskeleton
 motion (position, velocity, and acceleration), as well as operator-exo
 contact forces or exo-world contact forces.
 
-A useful background paper: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
+A useful background paper on impedance and admittance: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
 
 Variants of nonlinear feedback control such as feedback linearization or
 sliding mode control are largely ignored in this paper.
@@ -179,12 +183,14 @@ controller. Note that this is often somewhat confusing. Electric motors
 are torque sources (low impedance), but when a high gear ratio transmission
 is added (such as a harmonic drive) the whole system becomes high impedance
 and thus is best thought of as a position (or velocity) source. Therefore,
-position control is performed by the low level controller. Hydraulic actuators
+position or velocity 
+control is performed by the low level controller. Hydraulic actuators
 are high impedance, but when a force or load sensor is added (or piston differential
 oil pressure is used as a force sensor), the whole system becomes low impedance
 and is best thought of as a force source. Force (or joint torque) control is
-performed by the low level controller. Force or torque can be added to an
-electromechanical drive train (electric motor plus gears or motor plus ballscrew)
+performed by the low level controller. Force or torque sensing can be added to an
+electromechanical drive train (electric motor plus gears or electric
+motor plus ballscrew)
 to make it lower impedance and more like a force source as well.
 
 \section{Recommended Control Architecture}
@@ -340,6 +346,10 @@ We are also ignoring actuator dynamics, which we can handle by augmenting
 the state vector.
 
 [SOMETHING ABOUT MODELING HUMAN + EXOSKELETON + WORLD ]
+
+\section{Test case: Atlas humanoid robot}
+
+Gazebo and SDFast models.
 
 \section{Passive control with no active control}
 
@@ -823,6 +833,8 @@ and
 {\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 
+\subsection{Full Atlas robot implementation.}
+
 \section{Operator-Exoskeleton Force Control using position controlled actuation}
 
 At this point our dynamics formulation is no longer appropriate, since we
@@ -1080,6 +1092,8 @@ desired contact forces, with the desired impedance or admittance.
 
 \section{State Estimation}
 
+DISCUSS HOW TO HANDLE SENSOR NOISE
+
 Estimating acceleration using double differentiation with low pass filtering
 currently works well on real exoskeletons.
 However, impacts, shock waves, and the fact that neither
@@ -1096,11 +1110,59 @@ such as impacts.
 
 Disturbance observers~\cite{IEEE06197032}.
 
+\subsection{Full Atlas robot.}
+
+\section{Robustness to parametric modeling error}
+
+\section{Robustness to unmodeled dynamics}
+
+\subsection{Example unmodeled dynamics}
+
+Examples:
+\begin{itemize}
+\item
+A) hydraulic actuator dynamics.
+\item
+B) delay. 
+\item
+C) elastic straps sinusoidal oscillation.
+\item
+D) loose straps (bang coast bang oscillation)
+\end{itemize}
+
+\subsection{1 joint rotary example.}
+
+\subsection{2 joint rotary example: stance.}
+
+\subsection{2 joint rotary example: swing.}
+
+\subsection{4 link body example.}
+
+\subsection{Full Atlas robot.}
+
+\section{Underactuated control}.
+
+Not talking about floating body dynamics, where global (``root'') position
+and velocity is unactuated.
+
+What about only sagittal actuation?
+
+\subsection{No actuation on lateral and twist}
+
+\subsection{Passive actuation on lateral and twist}
+
+Address what is the complexity penalty, weight penalty, 
+and ``drag'' of actuator on individual joint motion.
+
+\subsection{Active actuation on lateral and twist}
+
+Address what is the complexity penalty, weight penalty, 
+and ``drag'' of actuator on individual joint motion.
+
 
 \section{Survey Existing Exoskeletons}
 
 \input{exos/bleex}
-
 
 
 \section{Discussion}
@@ -1178,3 +1240,24 @@ performance over an exoskeleton that just carries a load and is otherwise
 \bibliography{exo}
 
 \end{document}
+
+
+
+
+sensitivity to
+ modeling error
+ sensor error
+ unmodeled dynamics
+
+underactuated control problem
+ - not fully actuated sagittal only.
+ - how necessary is lateral actuation
+ - what is the penalty
+  weight
+  drag of actuator
+
+how handle failure and damage after Oct 1
+
+what about a full model of the system
+
+Oct 5-9
