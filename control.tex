@@ -561,7 +561,7 @@ Setting $\ddot{\vq}_d$ to zero and adding acceleration feedback:
 \label{eq:change-inertia1}
 \end{equation}
 sets the apparent inertia to $\mM_d$ if the dynamic models are perfect, and
-the state estimation produces not only perfect positions and velocities but
+state estimation produces not only perfect positions and velocities but
 also perfect acceleration estimates. In the case 
 where the operator directly applies torques at the
 exoskeleton joints we get:
@@ -1338,33 +1338,244 @@ We have not seen a lot of discussion of state estimation of exoskeletons in
 the literature.
 We will discuss our approach to state estimation on humanoid robots here.
 
-We implemented two kinds of Kalman filters for state estimation.
-Low level state estimation is done by an extended Kalman filter that takes into
-account joint position, actuator load measurements, actuator commands,
-and the dynamic model of the robot,
-and measured contact forces (feet and wrists)~\cite{}.
+We use extended Kalman Filtering (EKF) to perform state estimation.
+Currently, using the full body dynamics (equation~\ref{eq:dynamics2})
+and any addtional constraint equations for ground contacts (feet on the ground):
+\begin{equation}
+\mJ_w \ddot{\vq} + \dot{\mJ}_w \dot{\vq} = 0
+\end{equation}
+is too expensive to produce both a forward prediction and a linearized model
+about the current state in the desired 1ms time step.
+Therefore we approximate the dynamics by separating the center of mass dynamics
+from the joint dynamics and use two separate extended Kalman filters:
+a filter for the center of mass dynamics, and a filter for the joint dynamics.
+We use an orthogonal (QR) decomposition to project motion into the orthogonal
+complement of the contact Jacobian where the ``external'' dynamics (the dynamics
+of the center of mass) are separate from the ``internal'' dynamics (the motion
+of the joints).
+
+Joint velocities are estimated using actuator position sensors, actuator load
+sensors, actuator commands, a single high
+quality IMU at the pelvis, multiple low quality (but cheap) MEMs IMUs
+spread throughout the robot. We also take into account feet and hand
+contact forces, which
+are measured. We use the full internal dynamics as the process model,
+assuming the root dynamics are known. See Chapter 3 of~\cite{Xinjelefu-thesis}.
+The internal dynamics are linearized and covariances updated
+by a separate process at a 100Hz rate.
+The joint positions are predicted by integrating the estimated velocities.
+
 For higher level (overall) state estimation,
 we developed a center of mass location and velocity estimator, and its
 application in full body inverse dynamics control, fall detection
 and fall prevention for humanoid robots and exoskeletons~\cite{}.
-
+The center of mass filter is modeled as a multiple model EKF with contact switching
+to handle changes in support: single support, double support, and off the ground.
+We use the robot joint sensing (kinematics) to create a virtual sensor that measures
+center of mass position and velocity relative to a stance foot.
 We use Linear
 Inverted Pendulum Model (LIPM) dynamics with an offset to predict
 the center of mass motion. This offset can be interpreted
 as a modelling error on the center of mass position, or an
 external force exerted on the center of mass of the robot,
 or a combination of both. The center of mass estimator was
-implemented on our Atlas humanoid robot. During the DARPA
-Robotics Challenge Finals, it successfully saved our robot from
+implemented on our Atlas humanoid robot. 
+This estimator is especially helpful when compensating
+for unplanned slow changing external forces applied at
+unknown locations on the robot, which is quite likely when
+operating in tight spaces. It also handles relatively small
+dynamic forces well when walking, e.g. dragging a tether
+or pushing through a spring loaded door. Thanks to
+the estimator, very little tuning is done for our mass model.
+During the DARPA
+Robotics Challenge Finals
+where no safety belay was
+allowed, our early warning system
+successfully saved our robot from
 falling on two occasions, and made us the only competitive team
 without a fall or need for a human rescue among all teams.
 
+{\bf Safety Code: Fall Prediction:}
+The most significant contribution of the external force estimator is that it
+can detect when a large external force is being applied that might
+push the robot over.
+We compute a ``corrected capture point'' (CCP)~\cite{capture},
+which is an offset to the current capture point.
+The offset 
+takes into account the estimated external force, represented as an offset
+to the center of mass.
+The corrected capture point getting close to the boundary of the polygon of
+support warns the controller that the robot might fall if the external
+force is maintained.
+We can also compute the corrected capture point assuming that the
+external force follows a known time course plus an estimated constant offset,
+or steadily increases or decreases for a fixed time interval
+based on an estimated derivative.
+We assume the external force is due to the robot's actions, and not
+due to external disturbances such as wind, a moving support platform
+(although earthquakes do happen at the DRC location in California),
+or external agents pushing on the robot.
+The current
+behavior is stopped and the robot ``frozen'' in place.
 
-Unscented,
-Particle filters
+A derivation of the corrected capture point starts with LIPM dynamics
+augmented with a true center of mass offset and a true external force:
+\begin{equation}
+\ddot{c} = (c + c_{offset} + f_{ext}*z/mg - cop)*g/z
+= (c + \Delta - cop)*g/z
+\end{equation}
+where $c$ is the location of the center of mass projected on the ground
+plane,
+$cop$ is the center of pressure
+location in that ground plane, and $\Delta$ is the sum of the true center of mass
+offset from the modeled center of mass and any external horizontal force.
+Our extended Kalman filter estimates $\hat{c}$, $\hat{\dot{c}}$, and
+$\hat{\Delta}$,
+taking into account the
+current center of mass height $z$. We assume a constant center of mass height
+in estimating the corrected capture point based on the estimated capture point
+as described in~\cite{capture}:
+\begin{equation}
+\widehat{CCP} = \widehat{CP} + \hat{\Delta} 
+= \hat{c} + \hat{\dot{c}}\hat{z}/g + \hat{\Delta}
+\end{equation}
 
-DISCUSS HOW TO HANDLE SENSOR NOISE
+For dynamic walking, the corrected capture point goes beyond the
+current single foot support polygon during swing phase and is captured by
+the touchdown foot. One way to predict a fall is to use the
+swing foot time to touchdown and predict if the current
+capture point is within the support polygon of possible or desired
+footholds. This approach is complicated because it depends
+on the controller. Our simpler solution is to use a heuristic
+that detects a fall only if the corrected capture point
+is outside of the current support
+polygon for a continuous period of time. The time threshold was set to
+0.6 seconds after extensive testing. As soon as a fall is
+predicted, there are several things the humanoid can do, such
+as using angular momentum to maintain balance, or changing the
+current or future foot placements.
+We have implemented a simple
+step recovery controller that works in single support where
+the robot corrects the next foot placement and timing
+using a simple heuristic to avoid self collision.
+We would only step left if the robot is falling left, and similarly
+for right steps. We avoid crossing the legs in using foot placement
+to balance laterally.
 
+\begin{figure}[t]
+  \centering
+  \hbox{}
+      \includegraphics[height=5cm]{figs/door1-5.png}
+%      \includegraphics[height=5cm]{figs/door2-1c.png}
+      \hbox{}
+      \includegraphics[height=5cm]{figs/door1-3.png}
+      \hbox{}
+      \includegraphics[height=5cm]{figs/door-stuckc2.png}
+      \hbox{}
+      \caption{Successful sidestepping through the door (left, middle)
+        and the failure in the DRC rehearsal (right) in which the protective
+        cage (black padding) for the head is against the white door frame.}
+      \label{figDoor}
+\end{figure}
+
+\begin{figure}[t]
+      \centering
+      % \includegraphics[width=0.48\textwidth]{figs/door-traces.png}
+\subfigure
+{\includegraphics[width=0.48\textwidth]{figs/cop_x1.pdf} \label{subfig:ext_cop_x}}
+%\subfigure
+%{\includegraphics[width=0.48\textwidth]{figs/cop_y.pdf} \label{subfig:ext_cop_y}}
+\subfigure
+{\includegraphics[width=0.48\textwidth]{figs/ext_f1.pdf} \label{subfig:ext_f}}
+\caption{
+Atlas was caught on the door frame when sidestepping through it during
+the DRC rehearsal.
+The walking controller delayed liftoff and remained in double
+support when the external force estimator detected a large change
+in the estimated external force in the robot's sideways
+direction ($F_x$, through the door).
+The single support phase is shown by the shaded area, and the black dashed
+lines indicates the planned liftoff time.
+The estimated CoM is the sum of the model CoM and the estimated CoM offset.
+}
+\label{figDoorError}
+\end{figure}
+
+{\bf Results of Safety Code: Robot caught on door frame:}
+In the DRC rehearsal, the robot was caught on
+the door frame when sidestepping though (Figure~\ref{figDoor}).
+The walking
+controller detected an anomaly in the estimated external force in the
+sideways direction ($F_x$),
+delayed liftoff and remained in double support, and stopped the
+current behavior
+to allow for manual recovery (Figure~\ref{figDoorError}).
+
+{\bf Results of Safety Code: Manipulation Error:}
+For the manipulation controller, the robot is always assumed
+to be in double support, and the support polygon
+is computed by finding the convex hull of the foot corner
+points (light green in Figure~\ref{figDrillCOP}),
+computed using forward kinematics.
+To prevent the robot from falling during
+manipulation, we require the corrected capture point to be within a
+subset of the support polygon called the safe region, 
+(dark green in Figure~\ref{figDrillCOP}),
+When the corrected capture point escapes the safe region,
+a freeze signal is sent to the manipulation controller, and it
+clears all currently executing joint trajectories and freezes the robot
+at the current pose, with the balance controller still running.
+
+During our second
+run in the Finals, our right electric forearm mechanically failed
+when the cutting motion was initiated for the drill task. The
+uncontrolled forearm wedged the drill into the wall and
+pushed the robot backwards.
+The controller stopped the behavior (a freeze),
+and saved the robot from falling (Figure~\ref{figDrillCOP}).
+The operator was then able to
+recover from an otherwise catastrophic scenario.
+
+The time plot in Figure~\ref{figDrillCOP} shows candidate fall predictors
+during this event. We can eliminate some candidate fall predictors
+easily. The center of mass (CoM) (and a ``corrected'' CoM (not shown))
+usually provide a fall warning too late, because the CoM velocity is not
+included. The capture point (CP) does not include information about
+external forces. The center of pressure (CoP) is 
+noisy and gives too many false alarms. It can warn of 
+foot tipping, but it is less reliable about warning about robot falling,
+which is not the same thing as foot tipping in a force controlled robot
+or if there are non-foot contacts and external
+forces. In this plot, we see that the CoP moves away from the safe region
+during recovery, predicting that the robot is falling again, while the
+corrected capture point (CCP) moves towards the interior of the safe region.
+
+\begin{figure}[t]
+      \centering
+      \includegraphics[height=30mm]{figs/near-fall2c.png}
+      \includegraphics[height=30mm]{figs/drill-cop1.png}
+      \includegraphics[height=30mm]{figs/drill-cop2.png}
+      \includegraphics[height=30mm]{figs/drill-cop3.png}\\
+\includegraphics[width=0.48\textwidth]{figs/cp_time_xes.pdf}
+      \caption{Top Left: Robot posture after 
+error detection.
+Top Right: Black trace: The corrected capture point (CCP)
+up to the error detection,
+Red trace: The CCP during the ``frozen'' period, and Blue trace: The CCP moves
+back to the center of the polygon of support during manual recovery.
+Bottom: Plots of candidate fall predictors in the fore/aft direction
+during this event. The black vertical dashed lines mark the freeze time and
+the start of manual recovery.}
+      \label{figDrillCOP}
+\end{figure}
+
+Unscented and particle filters could be used instead of extended
+Kalman filtering. It may well be the case that unscented filtering
+outperforms extended Kalman filtering.
+
+\subsection{Current state estimation approaches in exoskeletons}
+
+We see that sensitivity amplification control uses acceleration as an input.
 Estimating acceleration using double differentiation with low pass filtering
 currently works well on real exoskeletons.
 However, impacts, shock waves, and the fact that neither
@@ -1381,11 +1592,10 @@ such as impacts.
 
 Disturbance observers~\cite{IEEE06197032}.
 
-\subsection{Full Atlas robot.}
-
 \section{Robustness to parametric modeling error and unmodelled dynamics}
 
-We need to be robust to parameter modeling errors such as the wrong mass
+We need to be robust to parameter modeling errors such as the wrong mass,
+center of mass location, joint location,
 or moment of inertia for an exoskeleton part, variations in the operator
 parameters, and variations in attachments to the exoskeleton and payload.
 Examples of typically unmodeled dynamics (non-parametric modeling error) include:
