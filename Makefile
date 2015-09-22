@@ -1,4 +1,4 @@
-all: intent.pdf technology.pdf control.pdf
+all: intent.pdf technology.pdf control.pdf survey.pdf
 
 intent.pdf: intent.tex
 	pdflatex intent
@@ -14,3 +14,8 @@ control.pdf: control.tex
 	pdflatex control
 	pdflatex control
 	pdflatex control
+
+survey.pdf: survey.tex
+	pdflatex survey
+	pdflatex survey
+	pdflatex survey
