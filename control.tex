@@ -36,7 +36,7 @@
 
 \title{A Survey of Possible Exoskeleton Control Architectures and
 Algorithms\\
-(Draft 2.1)}
+(Draft 2.2)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -105,7 +105,8 @@ outputs: exoskeleton actuator forces and torques, exoskeleton
 motion (position, velocity, and acceleration), as well as operator-exo
 contact forces or exo-world contact forces.
 
-A useful background paper on impedance and admittance: \url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
+A useful background paper on impedance and admittance:\\
+\url{http://summerschool.stiff-project.org/fileadmin/pdf/1804_C19.pdf}
 
 Variants of nonlinear feedback control such as feedback linearization or
 sliding mode control are largely ignored in this paper.
@@ -171,9 +172,10 @@ and parachute suits.
 
 The exoskeleton can adapt its behavior to the task.
 For example, for jumping, the exoskeleton can operate like a pogo 
-stick \url{https://www.youtube.com/watch?v=lbp41vWP4o4}, 
-and for running it could act like jumping 
-stilts \url{https://www.youtube.com/watch?v=9ZOd7yEyhwI},
+stick:\\
+\url{https://www.youtube.com/watch?v=lbp41vWP4o4},\\ 
+and for running it could act like jumping stilts:\\
+\url{https://www.youtube.com/watch?v=9ZOd7yEyhwI},
 
 \section{Effects of underlying exoskeleton actuator technology}
 
@@ -227,7 +229,7 @@ or other types of feedforward reference tracking control.
 Disturbance observers for model errors and contact/wind forces
 are implemented at this level.
 Typically this is done by a high sampling rate global servo~\cite{Atlas-robot}
-or distibuted limb or joint-level high sampling rate servos~\cite{Sarcos-robot}.
+or distributed limb or joint-level high sampling rate servos~\cite{Sarcos-robot}.
 Often, this controller is provided by the manufacturer of the robot
 or exoskeleton and runs on a separate computer system from the
 ``user's'' or task/application controller~\cite{Sarcos,Atlas}.
@@ -268,7 +270,13 @@ or is completely done by the operator.
 adjustment and/or behavior switching
 at all of these levels.
 
-This control architecture is intuitive, abstracts the hardware 
+{\bf State Estimation:}
+In this architecture, state estimation to deal with sensor noise and incomplete or
+redundant sensing is a separate process and is as independent as possible
+from the control method~\cite{certainty-eq,separation-prin}.
+This makes evaluating different control methods much easier.
+
+The recommended control architecture is intuitive, abstracts the hardware 
 and lower level control in a straightforward way, is easy to program, and is
 commonly used. Variants of this architecture were used by almost all teams
 in the DARPA Robotics Challenge~\cite{}.
@@ -289,6 +297,12 @@ but one or a small number of functions or policies.
 We are seeing more of these architectures
 due to the success and popularity of function approximation such as
 deep learning.
+
+An alternative approach to state estimation is to design state estimation
+and control laws simultaneously~\cite{LQG-LTR}. Another alternative is
+to have a controller with internal state, and design or learn a policy
+that works well, but does not have an explicit state estimation 
+part~\cite{lead-lag}.
 
 \section{Exoskeleton dynamics}
 
@@ -410,6 +424,7 @@ with exoskeleton actuators to cancel the exoskeleton weight (but not inertia).
 \vtau = \hat{\mG}(\hat{\vq})
 \end{equation}
 where $\vtau$ are the exoskeleton joint torques, 
+$\hat{\mG}()$ are the gravitational forces calculated using an imperfect model, 
 and $\hat{\vq}$ is the estimated configuration of the exoskeleton,
 The operator relies on mechanical backdrivability to drive
 the exokeleton to do tasks.
@@ -428,7 +443,8 @@ where $\hat{\mJ}$ is the estimated Jacobian matrix,
 $\hat{m}$ is the estimated
 weight of the exoskeleton (which could include the operator),
 and $\hat{\vg}$ is the gravity vector (it is estimated due to possible orientation
-errors in the controller's estimate of vertical). 
+errors in the controller's estimate of vertical).
+All weight is assumed to be concentrated at the center of mass of the full system.
 
 \section{Friction compensation}
 
@@ -446,6 +462,7 @@ to a humanoid robot:\\
 CMU: cancel gravity and friction: \url{https://www.youtube.com/watch?v=Ac5cowTwOPw}\\
 
 \section{Online inverse dynamics control}
+\label{sec:invdyn}
 
 The goal here is to map from desired motion (in this case desired
 accelerations) to exoskeleton actuator commands (and desired operator
@@ -620,32 +637,33 @@ Compliance, inverse damping, inverse mass are components of an admittance,
 as they map force and torques to kinematic variables (position, velocity, and
 acceleration). 
 
-We can implement force control 
-if measurements of the contact forces with
+We can implement operator force control 
+if measurements of the operator contact forces with
 the exoskeleton are available.
-The exoskeleton moves as to create as little force as possible 
-assuming the actuators are torque sources.
+The exoskeleton moves as to create as little force on the operator as possible 
+assuming the actuators are torque sources:
 \begin{equation}
-\vtau = \vtau_{\invdyn} - \mK_{\vf} \mJ^{\tr} ( \hat{\vf} - \vf_d )
+\vtau = \vtau_{\invdyn} + \mJ_o^{\tr} {\vf_o}_d
++ \mJ_o^{\tr} \mK_{\vf_o} ( \hat{\vf}_o - {\vf_o}_d )
 \end{equation}
-$\mK_{\vf}$ is a gain matrix, $\mJ$ is the appropriate Jacobian matrix for
-force $\vf$
+$\mK_{\vf_o}$ is a gain matrix, $\mJ_o$ is the Jacobian matrix for the operator
+force $\vf_o$
 Note that this does not require inverting the Jacobian matrix.
 We will see that the position control version does invert the Jacobian matrix.
 
 Applying this to force between the operator and the exoskeleton, and assuming
 that the operator directly applies exoskeleton joint torques,
 \begin{equation}
-\vtau = \vtau_{\invdyn} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\vtau = \vtau_{\invdyn} + {\vtau_o}_d - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
 \end{equation}
 So if our dynamic models and state estimation are perfect, we get:
 \begin{equation}
-\ddot{\vq} = - \mM^{-1} (\vq) \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\ddot{\vq} = - \mM^{-1} (\vq) ({\vtau_o}_d + \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d ))
 \end{equation}
 
 One can add force damping terms, which sometimes help:
 \begin{equation}
-\vtau = \vtau_{\invdyn} - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\vtau = \vtau_{\invdyn} + {\vtau_o}_d - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
 - \mK_{\dot{\vtau}_o} \hat{\dot{\vtau}}_o
 \end{equation}
 
@@ -705,7 +723,7 @@ desired acceleration $\ddot{\vq}_d$.
 The feedforward method is to compute the needed torques (potentially offline)
 using inverse
 dynamics (including the operator link inertias, link centers of mass, and link
-moments of inertia in the dynamic model) based on only the desired postion, 
+moments of inertia in the dynamic model) based on the desired postion, 
 desired velocity, and desired acceleration. Trajectory tracking errors are compensated
 for by feedback control designed using some other method. In most robotics
 fixed gain independent joint linear control is used.
@@ -738,35 +756,62 @@ and use constant gain independent joint linear feedback control.
 
 \subsection{Autonomous exoskeleton-world force control}
 
-A control objective could be to have the exoskeleton to apply a desired force.
+A control objective could be to have the exoskeleton to autonomously
+apply a desired force.
+One could add
+\begin{equation}
+\vtau = \vtau_{\invdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d
+\end{equation}
+to a gravity compensated control or to control including inverse dynamics.
 
-To be written.
-
-\begin{verbatim}
-include J' term
-\end{verbatim}
-
-Why isn't this identical to operator force control?
+Active force control could be added to improve the performance:
+\begin{equation}
+\vtau = \vtau_{\invdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d + \mJ_w^{\tr}(\vq) \mK_{\vf_w} (\vf_w - {\vf_w}_d)
+\end{equation}
 
 \subsection{Autonomous exoskeleton-world impedance control}
 
 Another control objective would be to allow the exoskeleton-world contact to
 be compliant or have an assigned impedance.
+Let's describe a small position offset of the exoskeleton-world
+contact points as $\vq_w$. We know that:
+\begin{equation}
+\dot{\vq}_w = \mJ_w \dot{\vq}
+\end{equation}
+and that
+\begin{equation}
+\vtau = \mJ_w^{\tr} \vf_w 
+\end{equation}
+This allows us to relate stiffness and damping in the external world coordinates
+with the stiffness and damping in exoskeleton joint coordinates.
+Here is the relationship for damping:
+\begin{equation}
+\vtau = \mJ_w^{\tr} \mK_{\dot{w}} \mJ_w \dot{\vq}
+\end{equation}
+So the damping in joint coordinates is $\vtau = \mK_{\dot{\vq}} \dot{\vq}$ and
+therefore
+\begin{equation}
+\mK_{\dot{\vq}} = \mJ_w^{\tr} \mK_{\dot{w}} \mJ_w
+\end{equation}
+The mapping is the same for stiffnes:
+\begin{equation}
+\mK_{\vq} = \mJ_w^{\tr} \mK_{w} \mJ_w
+\end{equation}
+So we should assign the exoskeleton joint position gains to be $\mK_{\vq}$ and
+the joint velocity gains to be $\mK_{\dot{\vq}}$ in equation~\ref{eq:impedance}.
 
-To be written.
-
-\begin{verbatim}
-Cartesis version - j-1
-joint version, w jKj =k
-\end{verbatim}
-
-Why isn't this identical to operator impedance control?
-
-\subsection{How can the operator share control with autonomous control?}
-
-To be written.
+Similarly, we can use exoskeleton-world force control to improve performance,
+setting
+\begin{equation}
+{\vf_w}_d = - \mK_w ( \hat{\vq}_w - {\vq_w}_d ) - \mK_{\dot{w}} \hat{\dot{\vq}}_w
+\end{equation}
+and add the force error to equation~\ref{eq:impedance}: 
+\begin{equation}
+\mJ_w^{\tr} \mK_{\vf_w} ( \hat{\vf}_w - {\vf_w}_d )
+\end{equation}
 
 \section{Using Online Optimization: Quadratic Programming}
+\label{sec:qp}
 
 The dominant paradigm in force controlled (typically
 hydraulic) full size humanoid robots is to handle constraints in inverse dynamics
@@ -795,6 +840,8 @@ torques, and contact forces are all minimized:
 C_r(\vx) = (\vq - \vq_d)^{\tr} \mW_{\vq} (\vq - \vq_d) + \vtau^{\tr} \mW_{\vtau} \vtau
 + \vf^{\tr} \mW_{\vf} \vf
 \end{equation}
+$\mW_{\vq}$, $\mW_{\vtau}$, and $\mW_{\vf}$ are weight matrices to trade off the
+different errors and error directions.
 The dynamics (equation~\ref{eq:dynamics}) are enforced as an equality constraint.
 Torque limits, friction limits, center of pressure location constraints,
 and unidirectional contact constraints are all
@@ -808,13 +855,19 @@ of mass) accelerations, center of mass dynamic behavior, center of pressure loca
 weight distribution, maintenance of a desired body part position, orientation,
 velocity, or trajectory. and joint/actuator position and velocity limits (indirectly).
 
-In the case of exoskeletons, part of the optimization criterion could be to
+In the case of exoskeletons, 
+part of the optimization criterion could be to
 minimize contact forces on the operator:
 \begin{equation}
 C_e(\vx) = C_r(\vx) + \vf^{\tr}_o \mW_{\vf_o} \vf_o
 \end{equation}
 Operator force feedback and impedance control could be implemented by specifying a
-desired operator force ${\vf_o}_d$:
+desired operator force ${\vf_o}_d$ and adding a ``hard'' equality constraint:
+\begin{equation}
+\vf_o = {\vf_o}_d
+\end{equation}
+or by adding a ``soft'' constraint in the form of a new term in the optimization
+criterion:
 \begin{equation}
 C_e(\vx) = C_r(\vx) + (\vf_o - {\vf_o}_d)^{\tr} \mW_{\vf_o} (\vf_o - {\vf_o}_d)
 \end{equation}
@@ -823,20 +876,155 @@ To implement operator impedance control we set the desired operator contact forc
 \begin{equation}
 {\vf_o}_d = \mJ_o^{-1} ( \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}} )
 \end{equation}
-Assuming that the operator directly applies exoskeleton joint torques, this becomes:
+Assuming that the operator directly applies exoskeleton joint torques, this becomes
+the equality constraint
+\begin{equation}
+\vtau_o = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\end{equation}
+or is added to the optimization criterion:
 \begin{equation}
 C_e(\vx) = C_r(\vx) 
 + (\vtau_o - {\vtau_o}_d)^{\tr} \mW_{\vtau_o} (\vtau_o - {\vtau_o}_d)
 \end{equation}
-and
+with
 \begin{equation}
 {\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 
 \subsection{Full Atlas robot implementation.}
 
+\section{Underactuated and overactuated control}
+
+There are two kinds of underactuation we want to consider. The first
+is ``floating body dynamics'', where the robot is not bolted to the floor.
+Humanoid robots have floating body dynamics. A ``root'' location (usually somewhere
+on the pelvis) is chosen, and the position, velocity, orientation, and angular
+velocity of that point and the rigid body it is on
+are included in the state vector $\vq$. The corresponding dimensions of the
+velocity vector $\dot{\vq}$ are not actuated. We have been sweeping this
+issue under the rug so far. It is now useful to be more explicit. A selection matrix
+$\mS$ is used to map from actuation variables $\vu$ to joint torques $\vtau$:
+\begin{equation}
+\vtau = \mS \vu
+\end{equation}
+The rows in $\mS$ corresponding to the root linear and angular velocities
+are all zero.
+
+The second kind of actuation appears in exoskeletons where we rely on the
+operator to actuate a particular joint. For example, many lower body
+exoskeltons only actuate the joints in the sagittal plane, leaving lateral
+and twist (yaw) joints unactuated. We can actually handle this by using
+the matrix $\mS$ and reducing the size of the $\vu$ vector.
+
+We can also have passive actuation. This we can include by augmenting the
+dynamics equations to include the force equation of the passive element,
+such as a nonlinear spring.
+
+We can have multijoint actuation, which can be handled in $\mS$ as well.
+
+We can have redundant actuation (more than one actuator across any particular
+joint). Here we augment $\vu$ and $\mS$ to accomodate extra actuators.
+
+The modified dynamics equations are
+\begin{equation}
+\mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
++ \mJ_w^{\tr}(\vq) \vf_w = \mS \vu + \mJ_o^{\tr}(\vq) \vf_o
+\label{eq:dynamics2}
+\end{equation}
+Note that $\ddot{\vq}$ and the new actuation vector $\vu$
+do not have the same dimensionality. What difference does that make?
+
+Underactuated joints reduce our ability to control behaviors directly
+through the actuators. In some cases we can control unactuated degrees of freedom
+through indirect effects over time, and in some cases those degrees of freedom
+are not ``controllable'' in the technical sense. Remember that we have a human
+operator that fully actuates the exoskeleton, so having some degrees of freedom
+not controllable by the actuators is not fatal to a design.
+
+The {\bf no control} case is unchanged with underactuation.
+
+{\bf Open loop control} continues to work with underactuation
+as long as a drive function can be found
+to generate the desired behavior.
+
+{\bf Gravity compensation} and {\bf friction compensation}
+still work on the actuated degrees
+of freedom. The operator needs to carry the load on the unactuated degrees of freedom.
+
+Straightforward {\bf online inverse dynanamics} as described in Section~\ref{sec:invdyn}
+no longer works if $\mS$ is not invertable (not square or not full rank).
+In the underactuated case $\mS$ is not square. In this case {\bf online optimization}
+as described in Section~\ref{sec:qp} is used to ``perform inverse dynamics'' by
+finding desirable combinations of accelerations $\ddot{\vq}$, contact forces $\vf$,
+and actuator commands $\vu$.
+
+Another approach to solving this problem is prioritized control, which does
+not include optimization~\cite{}. For reasons we will describe, we believe
+online optimization is much more flexible and can handle programming exoskeleton
+behavior much better, so we will not discuss prioritized control further.
+
+Operator {\bf force feedback} is implemented using online optimization by
+add the following ``hard'' constraint
+to the equality constraints in the quadratic program:
+\begin{equation}
+\vf_o = {\vf_o}_d 
+\end{equation}
+or adding a ``soft'' constraint as a term
+\begin{equation}
+(\vf_o - {\vf_o}_d)^{\tr} W_{\vf_o} (\vf_o - {\vf_o}_d)
+\end{equation}
+in the optimization criterion. $W_{\vf_o}$ is a weight to indicate how much operator
+force is acceptable (if ${\vf_o}_d = 0$) or how much operator force error is
+acceptable.
+Force damping can be implemented by adding a similar ``soft'' constraint:
+\begin{equation}
+\dot{\vf}_o^{\tr} W_{\dot{\vf}_o} \dot{\vf}_o
+\end{equation}
+to the optimization criterion.
+
+{\bf Impedance control} is implemented using online optimization by adding
+the impedance equations as ``hard'' equality constraints (to achieve them exactly)
+\begin{equation}
+\mJ_o^{\tr} {\vf_o} = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\end{equation}
+or by adding the ``soft'' constraint ``equation error'' to the optimization criterion
+weighted by a weight factor $W_{imp}$ to indicate
+how large an error is tolerated:
+\begin{equation}
+\ve = \mJ_o^{\tr} {\vf_o} - \mK_{\vq}( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\end{equation}
+and
+\begin{equation}
+\ve^{\tr} W_{imp} \ve
+\end{equation}
+
+{\bf Mapping external forces to operator forces} can be done either with the
+``hard'' equality constraint:
+\begin{equation}
+\vf_o = F_{ow} ( \vf_w )
+\end{equation}
+or using the ``soft'' constraint term:
+\begin{equation}
+(\vf_o - F_{ow} ( \vf_w ))^\tr \mW_{fmap}  (\vf_o - F_{ow} ( \vf_w ))
+\end{equation}
+
+Similar techniques are used to handle {\bf autonomous exoskeleton position, velocity,
+force, and impedance control.}
+
+\subsection{How can the operator share control with autonomous control?}
+
+The use of online optimization makes sharing control with an operator easy.
+Dimensions (even powered dimensions) that are under the operator's control have
+low weights in the online optimization. It is also easy to map operator controls
+such as joysticks, sliders, and alternative interfaces to almost any desired
+control outcome by including these measurements in the online optimization.
+The operator and the controller can ``share'' or ``blend''
+control by making their respective
+weight matrices similar.
+
 \section{Operator-Exoskeleton Force Control using position controlled actuation}
 
+We will now consider position controlled actuators.
 At this point our dynamics formulation is no longer appropriate, since we
 are assuming the actuators are now position rather than torque sources.
 
@@ -1139,25 +1327,6 @@ D) loose straps (bang coast bang oscillation)
 \subsection{4 link body example.}
 
 \subsection{Full Atlas robot.}
-
-\section{Underactuated control}.
-
-Not talking about floating body dynamics, where global (``root'') position
-and velocity is unactuated.
-
-What about only sagittal actuation?
-
-\subsection{No actuation on lateral and twist}
-
-\subsection{Passive actuation on lateral and twist}
-
-Address what is the complexity penalty, weight penalty, 
-and ``drag'' of actuator on individual joint motion.
-
-\subsection{Active actuation on lateral and twist}
-
-Address what is the complexity penalty, weight penalty, 
-and ``drag'' of actuator on individual joint motion.
 
 \section{Discussion}
 
