@@ -39,7 +39,7 @@
 
 \title{A Survey of Possible Exoskeleton Control Architectures and
 Algorithms\\
-(Draft 2.2)}
+(Draft 2.3)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -97,8 +97,9 @@ A later white paper will discuss how to handle malfunctions and damage to the
 system. Basically this boils down to fault detection, and switchover to
 an appropriate safe mode of operation.
 
-A later white paper will address robustness to modeling error and unmodeled
-dynamics using simulation.
+A later white paper will evaluate using simulation
+the various control approaches' robustness to modeling error and unmodeled
+dynamics.
 
 \subsection{Let's keep it simple}
 
@@ -170,7 +171,7 @@ to make it lower impedance and more like a force source as well.
 
 We recommend the following hierarchical control architecture~\cite{IEEE06907051}:
 
-\subsection{Low Level Control}
+\subsection{Low Level Control (LLC)}
 
 Low level control presents an API (Application Programmer Interface)
 for higher control levels
@@ -181,7 +182,7 @@ This level provides an idealization of the exoskeleton in two ways:
 What degrees of freedom (DOF) are controlled, and how is a degree of
 freedom controlled?
 
-\subsubsection{What degress of freedom are controlled?}
+\subsubsection{LLC: What degrees of freedom are controlled?}
 
 The low level control API may directly map on to the exoskeleton hardware
 (physical joints,
@@ -189,7 +190,7 @@ raw actuators, and raw sensors), or
 it may present an ``abstracted'' view or ``virtual'' hardware.
 For example, it is often useful to create virtual degrees of freedom that are
 actually combinations of joints, or to control points on the robot in Cartesian
-or other coordinates. We refer to these virtual degress of freedom as {\bf synergies.}
+or other coordinates. We refer to these virtual degrees of freedom as {\bf synergies.}
 A complex synergy is the center of mass. Higher level control is made easier by
 providing a virtual sensor that measures center of mass location and velocity,
 as well as providing a virtual actuator that acts at the center of mass in
@@ -199,11 +200,11 @@ to create virtual actuators that cross
 multiple joints. These multi-joint actuators are actually implemented by commands
 to individual physical single-joint actuators.
 
-\subsubsection{How is a degree of freedom controlled?}
+\subsubsection{LLC: How is a degree of freedom controlled?}
 
-It is useful for human programmers
-to provide them with idealized abstractions of control of a single degree of
-freedom. Here are some common alternatives:
+It is useful to provide human programmers
+with idealized abstractions of control of a single degree of
+freedom. Here are some common alternatives that could be provided by low level control:
 \begin{itemize}
 \item
 Position control. The joint moves to a specified position and stays there independent
@@ -228,23 +229,17 @@ Online optimization of accelerations, actuator forces and torques, and contact f
 using quadratic programming. See Section \ref{sec:qp} for further explanation.
 \end{itemize} 
 
-\subsubsection{Feedback control}
+\subsubsection{LLC: Feedback control}
 
-PID or more complex feedback control laws are implemented at this level.
+PID or more complex feedback control laws are implemented by low level control.
 
-\subsubsection{Feedforward control}
+\subsubsection{LLC: Feedforward control}
 
 Gravity, friction, actuator dynamics, and other feedforward disturbance
-compensation are implemented at this level, as well as any inverse dynamics
+compensation are implemented by low level control, as well as any inverse dynamics
 or other types of feedforward reference tracking control.
 
-\subsubsection{State estimation}
-
-State estimation is done at this level to compensate for sensor noise.
-Disturbance observers for model errors and contact/wind forces
-are implemented at this level.
-
-\subsubsection{Existing examples}
+\subsubsection{LLC: Existing examples}
 
 Typically low level control is implemented
 by a high sampling rate global servo~\cite{Atlas-robot}
@@ -297,10 +292,14 @@ or is completely done by the operator.
 
 \subsection{State Estimation}
 
-In this architecture, state estimation to deal with sensor noise and incomplete or
+In this architecture, state estimation to deal with sensor noise,
+disturbance estimation, and incomplete or
 redundant sensing is a separate process and is as independent as possible
 from the control method~\cite{certainty-eq,separation-prin}.
 This makes evaluating different control methods much easier.
+Disturbance observers for disturbances such as
+moving support surfaces, contact or wind forces, and model errors
+are also implemented.
 
 \subsection{Error Handling}
 
@@ -319,7 +318,7 @@ in the DARPA Robotics Challenge~\cite{}.
 
 Closely related control architectures combine Phoneme and Word control,
 or combine Phoneme, Word, and Behavior Selection.
-This is not a major change.
+Neither of these is a major change.
 
 An alternative behavioral architecture might not have explicit levels but instead
 has a ``soup'' of behaviors that compete or cooperate for the ability to
@@ -357,7 +356,7 @@ huge modeling and control problem, and would also be very dangerous for the
 operator (as riding a bull or bucking horse in a rodeo is dangerous to a rider).
 We do not address the loosely connected case in this paper.
 
-The dynamics of a revolute exoskeleton are:
+The dynamics of a revolute exoskeleton standing on the ground are:
 \begin{equation}
 \mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
 + \mJ_w^{\tr}(\vq) \vf_w = \vtau + \mJ_o^{\tr}(\vq) \vf_o
@@ -395,17 +394,12 @@ and so is the world ($\vtau_w$) (a very unrealistic assumption). In this case:
 + \vtau_w = \vtau + \vtau_o
 \end{equation}
 
-[SOMETHING ABOUT MODELING HUMAN + EXOSKELETON + WORLD ]
-Note that we are ignoring the operator dynamics and operator muscle and tissue
-forces resulting in operator joint torques. We will add these in later (or maybe
-we won't ???).
+Note that we are ignoring the human operator dynamics and operator muscle and tissue
+forces resulting in operator joint torques. Intent prediction will model these
+effects [intent.pdf].
 
 We are also ignoring actuator dynamics, which we can handle by augmenting 
 the state vector and adding additional equations.
-
-\section{Test case: Atlas humanoid robot}
-
-Gazebo and SDFast models.
 
 \section{Passive control with no active control}
 
@@ -436,26 +430,6 @@ In this case, it is common to generate the exoskeleton actuator commands using
 a time or phase index:
 $\vtau = \vtau_{ff}(t)$ where $\vtau_{ff}$ is a time
 dependent feedforward torque vector.
-
-Recognizing/estimating phase goes here.
-Phase Triggered References could go here.
-\begin{verbatim}
-H.Kawamoto and Y.Sankai, “Power Assist Method Based on Phase
-Sequence Driven by Interaction between Human and Robot Suit,”
-Proceedings of the IEEE International Workshop on Robot and Human
-Interactive Communication, pp. 491–496, 2004.
-\end{verbatim}
-
-Motion capture, motion libraries goes here.
-
-Often finite state machines whose states correspond to left stance, double support 1,
-right stance, and double support 2 are used to select behaviors. Gait transitions
-can be triggered by foot touchdown and liftoff events, or
-displacement of the Center of Mass (CoM).
-
-Central pattern generator
-
-Iterative learning control to acquire $\vtau_{ff}(t)$ for desired trajectories.
 
 \section{Active gravity compensation}
 
@@ -600,18 +574,8 @@ feedback control, impedance control, and admittance control.
 Computed torque control and feedback linearization are forms of online
 inverse dynamics.
 
-A key question is where does desired acceleration come from?
-\begin{verbatim}
-  Operator force control.
-  Receding Horizon Control of optimal trajectory of 
-    idealized LIPM+flywheel model (Atkeson)
-  intent prediction (see above)
-  neuromuscular model (Geyer, Wang, Van de Panne)
-  hybrid: Optimal control + neuromuscular model (Atkeson NSF Proposal)
-    - NMM provides bias through changes to optimization criterion
-    - NMM provides hard constraints
-    - NMM replaces components of model-based optimization scheme
-\end{verbatim}
+A key question is where does the desired acceleration $\ddot{\vq}_d$ come from?
+This is discussed in the companion paper [intent.pdf].
 
 \section{Operator-Exoskeleton Impedance Control}
 
@@ -690,8 +654,8 @@ the exoskeleton are available.
 The exoskeleton moves as to create as little force on the operator as possible 
 assuming the actuators are torque sources:
 \begin{equation}
-\vtau = \vtau_{\invdynw} + \mJ_o^{\tr} {\vf_o}_d
-+ \mJ_o^{\tr} \mK_{\vf_o} ( \hat{\vf}_o - {\vf_o}_d )
+\vtau = \vtau_{\invdynw} + \mJ_o^{\tr}(\vq) {\vf_o}_d
++ \mJ_o^{\tr}(\vq) \mK_{\vf_o} ( \hat{\vf}_o - {\vf_o}_d )
 \end{equation}
 $\mK_{\vf_o}$ is a gain matrix, $\mJ_o$ is the Jacobian matrix for the operator
 force $\vf_o$
@@ -824,29 +788,29 @@ be compliant or have an assigned impedance.
 Let's describe a small position offset of the exoskeleton-world
 contact points as $\vq_w$. We know that:
 \begin{equation}
-\dot{\vq}_w = \mJ_w \dot{\vq}
+\dot{\vq}_w = \mJ_w(\vq) \dot{\vq}
 \end{equation}
 and that
 \begin{equation}
-\vtau = \mJ_w^{\tr} \vf_w 
+\vtau = \mJ_w^{\tr}(\vq) \vf_w 
 \end{equation}
 This allows us to relate stiffness and damping in the external world coordinates
 with the stiffness and damping in exoskeleton joint coordinates.
 Here is the relationship for damping:
 \begin{equation}
-\vtau = \mJ_w^{\tr} \mK_{\dot{w}} \mJ_w \dot{\vq}
+\vtau = \mJ_w^{\tr}(\vq) \mK_{\dot{w}} \mJ_w(\vq) \dot{\vq}
 \end{equation}
 So the damping in joint coordinates is $\vtau = \mK_{\dot{\vq}} \dot{\vq}$ and
 therefore
 \begin{equation}
-\mK_{\dot{\vq}} = \mJ_w^{\tr} \mK_{\dot{w}} \mJ_w
+\mK_{\dot{\vq}}(\vq) = \mJ_w^{\tr}(\vq) \mK_{\dot{w}} \mJ_w(\vq)
 \end{equation}
 The mapping is the same for stiffnes:
 \begin{equation}
-\mK_{\vq} = \mJ_w^{\tr} \mK_{w} \mJ_w
+\mK_{\vq}(\vq) = \mJ_w^{\tr}(\vq) \mK_{w} \mJ_w(\vq)
 \end{equation}
-So we should assign the exoskeleton joint position gains to be $\mK_{\vq}$ and
-the joint velocity gains to be $\mK_{\dot{\vq}}$ in equation~\ref{eq:impedance}.
+So we should assign the exoskeleton joint position gains to be $\mK_{\vq}(\vq)$ and
+the joint velocity gains to be $\mK_{\dot{\vq}}(\vq)$ in equation~\ref{eq:impedance}.
 
 Similarly, we can use exoskeleton-world force control to improve performance,
 setting
@@ -856,7 +820,7 @@ setting
 and add the force error: 
 \begin{equation}
 \vtau = \vtau_{\invdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
-+ \mJ_w^{\tr} \mK_{\vf_w} ( \hat{\vf}_w - {\vf_w}_d )
++ \mJ_w^{\tr}(\vq) \mK_{\vf_w} ( \hat{\vf}_w - {\vf_w}_d )
 \end{equation}
 
 \section{Underactuated and overactuated control and floating body dynamics}
@@ -1133,7 +1097,7 @@ contact forces, or some other (usually simple) mapping.
 Sensitivity Amplification Control (SAC) used to control BLEEX
 is a dynamic cancellation technique (a.k.a.
 inverse dynamics, computed torque, or feedback linearization) that also tries
-to adjust the apparent inertia of the exoskeleton (equation~\ref{eq:change-inertia1})
+to modify the apparent inertia of the exoskeleton (equation~\ref{eq:change-inertia1})
 using acceleration feedback. It is not clearly stated but it appears that the
 acceleration is the result of double differentiating position, as there do not
 appear to be velocity sensors on BLEEX. Low pass filtering is applied to reduce
@@ -1337,10 +1301,19 @@ desired contact forces, with the desired impedance or admittance.
 We have not seen a lot of discussion of state estimation of exoskeletons in
 the literature.
 We will discuss our approach to state estimation on humanoid robots here.
+State estimation to deal with sensor noise,
+disturbance estimation, and incomplete or
+redundant sensing is a separate process and is as independent as possible
+from the control method~\cite{certainty-eq,separation-prin}.
+This makes evaluating different control methods much easier.
+Disturbance observers for disturbances such as
+moving support surfaces, contact or wind forces, and model errors
+are also implemented.
 
-We use extended Kalman Filtering (EKF) to perform state estimation.
+For humanoid robot state estimation (for proposed exoskeleton state estimation)
+we use extended Kalman Filtering (EKF) to perform state estimation.
 Currently, using the full body dynamics (equation~\ref{eq:dynamics2})
-and any addtional constraint equations for ground contacts (feet on the ground):
+and any additional constraint equations for ground contacts (feet on the ground):
 \begin{equation}
 \mJ_w \ddot{\vq} + \dot{\mJ}_w \dot{\vq} = 0
 \end{equation}
@@ -1356,8 +1329,8 @@ of the joints).
 
 Joint velocities are estimated using actuator position sensors, actuator load
 sensors, actuator commands, a single high
-quality IMU at the pelvis, multiple low quality (but cheap) MEMs IMUs
-spread throughout the robot. We also take into account feet and hand
+quality IMU at the pelvis, and multiple low quality (but cheap) MEMs IMUs
+spread throughout the robot or exoskeleton. We also take into account feet and hand
 contact forces, which
 are measured. We use the full internal dynamics as the process model,
 assuming the root dynamics are known. See Chapter 3 of~\cite{Xinjelefu-thesis}.
@@ -1371,18 +1344,19 @@ application in full body inverse dynamics control, fall detection
 and fall prevention for humanoid robots and exoskeletons~\cite{}.
 The center of mass filter is modeled as a multiple model EKF with contact switching
 to handle changes in support: single support, double support, and off the ground.
-We use the robot joint sensing (kinematics) to create a virtual sensor that measures
+We use the robot or exoskeleton
+joint sensing (kinematics) to create a virtual sensor that measures
 center of mass position and velocity relative to a stance foot.
 We use Linear
 Inverted Pendulum Model (LIPM) dynamics with an offset to predict
 the center of mass motion. This offset can be interpreted
 as a modelling error on the center of mass position, or an
-external force exerted on the center of mass of the robot,
+external force exerted on the center of mass of the robot/exoskeleton,
 or a combination of both. The center of mass estimator was
 implemented on our Atlas humanoid robot. 
 This estimator is especially helpful when compensating
 for unplanned slow changing external forces applied at
-unknown locations on the robot, which is quite likely when
+unknown locations on the robot or exoskeleton, which is quite likely when
 operating in tight spaces. It also handles relatively small
 dynamic forces well when walking, e.g. dragging a tether
 or pushing through a spring loaded door. Thanks to
@@ -1390,7 +1364,7 @@ the estimator, very little tuning is done for our mass model.
 During the DARPA
 Robotics Challenge Finals
 where no safety belay was
-allowed, our early warning system
+allowed, our fall early warning system
 successfully saved our robot from
 falling on two occasions, and made us the only competitive team
 without a fall or need for a human rescue among all teams.
@@ -1398,25 +1372,25 @@ without a fall or need for a human rescue among all teams.
 {\bf Safety Code: Fall Prediction:}
 The most significant contribution of the external force estimator is that it
 can detect when a large external force is being applied that might
-push the robot over.
+push the robot or exoskeleton over.
 We compute a ``corrected capture point'' (CCP)~\cite{capture},
 which is an offset to the current capture point.
 The offset 
 takes into account the estimated external force, represented as an offset
 to the center of mass.
 The corrected capture point getting close to the boundary of the polygon of
-support warns the controller that the robot might fall if the external
+support warns the controller that the robot or exoskeleton might fall if the external
 force is maintained.
 We can also compute the corrected capture point assuming that the
 external force follows a known time course plus an estimated constant offset,
 or steadily increases or decreases for a fixed time interval
 based on an estimated derivative.
-We assume the external force is due to the robot's actions, and not
+We assume the external force is due to the robot's or exoskeleton's
+movements, and not
 due to external disturbances such as wind, a moving support platform
-(although earthquakes do happen at the DRC location in California),
 or external agents pushing on the robot.
 The current
-behavior is stopped and the robot ``frozen'' in place.
+behavior is stopped and the robot or exoskeleton can safely be ``frozen'' in place.
 
 A derivation of the corrected capture point starts with LIPM dynamics
 augmented with a true center of mass offset and a true external force:
@@ -1451,14 +1425,14 @@ that detects a fall only if the corrected capture point
 is outside of the current support
 polygon for a continuous period of time. The time threshold was set to
 0.6 seconds after extensive testing. As soon as a fall is
-predicted, there are several things the humanoid can do, such
+predicted, there are several things the humanoid or exoskeleton can do, such
 as using angular momentum to maintain balance, or changing the
 current or future foot placements.
 We have implemented a simple
 step recovery controller that works in single support where
-the robot corrects the next foot placement and timing
+the robot or exoskeleton corrects the next foot placement and timing
 using a simple heuristic to avoid self collision.
-We would only step left if the robot is falling left, and similarly
+We would only step left if the robot or exoskeleton is falling left, and similarly
 for right steps. We avoid crossing the legs in using foot placement
 to balance laterally.
 
@@ -1575,7 +1549,7 @@ outperforms extended Kalman filtering.
 
 \subsection{Current state estimation approaches in exoskeletons}
 
-We see that sensitivity amplification control uses acceleration as an input.
+We see that Sensitivity Amplification Control uses acceleration as an input.
 Estimating acceleration using double differentiation with low pass filtering
 currently works well on real exoskeletons.
 However, impacts, shock waves, and the fact that neither
@@ -1587,9 +1561,6 @@ improve both velocity and
 acceleration estimation~\cite{Xinjilefu-thesis}, which should improve
 Sensitivity Amplification Control.
 
-Role of phase estimation, behavioral clocks, and phase reset events
-such as impacts.
-
 Disturbance observers~\cite{IEEE06197032}.
 
 \section{Robustness to parametric modeling error and unmodelled dynamics}
@@ -1598,11 +1569,11 @@ We need to be robust to parameter modeling errors such as the wrong mass,
 center of mass location, joint location,
 or moment of inertia for an exoskeleton part, variations in the operator
 parameters, and variations in attachments to the exoskeleton and payload.
-Examples of typically unmodeled dynamics (non-parametric modeling error) include:
+Examples of unmodeled dynamics (non-parametric modeling error) include:
 backlash, joint play, structural deformation, flexible wires and hoses,
 actuator dynamics, processing delay,
 elastic operator tissue and straps, and 
-loose or slack operator tissue and strap.
+loose or slack operator tissue and straps.
 
 There are two questions to focus on:
 
@@ -1621,10 +1592,15 @@ What happens when there are no errors in model-based control is
 feedforward control, which does not have stability issues (except for some ignorable
 technical issues). If your model is good, you get good performance. If your
 model is bad, you get larger errors and have to rely on feedback control.
-So feedforward control is robust, and we don't have to worry about it. We do have
+You may crash the exoskeleton, or fall down, but you will not oscillate
+(except in some contrived examples) and errors do not grow exponentially in
+response to feedforward control errors.
+So feedforward control is technically robust,  
+and we don't have to worry about it blowing up (except for chaotic systems).
+We do have to worry about performance.
+We have
 to worry about how to get good models, and what to do about stuff that varies:
 contacts, operator body, operator behavior, payloads, attachments, etc.
-We do have to worry about performance.
 
 On the other hand, feedback control can lead to steady state or growing
 oscillation, which we colloquially refer to as being unstable or instability.
@@ -1644,7 +1620,7 @@ and safe approach of manual conservative independent joint feedback control desi
 What to do about this to achieve robust online optimalization-based control is
 currently a research issue. In actual implementations, skilled engineers manually
 tune optimization weights and the various constraints that are active to
-make this control work reliably. The fact that this has been done on many actual
+make this type of control work reliably. The fact that this has been done on many actual
 humanoid robots in many situations is comforting. The fact that none of these
 implementations have moved with the speed and agility of a top percentile
 human athlete is disconcerting.
@@ -1681,15 +1657,15 @@ overall architecture in Section~\ref{sec:architecture}.
 We do not expect this to be controversial.
 
 2) We recommend actuation that can be treated as force or torque sources.
-This is a potentual problem for revolute electric actuation, as it
+This is a potential problem for revolute electric actuation, as it
 is difficult to get necessary performance at low gear ratios (20-50)
-and fit the necessary torque sensing,
+and fit the necessary torque sensing.
 
 3) We recommend the use of dynamic models of the exoskeleton, as has been done
 for the last decade starting with the BLEEX exoskeleton.
 We do not expect this to be controversial.
 
-4) We recommend using online optimization as part of the Lowest Level Controller
+4) We recommend using online optimization as part of the Low Level Controller
 in the form of quadratic programming. Online optimization
 was tested by the top biped robot
 teams in the DARPA Robotics Challenge, and worked well.
