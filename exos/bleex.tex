@@ -1,7 +1,7 @@
 \subsection{BLEEX}
 \label{exo:bleex}
 
-keywords: sensitivity amplification; strength augmentation;\\
+keywords: sensitivity amplification; strength augmentation.\\
 
 The Berkeley lower extremity exoskeleton (BLEEX) is an anthropomorphic, powered exoskeleton designed for human strength augmentation.  It is described as the first field-operational robotic system to allow its operator to carry significant loads over unstructured terrain without external power \cite{bleex_design_2006}.
 
@@ -66,10 +66,11 @@ is maximized by applying positive feedback.  To achieve a large sensitivity, BLE
 \begin{equation}
 \mM({\bf\theta})\ddot{{\bf \theta}} + \mC({\bf\theta},\dot{{\bf\theta}}) \dot{{\bf \theta}} + \mV({\bf\theta}) = {\bf T} + {\bf d} ,
 \end{equation}
-where $T$ is a vector of actuator torques, the BLEEX control torque would be
+where ${\bf T}$ is a vector of actuator torques, the BLEEX control torque would be
 \begin{equation}
 {\bf T} = \mV({\bf\theta}) + (1 - \alpha^{-1}) \big [ \mM({\bf\theta})\ddot{{\bf \theta}} + \mC({\bf\theta},\dot{{\bf\theta}}) \dot{{\bf \theta}} \big ] .
 \end{equation}
+The user must provide the first torque component as the exoskeleton has no actuator acting between the foot and the ground (the system is underactuated).
 
 \begin{figure}[ht]
   \centering
@@ -87,12 +88,10 @@ For sensing, BLEEX uses information from \textbf{8 encoders} and \textbf{16 acce
 
 \subsection{Assessment and Recommendations}
 
-Sensitivity amplification is a current best-in-class control strategy.  The exoskeleton shadows the user and uses exoskeleton data for joint angle, velocity, and acceleration and the exoskeleton model to minimize torques experienced by the human torque.  The process and hardware are relatively simple yet effective.   However, the approach has several significant disadvantages including heavy reliance on an accurate exoskeleton model and the fact that sensitivity amplification will amplify disturbances.  Note that in combat situations this latter point is critical as a sensitivity amplification will amplify forces acting on the suit and the operator will have to re-act to compensate.  The only way to compensate for or resist external forces in this setting is to filter them out, which would be extremely challenging unless additional sensory equipment is provided.  As one possibility, a sensitivity optimization approach may be paired with sEMG data to estimate user intent and provide such a filter.
+Sensitivity amplification is a current best-in-class control strategy.  The exoskeleton shadows the user and uses exoskeleton data for joint angle, velocity, and acceleration and the exoskeleton model to minimize torques experienced by the human torque.  The process and hardware are relatively simple yet effective.   However, the approach has several significant disadvantages including heavy reliance on an accurate exoskeleton model and the fact that sensitivity amplification will amplify disturbances.  Note that in combat situations this latter point is critical as a sensitivity amplification will amplify forces acting on the suit and the operator will have to re-act to compensate.  The only way to compensate for or resist external forces in this setting is to filter them out, which would be extremely challenging unless additional sensory equipment is provided.  As one possibility, a sensitivity optimization approach may be paired with sEMG data to estimate user intent and provide such a filter.  Note this type of implementation would present its own challenges considering limitations in sensing and calibration of current EMG systems. 
 
 
 \bibliographystyle{plain}
 \bibliography{exos/bleex}
 
 The figures in this section were obtained from \cite{sesitivityAmpPaper2005}. Materials presented are based on the references above.
-
-% \end{document}
