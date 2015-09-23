@@ -1,88 +1,66 @@
 \subsection{XoR}
 \label{exo:XoR}
 
-keywords: strength augmentation; hybrid actuation\\
+keywords: model-based control; strength augmentation; hybrid actuation; pneumatic actuation; electric motors;\\
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=4.0in]{exos/figs/xor.png}
 \end{figure}
 
+The XoR is a prototype, light-weight lower-body exoskeleton that uses a hybrid pneumatic-electric drive system that \textbf{reduces weight} while providing \textbf{precise torque control}, \textbf{backdrivability}, and a \textbf{desirable force / velocity} profile.  The exoskeleton is designed to serve in rehabilitation settings to augment operators' strength and assist with postural control for persons with disabilities.
 
-muscular weakness
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=3.5in]{exos/figs/xor_joint_rom.png}
+\end{figure}
 
-Purpose: prototype developed for "postural control of elderly people and persons with mobility disability" -- [[llimbCtrlReviw]]
+The XoR weighs 30kg and includes 10 DOF with 6 active joints (flexion / extension of hip, knee, and ankles) and 6 passive (hip abduction/adduction joints, hip rotation, and ankle adduction/abduction).  The active joints are powered by hybrid actuators comprised of an \emph{air muscle} and an electric motor.  The hybrid actuation scheme uses a unilateral air muscle layout to compensate for gravity and bilateral electric motors with relatively small gear ratio (57.5) to serve as the dynamic compensator.
 
+The actuation scheme is complementary in that the electric motors have a quick response time and produce high peak torque for short amounts of time, while air muscles have a delayed response (true of pneumatic systems in general due to the compressibility of air) with better power density and sustained torque.  The hybrid drive system sums the two to develop a desired torque profile that achieves the benefits of both and reduces weight and motor size.  The system offers high torque control with negligable stick-slip and backdrivability.
 
-Design:
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=3.5in]{exos/figs/xor_hybrid_drive_torque_time.png}
+\end{figure}  
 
-"implements a hybrid driving concept combining pneumatic artificial muscles and electric motors together [[XoRdesign]]; [[XoRkinemExtraction]] ...motion intention is estimated based on EMG signals ... user posture based on joint angles and ground reaction forces."  -- [[llimbCtrlReviw]]
+A challenge in using air muscles is that force reduces quadratically as a function of contraction.  For instance, at 30\% contraction, the force produced by FESTO rubber air muscles vanishes.  To address the issue, XoR is strategically places air muscles to generate forces in desired configurations.  
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=3.5in]{exos/figs/xor_air_muscle_force_vs_contraction.png}
+\end{figure}
 
-Control Strategy:
+In implementation, the XoR uses rubber air muscles (MDSP-40) connected to pulleys via tendons and to EP regulators in the backpack (a constant pressure and cam system is being tested to reduce weight required for backpack air valves).  The electric actuator is a geared, 200W brushless DC motor (Maxon EC powermax 30) rated at 4.7 A, which transmits power to joints through a belt and pulley system with a 57.5 gear ratio. the motor's 0.12 Nm output torque provides up to 34.5 Nm (for short duration) at every joint and is backdrivable.  The design yields a relatively high range of motion (up to 120 degrees) with a load capacity 150 Nm.  However, experiments reveal the need for bi-directional pneumatic actuation at hip joints.
 
-Model-based control -- "...Pneumatic artificial muscles provide gravity compensation and electric motors serve the dynamic compensator. The total generated torque tracks a desired value calculated on the basis of a bio-mechanical model... Only simulation results were available to prove the efficacy of this assistive strategy working with XoR." -- [[llimbCtrlReviw]]
-
-
-References:
-
-S. Hyon, J. Morimoto, T. Matsubara, T. Noda, M. Kawato, Xor: Hybrid drive exoskeleton robot that can balance, in: Intelligent Robots and Systems (IROS), 2011 IEEE/RSJ International Conference on, IEEE, 2011, pp. 3975–3981. <<XoRdesign>>
-
-J. Morimoto, T. Noda, S. Hyon, Extraction of latent kinematic relationships between human users and assistive robots, in: Robotics and Automation (ICRA), 2012 IEEE International Conference on, IEEE, 2012, pp. 3909–3915. <<XoRkinemExtraction>>
-
-
-***** Data from design paper [[XoRdesign]]
-
-HMI: 
-Brain-machine interface.
-
-Acutation:  
-Hybrid drive - pneumatic muscles with electrical motors arranged in "optimal ways."
-
-Design criteria:
-
-Precise torque control; high backdrivability; force/velocity profile for rehab and compensation; lightweight; quasi-autonomy for rehab; autonomous posture control.
-
-Precise torque control -- they believe this is most important feature to mobility assist/rehab programs as softness, compliance, and safety are defined in force/toque space;
-
-safety thru passive backdrivability;
-
-air muscles -- use them because there is negligable stick-slip; better controllability but gnereated force decreases quadratically with contraction (vanish around 30% contraction); optimize arrangment of AM to generate desired forces in specific confgs.  Use air muscle (AM) as gravity compensator and electric motor as dynamic compensator.  AM has high power density; good for high-load torque but delayed due to air compressibility.  There is also steady-state error.  Electric motors (without gear reduction) have high response torque but can only generate for short periods.  Hybrid drive sums the two to produce desired torque profile.  Can combine AM with small electric servos or hydraulic servo actuators.  Small servos without high gear reduction; DC (brushed and brushless).  
-
-Use AM as a unilateral drive for gravity comp combined with bilateral electric motors (motion control); generates precise high torque.  The air compressor / hydraulic pump can be smaller and lighter electric batteries.
-
-10 DOF; 6 active (all FE joints with hybrid drive) and 6 passive joints (hip ankle AA, hip rotation);
-
-Transmission - AM connected to pulleys via tendons.  Rubber muscle (MDSP-40) with EP regulators mounted in backpack; testing constant pressure and cam to reduce weight required for backpack air valves.  Bruschless DC geared motors (4.7 A rating; 0.12Nm output; gear ratio 57.5 for backdrivability; for short operation motor can generate 34.5 Nm/joint) with belt and pulleys
-
-Range of motion of 120 deg and load capacity 150 Nm.  Weight 33kg of which toro + cables ~15kg. Experiments show insufficient torque and need for bi-directional pneumatic acuation at hip joints.
-
-Sensing -- Rotory encoders at each joint; IMU in backpack; load cells at feet; network connected with servers processing sensory info from EMG, NIRS and EEG.  Controller runs at 1ms on Linux PC.
+For sensing, XoR is equipped with rotary encoders at joints, an IMU in the backpack, load cells in the feet, and is networked to servers capable of providing EMG, NIRS, and EEG data.  A control PC running at 1 KHz, pulse counter, amplifiers, Digital IO are external and so not included in the weight of the unit.  Human operators are outfitted with a goniometer.
 
 
-Control:
+\subsubsection{Control}
 
-PLANNED: Torque control; apply compliant control mechanisms designed for full humanoid to exoskeleton control
+The XoR control strategy applied in \cite{XoRkinemExtraction2012} has two main components.  First, a proportional-derivative (PD) feedback controller tracks desired joint angles and angular velocities that correspond to the state of the exoskeleton required to assist the human operator.  To obtain this state (specifying the desired joint angles / velocities), the controller simultaneously measures the joint angle trajectories of the human user (goniometer) and of the robot (encoders), and uses canonical correlation analysis (CCA) to extract latent variables in the kinematic relationship between the two.
 
-S. Hyon, “Compliant terrain adaptation for biped humanoids without
-measuring ground surface and contact forces,” IEEE Trans. Robotics,
-vol. 25, no. 1, pp. 171–178, 2009.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=6.0in]{exos/figs/xor_joint_angles.png}
+\end{figure}
 
-S. Hyon, “A motor control strategy with virtual musculoskeletal
-systems for compliant anthropomorphic robots,” IEEE/ASME Transactions
-on Mechatronics, vol. 14, issue 6, pp. 677–688, 2009.
+To avoid relying on high gain feedback, XoR incorporates user intent through EMG data.  The controller rectifies and low pass filters (10 Hz cut-off) data measured in the pilot's quadriceps femoris, tensor fasciae latate, gluteus medius, and tibialis anterior. 
+It sets desired joint angles and velocities, ${\bf x} = ({\bf \theta} \dot{\bf \theta})$, from the EMG data, ${\bf u} = (EMG_1 \cdot EMG_n)$, using a linear prediction model, 
+\[{\bf x}(k+1) = \mA{\bf x}(k)+\mB{\bf u}(k),\].  
+The controller uses the angular measurements required to perform CCA and EMG data to derive the model's $\mA$ and $\mB$ terms.  The predicted state from EMG model provides the desired input to yet another PD controller: 
+\[\tau_i = K_p (\theta_i^d - \theta_i) + K_d (\dot\theta_i^d - \dot \theta_i),\] 
+with gains of $K_p = 1000$ and $K_d = 100$.
 
-In simulation:
-Task-space controller; The paper describes CoM / CoP control strategy based on GRF.  Achieve desired GRF using PD feedback to track desired COM trajectory.  Full-body task space controller superimposed with a joint stiffness controller applying feedback tracking ref joint trajectories.  Simulations reveal max torque of 150 Nm (effective torque of 80Nm) for HFE and KFE joints.  Plan to include EMG sensors;
+In hip tracking experiments, the team found EMG data to be helpful.  When using EMG signals, XoR achieved a mean squared error of $1.8E^{-3}$.  Without the EMG data, the mean squared error increased to $2.1$.  Additional experiments confirm the air muscles can effectively perform gravity compensation when used in conjunction with electric actuators (to correct for torque errors induced by inaccuracies in the model mapping position to toque in air muscles).
 
-------------------------------------------------
 
 \subsection{Assessment and Recommendations}
 
-The XoR prototype uses a novel hybrid actuation scheme to achieve both fast peak torque response and high sustained torque.  
+The XoR prototype uses a promising hybrid actuation scheme to achieve both fast peak torque response and higher sustained torque while remaining lightweight.  They track human motion with feedback from a goniometer and feedforward control provided by EMG data.  These human intention / sensing modalities are both difficult to implement due to noise and calibration issues.  However, capturing the user intent is important, especially in the presence of external disturbances.  If the sensory system were improved (e.g, wearable ``robot skin'' sensing arrays), this exoskeleton design could be highly effective. 
 
 
 % \bibliographystyle{plain}
 % \bibliography{exos/xor}
 
-The figures in this section were obtained from \cite{xorDesign2011}. Materials presented are based on the references above.
+The figures in this section were obtained from \cite{xorDesign2011,XoRkinemExtraction2012}. Materials presented are based on the references above.
