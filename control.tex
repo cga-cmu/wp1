@@ -395,11 +395,12 @@ rigidly held by other types of physical constraints, we can lump the operator
 body parts with the exoskeleton parts which they are attached to in terms
 of link inertias, locations of center of mass, and moments of inertia,
 and just think of the whole system as one robot (we indicate this with
-the subscript $\ox$ in dynamics equations.
+the subscript $\ox$ on inertial, Coriolis and centripetal, and gravitational (ICCG)
+terms in the dynamics equations).
 We can also separate out the operator dynamics (indicated by
-the subscript $\myo$) from the exoskeleton dynamics (indicated by
-the subscript $\myx$) if this is more convenient
-(we separate them out and ignore them in what immediately follows).
+the subscript $\myo$ on ICCG terms) from the exoskeleton dynamics (indicated by
+the subscript $\myx$ on ICCG terms) if this is more convenient
+(we separate them out and ignore operator dynamics in what immediately follows).
 If the operator is loosely connected to the exoskeleton, this introduces a
 huge modeling and control problem, and would also be very dangerous for the
 operator (as riding a bull or bucking horse in a rodeo is dangerous to a rider).
@@ -790,8 +791,8 @@ the exoskeleton are available.
 The exoskeleton moves as to create as little force on the operator as possible 
 assuming the actuators are torque sources:
 \begin{equation}
-\vtau_{\myx} = \vtau_{\xinvdynw} + \mJ_{\ox}^{\tr}(\vq) {\vf_{\ox}}_d
-+ \mJ_{\ox}^{\tr}(\vq) \mK_{\vf_{\ox}} ( \hat{\vf}_{\ox} - {\vf_{\ox}}_d )
+\vtau_{\myx} = \vtau_{\xinvdynw} - \mJ_{\ox}^{\tr}(\vq) {\vf_{\ox}}_d
+- \mJ_{\ox}^{\tr}(\vq) \mK_{\vf_{\ox}} ( \hat{\vf}_{\ox} - {\vf_{\ox}}_d )
 \end{equation}
 $\mK_{\vf_{\ox}}$ is a gain matrix, $\mJ_{\ox}$ is the Jacobian matrix for the operator
 force $\vf_{\ox}$
@@ -907,13 +908,13 @@ A control objective could be to have the exoskeleton to autonomously
 apply a desired force.
 One could add
 \begin{equation}
-\vtau = \vtau_{\xinvdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d
+\mJ_{\xw}^{\tr}(\vq) {\vf_{\xw}}_d
 \end{equation}
 to a gravity compensated control or to control including inverse dynamics.
 
 Active force control could be added to improve the performance:
 \begin{equation}
-\vtau = \vtau_{\xinvdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d + \mJ_w^{\tr}(\vq) \mK_{\vf_w} (\vf_w - {\vf_w}_d)
+\mJ_{\xw}^{\tr}(\vq) \mK_{\vf_{\xw}} (\vf_{\xw} - {\vf_{\xw}}_d)
 \end{equation}
 
 \subsection{Autonomous exoskeleton-world impedance control}
@@ -924,26 +925,26 @@ be compliant or have an assigned impedance.
 Let's describe a small position offset of the exoskeleton-world
 contact points as $\vq_w$. We know that:
 \begin{equation}
-\dot{\vq}_w = \mJ_w(\vq) \dot{\vq}
+\dot{\vq}_w = \mJ_{\xw}(\vq) \dot{\vq}
 \end{equation}
 and that
 \begin{equation}
-\vtau = \mJ_w^{\tr}(\vq) \vf_w 
+\vtau_{\myx} = \mJ_{\xw}^{\tr}(\vq) \vf_{\xw} 
 \end{equation}
 This allows us to relate stiffness and damping in the external world coordinates
 with the stiffness and damping in exoskeleton joint coordinates.
 Here is the relationship for damping:
 \begin{equation}
-\vtau = \mJ_w^{\tr}(\vq) \mK_{\dot{w}} \mJ_w(\vq) \dot{\vq}
+\vtau_{\myx} = \mJ_{\xw}^{\tr}(\vq) \mK_{\dot{w}} \mJ_{\xw}(\vq) \dot{\vq}
 \end{equation}
-So the damping in joint coordinates is $\vtau = \mK_{\dot{\vq}} \dot{\vq}$ and
+So the damping in joint coordinates is $\vtau_{\myx} = \mK_{\dot{\vq}} \dot{\vq}$ and
 therefore
 \begin{equation}
-\mK_{\dot{\vq}}(\vq) = \mJ_w^{\tr}(\vq) \mK_{\dot{w}} \mJ_w(\vq)
+\mK_{\dot{\vq}}(\vq) = \mJ_{\xw}^{\tr}(\vq) \mK_{\dot{w}} \mJ_{\xw}(\vq)
 \end{equation}
 The mapping is the same for stiffnes:
 \begin{equation}
-\mK_{\vq}(\vq) = \mJ_w^{\tr}(\vq) \mK_{w} \mJ_w(\vq)
+\mK_{\vq}(\vq) = \mJ_{\xw}^{\tr}(\vq) \mK_{w} \mJ_{\xw}(\vq)
 \end{equation}
 So we should assign the exoskeleton joint position gains to be $\mK_{\vq}(\vq)$ and
 the joint velocity gains to be $\mK_{\dot{\vq}}(\vq)$ in equation~\ref{eq:impedance}.
@@ -951,12 +952,12 @@ the joint velocity gains to be $\mK_{\dot{\vq}}(\vq)$ in equation~\ref{eq:impeda
 Similarly, we can use exoskeleton-world force control to improve performance,
 setting
 \begin{equation}
-{\vf_w}_d = - \mK_w ( \hat{\vq}_w - {\vq_w}_d ) - \mK_{\dot{w}} \hat{\dot{\vq}}_w
+{\vf_{\xw}}_d = - \mK_w ( \hat{\vq}_w - {\vq_w}_d ) - \mK_{\dot{w}} \hat{\dot{\vq}}_w
 \end{equation}
 and add the force error: 
 \begin{equation}
-\vtau = \vtau_{\xinvdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
-+ \mJ_w^{\tr}(\vq) \mK_{\vf_w} ( \hat{\vf}_w - {\vf_w}_d )
+\vtau_{\myx} = \vtau_{\xinvdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
++ \mJ_{\xw}^{\tr}(\vq) \mK_{\vf_{\xw}} ( \hat{\vf}_{\xw} - {\vf_{\xw}}_d )
 \end{equation}
 
 \section{Underactuated and overactuated control and floating body dynamics}
@@ -968,41 +969,74 @@ We have been sweeping this
 issue under the rug so far. It is now useful to be more explicit.
 There are two kinds of underactuation we want to consider. The first
 is ``floating body dynamics'', where the robot is not bolted to the floor.
+Contacts are made and broken during walking, running, and many other behaviors,
+and contacts slip.
 Humanoid robots (and humans) have floating body dynamics.
 A ``root'' location (usually somewhere
 on the pelvis) is chosen, and the position, velocity, orientation, and angular
 velocity of that point and the rigid body it is on
 are included in the state vector $\vq$. The corresponding dimensions of the
-velocity vector $\dot{\vq}$ are not actuated. A selection matrix
-$\mS$ is used to map from actuation variables $\vu$ to joint torques $\vtau$:
+velocity vector $\dot{\vq}$ are not actuated. A Jacobian matrix
+$\mJ_{\myx}$ is used to map from actuation variables $\vu$ to joint torques $\vtau$:
 \begin{equation}
-\vtau = \mS \vu
+\vtau_{\myx} = \mJ_{\myx} \vu_{\myx}
 \end{equation}
 The rows in $\mS$ corresponding to the root linear and angular velocities
 are all zero.
+To maintain compatability in our joint representation, we will similarly
+map operator ``muscle commands'' $\myo$ to operator joint torques $\vtau_{\myo}$.
+\begin{equation}
+\vtau_{\myo} = \mJ_{\myo} \vu_{\myo}
+\end{equation}
 
 The second kind of underactuation appears in exoskeletons where we rely on the
 operator to actuate a particular joint. For example, many lower body
 exoskeletons only actuate the joints in the sagittal plane, leaving lateral
 and twist (yaw) joints unactuated or passively actuated. 
+Many ``exoskeletons'' or orthoses only actuate one joint on each limb (typically
+the ankle or knee). In these situations the question arises as to what is
+the scope of control: should the device only consider
+just the actuated joints,
+or should it consider a wider range of operator joints? Many of these devices
+do not have enough sensing (such as an IMU) to even estimate the state of other
+operator joints. We believe that for high performance the entire state of the
+operator must be considered in control, and we describe a way to do it in
+Section~\ref{sec:qp}.
+However, we are not aware of any system that goes this far in terms of control.
 
 Passive actuation can be handled by augmenting the
 dynamics equations to include the force equation of the passive element,
 such as a nonlinear spring.
 
-The underactuation can be handled by reducing the size of the $\vu$ vector
-and changing the matrix $\mS$ to reflect the missing actuation.
+``Missing joint''
+underactuation can be handled by reducing the size of the $\vu_{\myx}$ vector
+and changing the matrix $\mJ_{\myx}$ to reflect the missing actuation.
 We can have redundant actuation (more than one actuator across any particular
-joint). Here we augment $\vu$ and $\mS$ to accomodate extra actuators.
-We can have multijoint actuation, which can be handled in $\vu$ and $\mS$ as well.
+joint). Here we augment $\vu_{\myx}$ and $\mJ_{\myx}$ to accomodate extra actuators.
+We can have multijoint actuation, which can be handled in $\vu_{\myx}$ 
+and $\mJ_{\myx}$ as well.
 
 The modified dynamics equations are
 \begin{equation}
-\mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
-+ \mJ_w^{\tr}(\vq) \vf_w = \mS \vu + \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
-\label{eq:dynamics2}
+\mM_{\myo}(\vq) \ddot{\vq} + \mC_{\myo}(\vq,\dot{\vq}) + \mG_{\myo}(\vq)
++ \mJ_{\ow}^{\tr}(\vq) \vf_{\ow} = \mJ_{\myo} \vu_{\myo} - \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
+\label{eq:odynamics2}
 \end{equation}
-Note that $\ddot{\vq}$ and the new actuation vector $\vu$
+\begin{equation}
+\mM_{\myx}(\vq) \ddot{\vq} + \mC_{\myx}(\vq,\dot{\vq}) + \mG_{\myx}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \mJ_{\xw}^{\tr}(\vq) \vf_{\xw} = \mJ_{\myx} \vu_{\myx} + \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
+\label{eq:xdynamics2}
+\end{equation}
+\begin{equation}
+\mM_{\ox}(\vq) \ddot{\vq} + \mC_{\ox}(\vq,\dot{\vq}) + \mG_{\ox}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \mJ_{\ow}^{\tr}(\vq) \vf_{\ow}
++ \mJ_{\xw}^{\tr}(\vq) \vf_{\xw} 
+= \mJ_{\myo} \vu_{\myo} + \mJ_{\myx} \vu_{\myx}
+\label{eq:oxdynamics2}
+\end{equation}
+Note that $\ddot{\vq}$ and the actuation vectors $\vu_{\myo}$ and $\vu_{\myx}$
 do not have the same dimensionality. What difference does that make?
 
 Underactuated joints reduce our ability to control behaviors directly
@@ -1023,13 +1057,21 @@ still work on the actuated degrees
 of freedom. Passive actuation or 
 the operator needs to carry the load on the unactuated degrees of freedom.
 
-Straightforward {\bf online inverse dynanamics} as described in Section~\ref{sec:invdyn}
-no longer works if $\mS$ is not invertable (not square or not full rank).
-In the underactuated and overactuated cases $\mS$ is not square. 
-In these cases {\bf online optimization}
-as described in the next Section is used to ``perform inverse dynamics'' by
+Full (operator) body
+{\bf online inverse dynamics} as described in Section~\ref{sec:invdyn}
+no longer works if $\mJ_{\myx}$ is not invertable (not square or not full rank).
+In the underactuated and overactuated cases $\mJ_{\myx}$ is not square. 
+For a partial (operator) body
+exoskeleton we can rewrite the dynamics in terms of only those
+joints the exoskeleton actuates, and invert those dynamics to cancel exoskeleton
+effects on those joint. This is what has been done with the BLEEX exoskeleton,
+for example.~\cite{}.
+
+However, {\bf online optimization}
+as described in the next Section can be used to perform full (operator)
+body inverse dynamics by
 finding desirable combinations of accelerations $\ddot{\vq}$, contact forces $\vf$,
-and actuator commands $\vu$.
+and actuator commands $\vu_{\myx}$.
 
 Another approach to solving this problem is prioritized control, which does
 not include optimization~\cite{}. For reasons we will describe, we believe
@@ -1108,6 +1150,11 @@ to the optimization criterion:
 \begin{equation}
 \dot{\vf}_{\ox}^{\tr} W_{\dot{\vf}_{\ox}} \dot{\vf}_{\ox}
 \end{equation}
+
+Note that the same approach could be used to minimize or control internal forces
+such as skeletal forces (forces between bones) at the operator joints to protect
+the ankle, hip, and knee joints, for example.
+MORE GOES HERE.
 
 We can implement operator {\bf impedance control} in several ways:
 We can add 
@@ -1866,16 +1913,16 @@ sensitivity to
  modeling error
  sensor error
  unmodeled dynamics
+* future (after Oct 1) simulation studies
 
 underactuated control problem
- - not fully actuated sagittal only.
  - how necessary is lateral actuation
- - what is the penalty
+   * we don't know
+ - * what is the penalty
   weight
   drag of actuator
+* future (after Oct 1) simulation studies
 
-how handle failure and damage after Oct 1
+how handle failure and damage 
+* after Oct 1
 
-what about a full model of the system
-
-Oct 5-9
