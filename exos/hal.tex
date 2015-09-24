@@ -1,5 +1,6 @@
 \section{HAL}
 \label{exo:hal}
+\begin{refsection}[exos/hal.bib]
 
 keywords: model-based control; predefined gait trajectory; strength augmentation; rehabilitation.\\
 
@@ -44,8 +45,9 @@ While experiments in \cite{HALmuscleImped2005} only consider leg swing-up and sw
 
 Compared to sensitivity amplification methods, HAL's use of EMG data allows it to estimate intention without amplifying external disturbances.  This is ideal for combat scenarios.  However, sEMG data is extremely difficult to work with due to high filtering and calibration requirements.  A hybrid strategy which uses sensitivity amplification and sEMG data (possibly thresholded) to filter user intention could prove effective.  As an alternative, research into nano-fabrication and MEMs technologies has produced new ``robotic skin'' sensing arrays. This technology may allow direct measurement of interaction forces (i.e. estimating pressure / force and exoskeleton contact locations), which has not been feasible in the past.  Such measurements could (potentially) filter external disturbances from user generated input to estimate intent.
 
+\nocite{*}
+\printbibliography[heading=subbibliography]
 
-%\bibliographystyle{plain}
-%\bibliography{exos/hal}
+The figures in this section were obtained from \cite{HALmuscleImped2005,HALassist2011}.  Materials presented are based on the references above.
 
-The figures in this section were obtained from \cite{HALassist2011,HALmuscleImped2005}.  Materials presented are based on the references above.
+\end{refsection}
