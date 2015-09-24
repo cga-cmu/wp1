@@ -28,9 +28,16 @@
 
 \input latex-commands
 
-\newcommand{\gc}{{\mbox {GravityCompensation}}}
-\newcommand{\invdyn}{{\mbox {\tiny ID}}}
-\newcommand{\invdynw}{{\mbox {\tiny ID+Fw}}}
+\newcommand{\ff}{{\mbox {\tiny ff}}}
+\newcommand{\myo}{{\mbox {\tiny o}}}
+\newcommand{\myx}{{\mbox {\tiny x}}}
+\newcommand{\ox}{{\mbox {\tiny ox}}}
+\newcommand{\ow}{{\mbox {\tiny ow}}}
+\newcommand{\xw}{{\mbox {\tiny xw}}}
+\newcommand{\xinvdyn}{{\mbox {\tiny x-ID}}}
+\newcommand{\xinvdynw}{{\mbox {\tiny x-ID+Fw}}}
+\newcommand{\oxinvdyn}{{\mbox {\tiny ox-ID}}}
+\newcommand{\oxinvdynw}{{\mbox {\tiny ox-ID+Fw}}}
 
 \newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
 \newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
@@ -39,7 +46,7 @@
 
 \title{A Survey of Possible Exoskeleton Control Architectures and
 Algorithms\\
-(Draft 2.3)}
+(Draft 3.0)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -225,13 +232,52 @@ the user specifies a desired force or torque
 which changes according to the position, velocity,
 and acceleration of the joint.
 \item
+Valve control (for fluidic systems):
+\begin{equation}
+\vu = \mK_{\vq} (\vq - \vq_d) + \mK_{\dot{\vq}} ( \dot{\vq} - \dot{\vq}_d )
++ \mK_{\vtau} ( \vtau - \vtau_d )
++ \mK_{\dot{\vtau}} ( \dot{\vtau} - \dot{\vtau}_d ) + \vu_{\ff}
+\end{equation}
+where $\vu$ is a valve command vector (with a valve command for each actuator),
+$\vq$ is the vector of joint angles, $\dot{\vq}$ are joint velocities,
+$\vtau$ are actutor forces or joint torques, and $\dot{\vtau}$ is the rate of change
+of the forces or torques (the time derivative of $\vtau$). 
+The subscript $d$ indicates a desired value,
+$\mK_{\vq}$ is a joint position gain matrix,
+$\mK_{\dot{\vq}}$ is a joint velocity gain matrix, 
+$\mK_{\vtau}$ is a joint force/torque gain matrix,
+and $\mK_{\dot{\vtau}}$ is a joint force/torque derivative gain matrix.
+$\vu_{\ff}$ are feedforward valve commands.
+This formulation takes into account the most important hydraulic actuator dynamics,
+and allows full state feedback
+(including $\vtau$ as part of the state), pole placement, and linear quadratic
+regulator (LQR) control of
+a third order model of actuator plus rigid body dynamics.
+If electric motor and power amplifier dynamics are taken into account in electric
+motor systems, there would be an analogous equation for the commanded
+motor voltage of
+an analog power amplifier or
+the control input of a PWM amplifier.
+The $\mK_{\vtau} ( \vtau - \vtau_d )$ could be replaced or augmented
+by a servo on piston differential pressure in a fluidic system or
+a current servo in an electrical system.
+\item
 Online optimization of accelerations, actuator forces and torques, and contact forces
 using quadratic programming. See Section \ref{sec:qp} for further explanation.
 \end{itemize} 
 
 \subsubsection{LLC: Feedback control}
 
-PID or more complex feedback control laws are implemented by low level control.
+PID or more complex nonlinear feedback control laws such as sliding mode control
+are implemented by low level control. Note that a PID control law can be made
+(smoothly) nonlinear by changing the PID gains on each servo tick.
+Distributed low level control with limited communication typically controls each
+joint or each set of joints (a limb, for example) independently.
+Centralized low level control can support cross coupling of all joints,
+and implement ``modern'' control schemes such as full state feedback,
+pole placement, linear quadratic regulator (LQR) design, linear quadratic
+Gaussian (LQG) design, and linear quadratic Gaussian loop transfer recovery
+(LQG-LTR) design,
 
 \subsubsection{LLC: Feedforward control}
 
@@ -339,78 +385,158 @@ to have a controller with internal state, and design or learn a policy
 that works well, but does not have an explicit state estimation 
 part~\cite{lead-lag}.
 
-\section{Exoskeleton dynamics}
+\section{Operator and exoskeleton dynamics}
 
 Exoskeletons are similar to robots, but there are several important differences.
 There are two sets of contact forces: operator-exoskeleton (which we denote
-with a subscript $o$ as in $\vf_o$) and exoskeleton-world (which we denote
-with a subscript $w$ as in $\vf_w$). If the operator is tightly strapped or
+with a subscript $\ox$ as in $\vf_{\ox}$) and exoskeleton-world (which we denote
+with a subscript $\xw$ as in $\vf_{\xw}$). If the operator is tightly strapped or
 rigidly held by other types of physical constraints, we can lump the operator
-body parts with the exoskelton parts which they are attached to in terms
+body parts with the exoskeleton parts which they are attached to in terms
 of link inertias, locations of center of mass, and moments of inertia,
-and just think of the whole system as one robot.
-We can also separate out the operator dynamics if this is more convenient
-(we separate them out and ignore them in what follows).
+and just think of the whole system as one robot (we indicate this with
+the subscript $\ox$ in dynamics equations.
+We can also separate out the operator dynamics (indicated by
+the subscript $\myo$) from the exoskeleton dynamics (indicated by
+the subscript $\myx$) if this is more convenient
+(we separate them out and ignore them in what immediately follows).
 If the operator is loosely connected to the exoskeleton, this introduces a
 huge modeling and control problem, and would also be very dangerous for the
 operator (as riding a bull or bucking horse in a rodeo is dangerous to a rider).
 We do not address the loosely connected case in this paper.
 
-The dynamics of a revolute exoskeleton standing on the ground are:
+The dynamics of an operator standing on the ground (or on parts of the exoskeleton
+that are on the ground):
 \begin{equation}
-\mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
-+ \mJ_w^{\tr}(\vq) \vf_w = \vtau + \mJ_o^{\tr}(\vq) \vf_o
-\label{eq:dynamics}
+\mM_{\myo}(\vq) \ddot{\vq} + \mC_{\myo}(\vq,\dot{\vq}) + \mG_{\myo}(\vq)
++ \mJ_{\ow}^{\tr}(\vq) \vf_{\ow} = \vtau_{\myo} - \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
+\label{eq:odynamics}
 \end{equation}
-where $\vq$ are the joint angles of
-the exoskeleton, $\dot{\vq}$ and $\ddot{\vq}$ are the corresponding
-velocities and accelerations, $\mM$ is the inertia matrix, $\mC()$ are the Coriolis and
-centripetal forces, $\mG()$ are the gravitational forces, $\mF()$ are the
-friction forces, $\mJ_w^{\tr}(\vq) \vf_w$ (Jacobian matrix multiplied with the
-contact forces)
-are the exoskeleton-world
-contact forces 
+where $\vq$ are the operator joint angles,
+$\dot{\vq}$ and $\ddot{\vq}$ are the corresponding
+joint velocities and accelerations,
+$\mM_{\myo}$ is the operator inertia matrix, 
+$\mC_{\myo}()$ are the operator Coriolis and
+centripetal forces, 
+$\mG_{\myo}()$ are the operator gravitational forces,
+$\mJ_{\ow}^{\tr}(\vq) \vf_{\ow}$ (Jacobian matrix multiplied with the
+contact forces) are the operator-world contact forces 
 expressed as exoskeleton joint torques, 
-$\vtau$ are the exoskeleton
-joint torques,
-and $\mJ_o^{\tr}(\vq) \vf_o$
-are the operator-exoskelton forces expressed
-as exoskeleton joint torques.
+$\vtau$ are the operator joint torques due to muscle activity and passive tissue
+mechanics,
+and 
+$\mJ_{\ox}^{\tr}(\vq) \vf_{\ox}$
+are the operator-exoskeleton forces expressed
+as operator joint torques.
+We assume the operator joint friction is negligable.
 
-We do not describe how to derive this equation or identify appropriate parameters
-for an exoskeleton. We can provide this information if requested.
+We assume the exoskeleton joints match some or all of the human joints.
+The dynamics of such an exoskeleton standing on the ground or attached to
+the human are:
+\begin{equation}
+\mM_{\myx}(\vq) \ddot{\vq} + \mC_{\myx}(\vq,\dot{\vq}) + \mG_{\myx}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \mJ_{\xw}^{\tr}(\vq) \vf_{\xw} = \vtau_{\myx} + \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
+\label{eq:xdynamics}
+\end{equation}
+$\mM_{\myx}$ is the exoskeleton inertia matrix,
+$\mC_{\myx}()$ are the exoskeleton Coriolis and centripetal forces,
+$\mG_{\myx}()$ are the exoskeleton gravitational forces,
+$\mF_{\myx}()$ are the exoskeleton friction forces,
+$\mJ_{\xw}^{\tr}(\vq) \vf_{\xw}$ (Jacobian matrix multiplied with the
+contact forces) are the exoskeleton-world
+contact forces expressed as operator joint torques, 
+$\vtau_{\myx}$ are the exoskeleton joint torques,
+and 
+$\mJ_{\ox}^{\tr}(\vq) \vf_{\ow}$
+are the operator-exoskeleton forces expressed
+as operator joint torques.
+
+The dynamics of the combined system when the operator is tightly strapped in
+or otherwise ``rigidly'' attached to the exoskeleton are:
+\begin{equation}
+\mM_{\ox}(\vq) \ddot{\vq} + \mC_{\ox}(\vq,\dot{\vq}) + \mG_{\ox}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \mJ_{\ow}^{\tr}(\vq) \vf_{\ow}
++ \mJ_{\xw}^{\tr}(\vq) \vf_{\xw} 
+= \vtau_{\myo} + \vtau_{\myx}
+\label{eq:oxdynamics}
+\end{equation}
+$\mM_{\ox}$ is the combined operator-exoskeleton inertia matrix,
+$\mC_{\ox}()$ are the combined Coriolis and centripetal forces,
+and $\mG_{\ox}()$ are the combined gravitational forces.
+Note that the forces between the operator and the exoskeleton
+do not appear explicitly in the
+combined dynamics, but they can be computed using either equation~\ref{eq:odynamics}
+or \ref{eq:xdynamics}.
+
+We are ignoring actuator dynamics, which we can handle by augmenting 
+the state vector and adding additional equations.
+
+We do not describe how to derive these equations or identify appropriate 
+model parameters.
+We can provide this information if requested.
 We are assuming that the equations have been derived taking into account constraints
 such as one or two feet on the ground. Until we discuss ``floating body'' dynamics
 in Section~\ref{sec:float}, we are assuming contacts do not slip and are not broken.
-We are assuming all degrees of freedom (joints) are actuated until 
-Section~\ref{sec:float}.
+Therefore foot touchdown and liftoff require special handling by controllers
+using these dynamics, which we will not describe in this paper.
+We are assuming all degrees of freedom (joints) are actuated by the operator,
+but not necessarily by the exoskeleton, until we get to 
+``floating body'' dynamics (Section~\ref{sec:float}).
 
 To understand these equations better, it is useful to have all Jacobians equal
 to the identity matrix. This means the operator is directly applying torques
-at the exoskeleton joints ($\vtau_o$) (a realistic assumption), 
-and so is the world ($\vtau_w$) (a very unrealistic assumption). In this case:
+at the exoskeleton joints ($\vtau_{\ox}$) (a realistic assumption), 
+and so is the world ($\vtau_{\ow}$ and $\vtau_{\xw}$)
+(a very unrealistic assumption). In this case,
+the operator dynamics are:
 \begin{equation}
-\mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
-+ \vtau_w = \vtau + \vtau_o
+\mM_{\myo}(\vq) \ddot{\vq} + \mC_{\myo}(\vq,\dot{\vq}) + \mG_{\myo}(\vq)
++ \vtau_{\ow} = \vtau_{\myo} - \vtau_{\ox}
+\end{equation}
+the exoskeleton dynamics are:
+\begin{equation}
+\mM_{\myx}(\vq) \ddot{\vq} + \mC_{\myx}(\vq,\dot{\vq}) + \mG_{\myx}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \vtau_{\xw} = \vtau_{\myx} + \vtau_{\ox}
+\end{equation}
+and the combined dynamics are:
+\begin{equation}
+\mM_{\ox}(\vq) \ddot{\vq} + \mC_{\ox}(\vq,\dot{\vq}) + \mG_{\ox}(\vq)
++ \mF_{\myx}(\vq,\dot{\vq})
++ \vtau_{\ow}
++ \vtau_{\xw} 
+= \vtau_{\myo} + \vtau_{\myx}
+\label{eq:oxdynamics}
 \end{equation}
 
-Note that we are ignoring the human operator dynamics and operator muscle and tissue
-forces resulting in operator joint torques. Intent prediction will model these
-effects [intent.pdf].
+\section{What do we want from intent prediction?}
 
-We are also ignoring actuator dynamics, which we can handle by augmenting 
-the state vector and adding additional equations.
+For many of the following control systems, no operator intent estimation or
+prediction is needed.
+When we get to inverse dynamics, we need to know a desired acceleration
+$\ddot{\vq}_d$.
+In addition,
+operator force 
+estimates ($\hat{\vf}_{\myo}$ or $\hat{\vtau}_{\myo}$) or
+operator-exoskeleton force 
+estimates ($\hat{\vf}_{\ox}$ or $\hat{\vtau}_{\ox}$) are useful.
+For online optimization, the more we know about the future, the better online
+optimization can perform. We discuss this in Section~\ref{sec:predict}.
 
 \section{Passive control with no active control}
 
-One control option is to use only passive controls, and no active controls
+One control option is to use only passive controls on a joint or on
+all joints, and no active controls
 or actuators.
 Such a system would rely on counterbalancing, mechanical springs, air springs, etc.
 to reduce forces. 
 An operator would rely on mechanical backdrivability to drive
 exokeleton to do tasks.
+These passive devices have no controls, and can be included in the dynamics equations.
 In this case, 
-$\vtau$ is generated by passive devices such as springs or dampers.
+$\vtau_{\myx}$ is zero for any passive degree of freedom.
 
 \section{Open loop control}
 
@@ -420,7 +546,7 @@ constant, or a function of time or phase of a behavior or task
 Commands or behaviors may be selected at a relatively coarse time interval
 by the operator or by the exoskeleton controller.
 This approach typically 
-uses position and velocity control in either joint or
+uses impedance control in either joint or
 Cartesian coordinates
 with either pre-generated references, selected targets,
 or online generated trajectories to move to targets or perform tasks.
@@ -428,22 +554,30 @@ The operator relies on mechanical backdrivability
 to correct exoskeleton behavior.
 In this case, it is common to generate the exoskeleton actuator commands using
 a time or phase index:
-$\vtau = \vtau_{ff}(t)$ where $\vtau_{ff}$ is a time
+$\vtau_{\myx} = \vtau_{\ff}(t)$ where $\vtau_{\ff}$ is a time or behavioral phase
 dependent feedforward torque vector.
 
 \section{Active gravity compensation}
 
-Active gravity compensation is similar 
+Active exoskeleton gravity compensation is similar 
 to counterbalancing or physical gravity compensation, except it is done
-with exoskeleton actuators to cancel the exoskeleton weight (but not inertia).
+with exoskeleton actuators to cancel the exoskeleton weight (but not inertia):
 \begin{equation}
-\vtau = \hat{\mG}(\hat{\vq})
+\vtau_{\myx} = \hat{\mG}_{\myx}(\hat{\vq})
 \end{equation}
-where $\vtau$ are the exoskeleton joint torques, 
-$\hat{\mG}()$ are the gravitational forces calculated using an imperfect model, 
-and $\hat{\vq}$ is the estimated configuration of the exoskeleton,
+where $\vtau_{\myx}$ are the exoskeleton joint torques, 
+$\hat{\mG}_{\myx}()$ are the exoskeleton
+gravitational forces calculated using an imperfect model, 
+and $\hat{\vq}$ is the estimated configuration of the operator (and exoskeleton),
 The operator relies on mechanical backdrivability to drive
 the exokeleton to do tasks.
+The weight of the operator can also be supported by the exoskeleton in
+full gravity compensation:
+\begin{equation}
+\vtau_{\myx} = \hat{\mG}_{\ox}(\hat{\vq})
+\end{equation}
+where $\hat{\mG}_{\ox}()$ are the combined operator and exoskeleton
+gravitational forces calculated using an imperfect model, 
 
 Sarcos Primus Humanoid videos of active gravity compensation applied
 to a humanoid robot:\\
@@ -453,9 +587,9 @@ ATR: cancel gravity only: \url{https://www.youtube.com/watch?v=KNxxLm4sPys}
 A simple approximation for a lower body exoskeleton with a heavy payload at the
 torso is:
 \begin{equation}
-\vtau \approx \hat{\mJ}^{\tr}(\hat{\vq}) (\hat{m} \hat{\vg})
+\vtau_{\myx} \approx \hat{\mJ}^{\tr}(\hat{\vq}) (\hat{m} \hat{\vg})
 \end{equation}
-where $\hat{\mJ}$ is the estimated Jacobian matrix,
+where $\hat{\mJ}$ is the estimated Jacobian matrix for the center of mass,
 $\hat{m}$ is the estimated
 weight of the exoskeleton (which could include the operator),
 and $\hat{\vg}$ is the gravity vector (it is estimated due to possible orientation
@@ -466,7 +600,7 @@ All weight is assumed to be concentrated at the center of mass of the full syste
 
 Friction can also be compensated.
 \begin{equation}
-\vtau = \hat{\mF}(\hat{\vq},\hat{\dot{\vq}}) 
+\vtau_{\myx} = \hat{\mF}_{\myx}(\hat{\vq},\hat{\dot{\vq}}) 
 \end{equation}
 are the estimated friction torques at the estimated exoskeleton configuration
 and velocity.
@@ -484,20 +618,20 @@ The goal here is to map from desired motion (in this case desired
 accelerations) to exoskeleton actuator commands (and desired operator
 and world contact forces).
 The exoskeleton actuator torques
-attempt to match the torques caused by inertial, Coriolis, centripetal,
+attempt to match the torques caused by exoskeleton inertial, Coriolis, centripetal,
 gravitational, and frictional forces.
 \begin{equation}
-\vtau = \vtau_{\invdyn} 
-= \hat{\mM}(\hat{\vq}) \ddot{\vq}_d
-+ \hat{\mC}(\hat{\vq},\hat{\dot{\vq}})
-+ \hat{\mG}(\hat{\vq})
-+ \hat{\mF}(\hat{\vq},\hat{\dot{\vq}})
+\vtau_{\myx} = \vtau_{\xinvdyn} 
+= \hat{\mM}_{\myx}(\hat{\vq}) \ddot{\vq}_d
++ \hat{\mC}_{\myx}(\hat{\vq},\hat{\dot{\vq}})
++ \hat{\mG}_{\myx}(\hat{\vq})
++ \hat{\mF}_{\myx}(\hat{\vq},\hat{\dot{\vq}})
 \end{equation}
 If in addition we want to cancel exoskeleton-world contact forces,
 we add another term:
 \begin{equation}
-\vtau = \vtau_{\invdynw} = \vtau_{\invdyn} 
-+ \hat{\mJ}_w^{\tr}(\hat{\vq}) \hat{\vf}_w
+\vtau_{\myx} = \vtau_{\xinvdynw} = \vtau_{\xinvdyn} 
++ \hat{\mJ}_{\xw}^{\tr}(\hat{\vq}) \hat{\vf}_{\xw}
 \end{equation}
 If there are actuator dynamics or other dynamics, we can include those
 dynamics as well.
@@ -506,22 +640,23 @@ These force/torque estimates rely on estimated dynamic models and their paramete
 If the models and estimated state (position and velocity) are perfect, we get
 perfect cancellation of most of the dynamics:
 \begin{equation}
-\mM(\vq) (\ddot{\vq} - \ddot{\vq}_d) = \mJ_o^{\tr}(\vq) \vf_o
+\mM_{\myx}(\vq) (\ddot{\vq} - \ddot{\vq}_d) = \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
 \end{equation}
 If $\ddot{\vq}_d$ is set to zero, the operator directly drives the acceleration
-of the exoskeleton with an effective inertia of $(\mM^{-1}(\vq) \mJ_o^{\tr}(\vq))^{-1}$
+of the exoskeleton with an effective inertia of 
+$(\mM^{-1}_{\myx}(\vq) \mJ_{\ox}^{\tr}(\vq))^{-1}$
 \begin{equation}
-\ddot{\vq} = \mM^{-1}(\vq) \mJ_o^{\tr}(\vq) \vf_o
+\ddot{\vq} = \mM^{-1}_{\myx}(\vq) \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
 \label{eq:cancel}
 \end{equation}
 $\ddot{\vq}_d$ can be used to drive the exoskeleton along trajectories, and
-the operator can directly modify the trajectory.
+the operator can directly modify the current trajectory.
 
 Simplifying equation~\ref{eq:cancel} by 
 assuming the operator directly applies torques at the
 exoskeleton joints we get:
 \begin{equation}
-\mM (\vq) \ddot{\vq} = \vtau_o
+\mM_{\myx} (\vq) \ddot{\vq} = \vtau_{\ox}
 \end{equation}
 The operator sees the true inertia of the exoskeleton, but no gravitational
 loads and no other dynamics (Coriolis, centripetal, or frictional).
@@ -531,37 +666,37 @@ some form of acceleration or force feedback.
 With acceleration feedback we can make the exoskeleton have a different inertia.
 Setting $\ddot{\vq}_d$ to zero and adding acceleration feedback:
 \begin{equation}
-\vtau = \vtau_{\invdynw} - (\mM_d(\hat{\vq}) - \hat{\mM}(\hat{\vq})) \hat{\ddot{\vq}}
+\vtau_{\myx} = \vtau_{\xinvdynw} - (\mM_d(\hat{\vq}) - \hat{\mM}_{\myx}(\hat{\vq})) \hat{\ddot{\vq}}
 \label{eq:change-inertia1}
 \end{equation}
-sets the apparent inertia to $\mM_d$ if the dynamic models are perfect, and
+sets the apparent exoskeleton inertia to $\mM_d$ if the dynamic models are perfect, and
 state estimation produces not only perfect positions and velocities but
 also perfect acceleration estimates. In the case 
 where the operator directly applies torques at the
 exoskeleton joints we get:
 \begin{equation}
-\mM_d (\vq) \ddot{\vq} = \vtau_o
+\mM_d (\vq) \ddot{\vq} = \vtau_{\ox}
 \end{equation}
 In robotics this is usually considered a bad idea if $\mM_d$ is smaller (a complex
-issue for a matrix) than $\mM$ at any $\vq$. This type of control is vulnerable
+issue for a matrix) than $\mM_{\myx}$ at any $\vq$. This type of control is vulnerable
 to unmodeled dynamics. However, in an exoskeleton, since we have not tried to
-cancel the human's dynamics, the human stabilizes a possible unstable exoskeleton
+cancel the human's dynamics, the human stabilizes a possibly unstable exoskeleton
 (if the straps are tight enough).
 
 With force feedback we can also make the exoskeleton have a different inertia.
 Setting $\ddot{\vq}_d$ to zero and adding force feedback:
 \begin{equation}
-\vtau = \vtau_{\invdynw} + \mK \hat{\vf}_o
+\vtau_{\myx} = \vtau_{\xinvdynw} + \mK \hat{\vf}_{\ox}
 \end{equation}
 In the case where the force measurements are perfect and 
 the operator directly applies torques at the
 exoskeleton joints we get:
 \begin{equation}
-(\mK + \mI)^{-1} \mM (\vq) \ddot{\vq} = \vtau_o
+(\mK + \mI)^{-1} \mM_{\myx} (\vq) \ddot{\vq} = \vtau_{\ox}
 \end{equation}
-By setting $\mK = \mM^{-1}_d (\vq) \mM (\vq) - \mI$ we can achieve
+By setting $\mK = \mM^{-1}_d (\vq) \mM_{\myx} (\vq) - \mI$ we can achieve
 \begin{equation}
-\mM_d (\vq) \ddot{\vq} = \vtau_o
+\mM_d (\vq) \ddot{\vq} = \vtau_{\ox}
 \end{equation}
 
 Online inverse dynamics control is a generalization of 
@@ -575,7 +710,7 @@ Computed torque control and feedback linearization are forms of online
 inverse dynamics.
 
 A key question is where does the desired acceleration $\ddot{\vq}_d$ come from?
-This is discussed in the companion paper [intent.pdf].
+This is discussed in a companion paper [intent.pdf].
 
 \section{Operator-Exoskeleton Impedance Control}
 
@@ -600,18 +735,19 @@ Here we make the exoskeleton appear as a locally linear impedance in joint
 coordinates to the operator.
 We can also make the exoskeleton appear as a locally linear impedance to the
 operator in some other coordinate system, such as Cartesian coordinates.
-A different goal is to make the exoskeleton appear as a locally linear impedance to
+A different goal is to make the exoskeleton or combined operator and
+exoskeleton appear as a locally linear impedance to
 the outside world in some coordinate system.
 
 To make the exoskeleton appear as a locally linear impedance in joint
-coordinates to the operator, we add position and velocity feedback to $\vtau$:
+coordinates to the operator, we add position and velocity feedback to $\vtau_{\myx}$:
 \begin{equation}
-\vtau = \vtau_{\invdynw} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\vtau_{\myx} = \vtau_{\xinvdynw} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \label{eq:impedance}
 \end{equation}
 so if the dynamic models and state estimation are perfect we get this impedance:
 \begin{equation}
-\mM \ddot{\vq} - \mK_{\dot{\vq}} \dot{\vq} - \mK_{\vq} ( \vq - \vq_d ) = \vtau_o
+\mM_{\myx} \ddot{\vq} + \mK_{\dot{\vq}} \dot{\vq} + \mK_{\vq} ( \vq - \vq_d ) = \vtau_{\ox}
 \end{equation}
 and the operator sees the desired impedance.
 
@@ -654,34 +790,34 @@ the exoskeleton are available.
 The exoskeleton moves as to create as little force on the operator as possible 
 assuming the actuators are torque sources:
 \begin{equation}
-\vtau = \vtau_{\invdynw} + \mJ_o^{\tr}(\vq) {\vf_o}_d
-+ \mJ_o^{\tr}(\vq) \mK_{\vf_o} ( \hat{\vf}_o - {\vf_o}_d )
+\vtau_{\myx} = \vtau_{\xinvdynw} + \mJ_{\ox}^{\tr}(\vq) {\vf_{\ox}}_d
++ \mJ_{\ox}^{\tr}(\vq) \mK_{\vf_{\ox}} ( \hat{\vf}_{\ox} - {\vf_{\ox}}_d )
 \end{equation}
-$\mK_{\vf_o}$ is a gain matrix, $\mJ_o$ is the Jacobian matrix for the operator
-force $\vf_o$
+$\mK_{\vf_{\ox}}$ is a gain matrix, $\mJ_{\ox}$ is the Jacobian matrix for the operator
+force $\vf_{\ox}$
 Note that this does not require inverting the Jacobian matrix.
 We will see that the position control version does invert the Jacobian matrix.
 
 Applying this to force between the operator and the exoskeleton, and assuming
 that the operator directly applies exoskeleton joint torques,
 \begin{equation}
-\vtau = \vtau_{\invdynw} + {\vtau_o}_d - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
+\vtau_{\myx} = \vtau_{\xinvdynw} + {\vtau_{\ox}}_d - \mK_{\vtau_{\ox}} ( \hat{\vtau}_{\ox} - {\vtau_{\ox}}_d )
 \end{equation}
 So if our dynamic models and state estimation are perfect, we get:
 \begin{equation}
-\ddot{\vq} = - \mM^{-1} (\vq) ({\vtau_o}_d + \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d ))
+\ddot{\vq} = - \mM^{-1}_{\myx} (\vq) ({\vtau_{\ox}}_d + \mK_{\vtau_{\ox}} ( \hat{\vtau}_{\ox} - {\vtau_{\ox}}_d ))
 \end{equation}
 
 One can add force damping terms, which sometimes help:
 \begin{equation}
-\vtau = \vtau_{\invdynw} + {\vtau_o}_d - \mK_{\vtau_o} ( \hat{\vtau}_o - {\vtau_o}_d )
-- \mK_{\dot{\vtau}_o} \hat{\dot{\vtau}}_o
+\vtau = \vtau_{\xinvdynw} + {\vtau_{\ox}}_d - \mK_{\vtau_{\ox}} ( \hat{\vtau}_{\ox} - {\vtau_{\ox}}_d )
+- \mK_{\dot{\vtau}_{\ox}} \hat{\dot{\vtau}}_{\ox}
 \end{equation}
 
 Note that impedance control can also be implemented using force control
 by setting:
 \begin{equation}
-{\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+{\vtau_{\ox}}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 in addition to directly including the stiffness and damping terms in
 equation~\ref{eq:impedance}. 
@@ -693,7 +829,7 @@ the exoskeleton contact with the outside world.
 A different control objective could be to map the external forces to 
 desired operator forces:
 \begin{equation}
-{\vf_o}_d = F_{ow} ( \vf_w )
+{\vf_{\ox}}_d = F_{\ox-\xw} ( \vf_{\xw} )
 \end{equation}
 and cancel the external forces not transferred in the inverse dynamics.
 Everything in the above equation is estimated, so we are dropping the hats 
@@ -703,16 +839,16 @@ For example, we could want the operator to feel a scaled (scale factor $\alpha$)
 version of the external
 forces, as if they were contacting the operator directly.
 \begin{equation}
-{\vf_o}_d = \alpha J_o^{-\tr}(\vq) J_w^{\tr}(\vq) \vf_w
+{\vf_{\ox}}_d = \alpha J_{\ox}^{-\tr}(\vq) J_{\xw}^{\tr}(\vq) \vf_{\xw}
 \end{equation}
-and we scale the $\mJ_w^{\tr}(\vq) \vf_w$ term in the inverse dynamics
+and we scale the $\mJ_{\xw}^{\tr}(\vq) \vf_{\xw}$ term in the inverse dynamics
 by $(1-\alpha)$
 We are assuming we have any necessary force sensing between the exoskeleton and
 the world.
 
 If the operator applies joint torques, this simplifies to
 \begin{equation}
-{\vtau_o}_d = \alpha J_w^{\tr}(\vq) ( \vf_w )
+{\vtau_{\ox}}_d = \alpha J_{\xw}^{\tr}(\vq) ( \vf_{\xw} )
 \end{equation}
 and the inversion of a Jacobian matrix is unnecessary.
 
@@ -771,13 +907,13 @@ A control objective could be to have the exoskeleton to autonomously
 apply a desired force.
 One could add
 \begin{equation}
-\vtau = \vtau_{\invdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d
+\vtau = \vtau_{\xinvdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d
 \end{equation}
 to a gravity compensated control or to control including inverse dynamics.
 
 Active force control could be added to improve the performance:
 \begin{equation}
-\vtau = \vtau_{\invdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d + \mJ_w^{\tr}(\vq) \mK_{\vf_w} (\vf_w - {\vf_w}_d)
+\vtau = \vtau_{\xinvdyn} + \mJ_w^{\tr}(\vq) {\vf_w}_d + \mJ_w^{\tr}(\vq) \mK_{\vf_w} (\vf_w - {\vf_w}_d)
 \end{equation}
 
 \subsection{Autonomous exoskeleton-world impedance control}
@@ -819,7 +955,7 @@ setting
 \end{equation}
 and add the force error: 
 \begin{equation}
-\vtau = \vtau_{\invdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\vtau = \vtau_{\xinvdyn} - \mK_{\vq} ( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
 + \mJ_w^{\tr}(\vq) \mK_{\vf_w} ( \hat{\vf}_w - {\vf_w}_d )
 \end{equation}
 
@@ -847,7 +983,7 @@ are all zero.
 
 The second kind of underactuation appears in exoskeletons where we rely on the
 operator to actuate a particular joint. For example, many lower body
-exoskeltons only actuate the joints in the sagittal plane, leaving lateral
+exoskeletons only actuate the joints in the sagittal plane, leaving lateral
 and twist (yaw) joints unactuated or passively actuated. 
 
 Passive actuation can be handled by augmenting the
@@ -863,7 +999,7 @@ We can have multijoint actuation, which can be handled in $\vu$ and $\mS$ as wel
 The modified dynamics equations are
 \begin{equation}
 \mM(\vq) \ddot{\vq} + \mC(\vq,\dot{\vq}) + \mG(\vq) + \mF(\vq,\dot{\vq})
-+ \mJ_w^{\tr}(\vq) \vf_w = \mS \vu + \mJ_o^{\tr}(\vq) \vf_o
++ \mJ_w^{\tr}(\vq) \vf_w = \mS \vu + \mJ_{\ox}^{\tr}(\vq) \vf_{\ox}
 \label{eq:dynamics2}
 \end{equation}
 Note that $\ddot{\vq}$ and the new actuation vector $\vu$
@@ -955,35 +1091,35 @@ In the case of exoskeletons,
 part of the optimization criterion could be to
 minimize contact forces on the operator:
 \begin{equation}
-C_e(\vx) = C_r(\vx) + \vf^{\tr}_o \mW_{\vf_o} \vf_o
+C_e(\vx) = C_r(\vx) + \vf^{\tr}_{\ox} \mW_{\vf_{\ox}} \vf_{\ox}
 \end{equation}
 Operator force feedback and impedance control could be implemented by specifying a
-desired operator force ${\vf_o}_d$ and adding a ``hard'' equality constraint:
+desired operator force ${\vf_{\ox}}_d$ and adding a ``hard'' equality constraint:
 \begin{equation}
-\vf_o = {\vf_o}_d
+\vf_{\ox} = {\vf_{\ox}}_d
 \end{equation}
 or by adding a ``soft'' constraint in the form of a new term in the optimization
 criterion:
 \begin{equation}
-C_e(\vx) = C_r(\vx) + (\vf_o - {\vf_o}_d)^{\tr} \mW_{\vf_o} (\vf_o - {\vf_o}_d)
+C_e(\vx) = C_r(\vx) + (\vf_{\ox} - {\vf_{\ox}}_d)^{\tr} \mW_{\vf_{\ox}} (\vf_{\ox} - {\vf_{\ox}}_d)
 \end{equation}
 Force damping can be implemented by adding the following ``soft'' constraint term
 to the optimization criterion:
 \begin{equation}
-\dot{\vf}_o^{\tr} W_{\dot{\vf}_o} \dot{\vf}_o
+\dot{\vf}_{\ox}^{\tr} W_{\dot{\vf}_{\ox}} \dot{\vf}_{\ox}
 \end{equation}
 
 We can implement operator {\bf impedance control} in several ways:
 We can add 
 the impedance equations as ``hard'' equality constraints (to achieve them exactly)
 \begin{equation}
-\mJ_o^{\tr} {\vf_o} = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\mJ_{\ox}^{\tr} {\vf_{\ox}} = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 or by adding the ``soft'' constraint ``equation error'' to the optimization criterion
 weighted by a weight factor $W_{imp}$ to indicate
 how large an error is tolerated:
 \begin{equation}
-\ve = \mJ_o^{\tr} {\vf_o} - \mK_{\vq}( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\ve = \mJ_{\ox}^{\tr} {\vf_{\ox}} - \mK_{\vq}( \hat{\vq} - \vq_d ) - \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 and
 \begin{equation}
@@ -992,7 +1128,7 @@ and
 
 We can alternatively just set the desired operator contact force to:
 \begin{equation}
-{\vf_o}_d = \mJ_o^{-1} ( \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}} )
+{\vf_{\ox}}_d = \mJ_{\ox}^{-1} ( \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}} )
 \end{equation}
 Unfortunately, this involves inverting the Jacobian matrix, which may introduce
 problems.
@@ -1000,26 +1136,26 @@ Assuming that the operator directly applies exoskeleton joint torques,
 we can get rid of the Jacobian matrix, and this becomes
 the equality constraint
 \begin{equation}
-\vtau_o = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+\vtau_{\ox} = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 or is added to the optimization criterion:
 \begin{equation}
 C_e(\vx) = C_r(\vx) 
-+ (\vtau_o - {\vtau_o}_d)^{\tr} \mW_{\vtau_o} (\vtau_o - {\vtau_o}_d)
++ (\vtau_{\ox} - {\vtau_{\ox}}_d)^{\tr} \mW_{\vtau_{\ox}} (\vtau_{\ox} - {\vtau_{\ox}}_d)
 \end{equation}
 with
 \begin{equation}
-{\vtau_o}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
+{\vtau_{\ox}}_d = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
 
 {\bf Mapping external forces to operator forces} can be done either with the
 ``hard'' equality constraint:
 \begin{equation}
-\vf_o = F_{ow} ( \vf_w )
+\vf_{\ox} = F_{ow} ( \vf_w )
 \end{equation}
 or using the ``soft'' constraint term:
 \begin{equation}
-(\vf_o - F_{ow} ( \vf_w ))^\tr \mW_{fmap}  (\vf_o - F_{ow} ( \vf_w ))
+(\vf_{\ox} - F_{ow} ( \vf_w ))^\tr \mW_{fmap}  (\vf_{\ox} - F_{ow} ( \vf_w ))
 \end{equation}
 
 Similar techniques are used to handle {\bf autonomous exoskeleton position, velocity,
@@ -1076,7 +1212,7 @@ by assuming the forces to be controlled
 are directly applied to the exoskeleton joints, and thus the Jacobian matrix
 is the identity matrix, gives us a similar equation:
 \begin{equation}
-\dot{\vq}_d = \mK_1 \vtau_o
+\dot{\vq}_d = \mK_1 \vtau_{\ox}
 \end{equation}
 and we avoid inverting a Jacobian and problems with singularities.
 
@@ -1169,7 +1305,7 @@ tion: On-line implementation,” McGill University, Montr ́eal, Canada,
 Tech. Rep. TR-CIM-94-15, Nov. 1994.
 \end{verbatim}
 
-\subsection{Dual Control Appproach}
+\subsection{Dual Control Approach}
 
 This approach implements a passive swing leg in addition to Sensitivity 
 Amplification Control for the stance leg.
@@ -1641,7 +1777,7 @@ descent in simulation to improve the control robustness.
 One technique to do this is multiple-model design~\cite{acc12}.
 
 Note that adaptive or learning
-control does not promise to improve the kind of robustness exoskeltons need. 
+control does not promise to improve the kind of robustness exoskeletons need. 
 These approaches promise
 to improve performance, and try to track (slowly) changes in the operator, exoskeleton,
 or contacts to maintain performance. If something changes quickly, we need robust
