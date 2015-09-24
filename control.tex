@@ -175,7 +175,7 @@ We recommend the following hierarchical control architecture~\cite{IEEE06907051}
 
 Low level control presents an API (Application Programmer Interface)
 for higher control levels
-to access the actuators, sensors, and other robot hardware.
+to access the actuators, sensors, and other robot hardware~\cite{IEEE07271219}.
 It implements high servo rate processing including feedback control and online
 optimization.
 This level provides an idealization of the exoskeleton in two ways: 
@@ -1035,6 +1035,9 @@ control outcome by including these measurements in the online optimization.
 The operator and the controller can ``share'' or ``blend''
 control by making their respective
 weight matrices similar.
+
+Another approach to shared control is allocating time slices or providing assistance
+on an as-needed basis~\cite{IEEE07140030}.
 
 \subsection{Full Atlas robot implementation.}
 
