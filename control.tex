@@ -1316,9 +1316,186 @@ weight matrices similar.
 Another approach to shared control is allocating time slices or providing assistance
 on an as-needed basis~\cite{IEEE07140030}.
 
-\subsection{Full Atlas robot implementation.}
+\subsection{Full robot implementations.}
 
-Discuss or point to DRC papers by multiple groups.
+Point to DRC papers by multiple groups.
+
+Figure~\ref{f:cga1} shows the architecture of our robot control based on hierarchical optimization. 
+It was successfully tested on our SARCOS Primus Humanoid
+and ATLAS (Boston Dynamics) platforms. Our ATLAS robot demonstrated rough terrain walking, ladder climbing, and full body manipulation in the DARPA Robotics Challenge (DRC) Trials of 2013. This work also received 
+a ``Best Oral Paper Award'' at Humanoids 2013~\cite{Feng/etal13}. Figure~\ref{fig:terrain_pic} shows a sequence of snapshots of ATLAS 
+walking on rough terrain and plots of measured trajectories of the feet and the center of mass (CoM) for the DRC Trials.
+Figure~\ref{fig:ladder_pic} shows similar data for ladder climbing.
+In the DARPA Robotics Challenge Finals in 2015 our robot was the only
+biped that did not fall down or need to be rescued by 
+humans during the two days of the evaluations~\cite{cga-hum15}.
+Our robot performance was also the most consistent across the two days.
+Because of the way the evaluations were run, we have only limited data
+from the actual evaluations. Videos of our robot's performance during the
+DRC Finals are available~\cite{cga-web-page}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.75\textwidth]{Figures/cga1_modified}
+\caption{Controller architecture based on hierarchical optimization.}
+\label{f:cga1}
+\end{figure}
+
+
+
+\begin{figure}[t]
+  \begin{center}
+    {\includegraphics[height=3.8cm]{Figures/atlas_terrain}}
+    \caption{ATLAS robot practicing for the terrain task of the DRC. Photo snapshots taken every 5 seconds. Measured trajectories in the transverse (a) and sagittal planes (b) of the left (red) and right foot (green) and the center of mass (CoM, blue) are shown. The robot walks in a straight line along $y=0$ in reality. Our state estimator at that time drifted significantly. This has been fixed by adding vision-based SLAM.
+      }\label{fig:terrain_data} 
+\label{fig:terrain_pic} 
+  \end{center}
+\end{figure}   
+
+
+\begin{figure}[t]
+  \begin{center}
+    {\includegraphics[height=4cm]{Figures/atlas_ladder}}
+    \caption{
+      ATLAS climbing the top half of the same 
+      ladder as used in the DRC. Photo snapshots taken every 13 seconds. The
+      top row shows repositioning of the hook hands, and the bottom row shows
+      stepping up one tread.
+      The two plots show ATLAS climbing the first five treads during
+      the actual run at the DRC Trials. Axis definitions and color codes for foot and CoM trajectories are the same as in Fig.~\ref{fig:terrain_data}. Left and right hand positions are plotted with cyan and magenta dashed lines. 
+      }\label{fig:ladder_data} 
+\label{fig:ladder_pic} 
+  \end{center}
+\end{figure}    
+
+In the controller architecture, the {\bf Behavior Library} (Fig.~\ref{f:cga1}) contains
+learned behaviors and behaviors created from demonstration or
+motion capture of humans or other robots, and also acts as a cache
+for planning. The output of the library is used to prime, speed up,
+and guide the real time optimization process, and can be motion
+or force trajectories in joint or task coordinates ($\vx_d(t)$), as well as
+possibly including value, heuristic cost, or utility functions ($V_x(t)$)
+that can be used
+to guide search and optimization. 
+Libraries can be built in advance, or when task specification are known.
+The rest of the controller can
+also operate without information from the library if suitable information
+is not available.
+
+The {\bf Multistep Low-Order Dynamics Planner} uses
+receding horizon control to continually optimize trajectories of
+motion and force of a simplified model of the current task.
+In walking, this is usually center of mass ($COM_d(t)$),
+angular momentum ($\mL_d(t)$),
+contact force ($\mbox{contacts}_d(t)$) trajectories,
+and value, heuristic cost, or utility functions ($V_c(t)$)
+specifying tradeoffs between these quantities.
+We optimize with a time horizon of several seconds
+using Differential Dynamic Programming~\cite{ddp}.
+
+For walking, our planner is similar in spirit to Kajita's Preview Control for a Linear Inverted
+Pendulum Model (LIPM)~\cite{kajita03}. We are also using a CoM
+model, reason about Zero Moment Point (ZMP), and use future information 
+to guide the current trajectory. However, our planner can be generalized to 
+nonlinear models and adjust foot steps while optimizing the CoM 
+trajectory. 
+%We explicitly add the vertical height in our  CoM model to handle height variations on rough terrain. 
+Like capture point methods~\cite{capture_pt}, we take the 
+next few steps into consideration but
+do not plan to come to rest at the end. Ogura et al.~\cite{wabian2} 
+investigated generating human-like walking with heel-strike and toe-off by 
+parameterizing the swing foot trajectory. In contrast, we use very simple rules to guide the low level controller to achieve the same behaviors.
+
+The {\bf Full Body QP Optimization} uses quadratic programming (QP) with a
+very short time horizon (1ms on SARCOS and 2ms on ATLAS) to optimize the 
+desired full state of the robot ($\vtheta_d$, $\dot{\vtheta}_d$),
+joint torques ($\vtau_d$), and contact forces ($\vf_d$).
+Currently, we pre-specify gain matrices 
+($\mK_{\theta}$, $\mK_{\dot{\theta}}$, $\mK_{\tau}$,
+$\mK_{\mbox{f}}$)
+for the robot controller, but plan to explore how to optimize gains
+as well as trajectories.
+This module enforces constraints
+such as robot kinematics and dynamics 
+and joint, velocity, torque, actuator, friction cone,
+and center of pressure limits, and resolves redundancies.
+The module performs inverse kinematics and dynamics to provide us with
+compliant motions and dynamic behaviors, while compensating for the
+effects of modeling errors.
+
+For the QP, we use a formulation developed in our group 
+\cite{Stephens-thesis,Whitman10,Whitman-thesis}. Unlike~\cite{mistry10,usc_id1} who 
+use orthogonal decomposition to project the allowable motions into the null 
+space of the constraint Jacobian, and minimize costs in the contact constraints and the commands, we directly 
+optimize a quadratic cost in terms of state accelerations, torques and contact 
+forces on the full robot model. This design choice allows us to trade off physical quantities of 
+interest. We are also able to directly reason about inequality constraints 
+such as center of pressure within the support polygon, friction, and torque 
+limits. Although it becomes a bigger QP problem, we are still able to solve it 
+in real time. Hutter el al.~\cite{eth_id} resolved redundancy in inverse 
+dynamics using a kinematic task prioritization approach that ensures lower 
+priority tasks always exist in the null space of higher priority ones. In 
+contrast to their strictly hierarchical approach, we minimize a sum of 
+weighted terms. 
+We can directly specify the relative importance of the terms by adjusting 
+the weights. 
+
+%One popular approach to controlling humanoid robots is through inverse 
+%kinematics with stiff joint position tracking. On the other hand, 
+%inverse dynamics
+%based approaches have gained increasing acceptance by providing compliant 
+%motions and robustness to external perturbations. 
+%However, the performance of inverse dynamics methods 
+%is heavily dependent on high quality dynamic models, which are often very 
+%difficult to produce for a physical robot. In contrast, inverse
+%kinematics based approaches 
+%only require kinematic models, which are much easier to generate in practice. 
+%This was one reason we supplemented our original two part implementation with 
+%an inverse kinematics controller for the physical robot.
+
+
+
+The {\bf Low-Level Robot Controller} is a blend of our work and controllers
+provided by the robot manufacturers. For SARCOS
+and ATLAS, hydraulic valve commands for each
+joint $i$ are generated by high rate servo controllers provided
+by the manufacturers,
+\begin{equation}
+v_i = k_{\theta,i} ( \theta_i - \theta_{d,i} )
++ k_{\dot{\theta},i} ( \dot{\theta}_i - \dot{\theta}_{d,i} )
++ k_{\tau,i} ( \tau_i - \tau_{d,i} )
++ v_{\ff,i}
+\end{equation}
+where $v_i$ is the valve command,
+$\theta_i$ is the joint angle,
+$\dot{\theta}_i$ is the joint angular velocity,
+$\tau_i$ is the joint torque,
+and $v_{\ff,i}$ is a feedforward valve command.
+Subscripts $d$ indicate desired values, and
+quantities denoted with $k$ are scalar gains.
+This joint level servo runs at 5kHz on SARCOS and at
+1kHz on ATLAS.
+
+We augment this independent joint control by coupling joints
+and providing force control based on force/torque sensors in the wrists,
+ankles, and skin of the robot,
+\begin{equation}
+\vv = \mK_{\theta} ( \vtheta - \vtheta_{d} )
++ \mK_{\dot{\theta}} ( \dot{\vtheta} - \dot{\vtheta}_{d} )
++ \mK_{\tau} ( \vtau - \vtau_{d} )
++ \mK_{\mbox{f}} ( \vf - \vf_{d} ) 
++ \vv_{\ff}
+\end{equation}
+where $\vv$, $\vtheta$, $\dot{\vtheta}$, $\vtau$, and $\vv_{\ff}$
+are the corresponding vector quantities, and the $\mK$ are matrix gains
+coupling all joints. $\vf$ are sensed contact forces.
+The coupled controller runs at 1kHz on SARCOS and 500Hz on ATLAS.
+
+Figure~\ref{f:cga1} does not include our state estimator, which provides
+appropriate state information to all other modules. The details of this work on state estimation are
+described in~\cite{xinji_com_est,Xinjilefu-thesis}.
 
 \section{Operator-Exoskeleton Force Control using position controlled actuation}
 
