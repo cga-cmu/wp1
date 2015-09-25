@@ -92,7 +92,7 @@ and focus on a lower body exoskeleton to support any payloads that
 are on the torso or head.
 
 %\section{Symbiosis and Autonomy, Handling Errors, and Superhuman Reflexes}
-A later white paper will discuss
+A later white paper could discuss
 possible combinations of response to user and exoskeleton
 autonomy including balance control; response to trips, slips,
 stumbles, and fumbles; task assistance and guidance (guide operator to
@@ -100,11 +100,12 @@ doorknob, button, or light switch); superhuman response to external
 perturbations such as projectiles and explosions; and autonomous
 execution (operator/exoskeleton symbiosis with multi-tasking)?
 
-A later white paper will discuss how to handle malfunctions and damage to the
-system. Basically this boils down to fault detection, and switchover to
+A later white paper could discuss how to handle exoskeleton
+malfunctions and damage to the
+system. Basically this boils down to fault detection, and switch over to
 an appropriate safe mode of operation.
 
-A later white paper will evaluate using simulation
+A later white paper could evaluate using simulation
 the various control approaches' robustness to modeling error and unmodeled
 dynamics.
 
@@ -186,8 +187,8 @@ to access the actuators, sensors, and other robot hardware~\cite{IEEE07271219}.
 It implements high servo rate processing including feedback control and online
 optimization.
 This level provides an idealization of the exoskeleton in two ways: 
-What degrees of freedom (DOF) are controlled, and how is a degree of
-freedom controlled?
+{\it What degrees of freedom (DOF) are controlled?,} and 
+{\it How is a degree of freedom controlled?}
 
 \subsubsection{LLC: What degrees of freedom are controlled?}
 
@@ -240,7 +241,7 @@ Valve control (for fluidic systems):
 \end{equation}
 where $\vu$ is a valve command vector (with a valve command for each actuator),
 $\vq$ is the vector of joint angles, $\dot{\vq}$ are joint velocities,
-$\vtau$ are actutor forces or joint torques, and $\dot{\vtau}$ is the rate of change
+$\vtau$ are actuator forces or joint torques, and $\dot{\vtau}$ is the rate of change
 of the forces or torques (the time derivative of $\vtau$). 
 The subscript $d$ indicates a desired value,
 $\mK_{\vq}$ is a joint position gain matrix,
@@ -258,9 +259,9 @@ motor systems, there would be an analogous equation for the commanded
 motor voltage of
 an analog power amplifier or
 the control input of a PWM amplifier.
-The $\mK_{\vtau} ( \vtau - \vtau_d )$ could be replaced or augmented
+The torque error term $\mK_{\vtau} ( \vtau - \vtau_d )$ could be replaced or augmented
 by a servo on piston differential pressure in a fluidic system or
-a current servo in an electrical system.
+an electrical current servo in an electric system.
 \item
 Online optimization of accelerations, actuator forces and torques, and contact forces
 using quadratic programming. See Section \ref{sec:qp} for further explanation.
@@ -389,17 +390,17 @@ part~\cite{lead-lag}.
 
 Exoskeletons are similar to robots, but there are several important differences.
 There are two sets of contact forces: operator-exoskeleton (which we denote
-with a subscript $\ox$ as in $\vf_{\ox}$) and exoskeleton-world (which we denote
-with a subscript $\xw$ as in $\vf_{\xw}$). If the operator is tightly strapped or
+with a subscript ${\mbox {ox}}$ as in $\vf_{\ox}$) and exoskeleton-world (which we denote
+with a subscript ${\mbox {xw}}$ as in $\vf_{\xw}$). If the operator is tightly strapped or
 rigidly held by other types of physical constraints, we can lump the operator
 body parts with the exoskeleton parts which they are attached to in terms
 of link inertias, locations of center of mass, and moments of inertia,
 and just think of the whole system as one robot (we indicate this with
-the subscript $\ox$ on inertial, Coriolis and centripetal, and gravitational (ICCG)
-terms in the dynamics equations).
+the subscript ${\mbox {ox}}$ on inertial, Coriolis and centripetal, and gravitational (ICCG)
+terms in the dynamics equations as in $\mM_{\ox}$).
 We can also separate out the operator dynamics (indicated by
-the subscript $\myo$ on ICCG terms) from the exoskeleton dynamics (indicated by
-the subscript $\myx$ on ICCG terms) if this is more convenient
+the subscript ${\mbox {o}}$ on ICCG terms as in $\mM_{\myo}$) from the exoskeleton dynamics (indicated by
+the subscript ${\mbox {x}}$ on ICCG terms as in $\mM_{\myx}$) if this is more convenient
 (we separate them out and ignore operator dynamics in what immediately follows).
 If the operator is loosely connected to the exoskeleton, this introduces a
 huge modeling and control problem, and would also be very dangerous for the
@@ -429,7 +430,7 @@ and
 $\mJ_{\ox}^{\tr}(\vq) \vf_{\ox}$
 are the operator-exoskeleton forces expressed
 as operator joint torques.
-We assume the operator joint friction is negligable.
+We assume the operator joint friction is negligible.
 
 We assume the exoskeleton joints match some or all of the human joints.
 The dynamics of such an exoskeleton standing on the ground or attached to
@@ -509,7 +510,6 @@ and the combined dynamics are:
 + \vtau_{\ow}
 + \vtau_{\xw} 
 = \vtau_{\myo} + \vtau_{\myx}
-\label{eq:oxdynamics}
 \end{equation}
 
 \section{What do we want from intent prediction?}
@@ -532,9 +532,9 @@ One control option is to use only passive controls on a joint or on
 all joints, and no active controls
 or actuators.
 Such a system would rely on counterbalancing, mechanical springs, air springs, etc.
-to reduce forces. 
+to reduce operator forces. 
 An operator would rely on mechanical backdrivability to drive
-exokeleton to do tasks.
+exoskeleton to do tasks.
 These passive devices have no controls, and can be included in the dynamics equations.
 In this case, 
 $\vtau_{\myx}$ is zero for any passive degree of freedom.
@@ -558,8 +558,30 @@ a time or phase index:
 $\vtau_{\myx} = \vtau_{\ff}(t)$ where $\vtau_{\ff}$ is a time or behavioral phase
 dependent feedforward torque vector.
 
+\section{Fixed feedforward control with feedback control}
+
+We can add our favorite feedback control scheme to open loop control.
+Now the control is closed loop, but the feedforward control to achieve
+a trajectory is designed and executed independently of any feedback control.
+In most practical robotics manually designed
+fixed gain independent joint linear (PID) feedback control is used.
+As previously mentioned, more complex feedback control approaches such as
+approaches that coordinate across joints
+(full state feedback,
+pole placement, linear quadratic regulator (LQR) design, linear quadratic
+Gaussian (LQG) design, and linear quadratic Gaussian loop transfer recovery
+(LQG-LTR) design)
+or nonlinear alternatives that handle discontinuous control problems such as
+sliding mode control can also be used.
+Feedback gains can be ``gain scheduled'', which means that feedback gains are
+pre-tabulated and looked up and deployed
+based on the current position, velocity, or some other
+quantity (temperature, for example). 
+
 \section{Active gravity compensation}
 
+Now we will examine feedforward control that varies and is computed based on
+the current state of the exoskeleton.
 Active exoskeleton gravity compensation is similar 
 to counterbalancing or physical gravity compensation, except it is done
 with exoskeleton actuators to cancel the exoskeleton weight (but not inertia):
@@ -571,7 +593,7 @@ $\hat{\mG}_{\myx}()$ are the exoskeleton
 gravitational forces calculated using an imperfect model, 
 and $\hat{\vq}$ is the estimated configuration of the operator (and exoskeleton),
 The operator relies on mechanical backdrivability to drive
-the exokeleton to do tasks.
+the exoskeleton to do tasks.
 The weight of the operator can also be supported by the exoskeleton in
 full gravity compensation:
 \begin{equation}
@@ -599,13 +621,13 @@ All weight is assumed to be concentrated at the center of mass of the full syste
 
 \section{Friction compensation}
 
-Friction can also be compensated.
+Friction can also be compensated using feedforward control.
 \begin{equation}
 \vtau_{\myx} = \hat{\mF}_{\myx}(\hat{\vq},\hat{\dot{\vq}}) 
 \end{equation}
 are the estimated friction torques at the estimated exoskeleton configuration
 and velocity.
-Note that these may be load dependent, and may require additional state to
+Note that friction may be load dependent, and may require additional state to
 correctly handle stiction and hysteresis effects.
 
 Sarcos Primus Humanoid video of friction compensation applied
@@ -781,7 +803,7 @@ can be used to improve this type of control performance.
 
 What is admittance?
 \url{https://en.wikipedia.org/wiki/Admittance}
-Compliance, inverse damping, inverse mass are components of an admittance,
+Compliance, inverse damping, and inverse mass are components of an admittance,
 as they map force and torques to kinematic variables (position, velocity, and
 acceleration). 
 
@@ -794,8 +816,8 @@ assuming the actuators are torque sources:
 \vtau_{\myx} = \vtau_{\xinvdynw} - \mJ_{\ox}^{\tr}(\vq) {\vf_{\ox}}_d
 - \mJ_{\ox}^{\tr}(\vq) \mK_{\vf_{\ox}} ( \hat{\vf}_{\ox} - {\vf_{\ox}}_d )
 \end{equation}
-$\mK_{\vf_{\ox}}$ is a gain matrix, $\mJ_{\ox}$ is the Jacobian matrix for the operator
-force $\vf_{\ox}$
+$\mK_{\vf_{\ox}}$ is a gain matrix. $\mJ_{\ox}$ is the Jacobian matrix for the operator
+force $\vf_{\ox}$.
 Note that this does not require inverting the Jacobian matrix.
 We will see that the position control version does invert the Jacobian matrix.
 
@@ -830,7 +852,7 @@ the exoskeleton contact with the outside world.
 A different control objective could be to map the external forces to 
 desired operator forces:
 \begin{equation}
-{\vf_{\ox}}_d = F_{\ox-\xw} ( \vf_{\xw} )
+{\vf_{\ox}}_d = \mF_{\ox-\xw} ( \vf_{\xw} )
 \end{equation}
 and cancel the external forces not transferred in the inverse dynamics.
 Everything in the above equation is estimated, so we are dropping the hats 
@@ -871,7 +893,7 @@ desired acceleration $\ddot{\vq}_d$.
 The feedforward method is to compute the needed torques (potentially offline)
 using inverse
 dynamics (including the operator link inertias, link centers of mass, and link
-moments of inertia in the dynamic model) based on the desired postion, 
+moments of inertia in the dynamic model) based on the desired position, 
 desired velocity, and desired acceleration. Trajectory tracking errors are compensated
 for by feedback control designed using some other method. In most robotics
 fixed gain independent joint linear control is used.
@@ -942,7 +964,7 @@ therefore
 \begin{equation}
 \mK_{\dot{\vq}}(\vq) = \mJ_{\xw}^{\tr}(\vq) \mK_{\dot{w}} \mJ_{\xw}(\vq)
 \end{equation}
-The mapping is the same for stiffnes:
+The mapping is the same for stiffness:
 \begin{equation}
 \mK_{\vq}(\vq) = \mJ_{\xw}^{\tr}(\vq) \mK_{w} \mJ_{\xw}(\vq)
 \end{equation}
@@ -981,15 +1003,15 @@ $\mJ_{\myx}$ is used to map from actuation variables $\vu$ to joint torques $\vt
 \begin{equation}
 \vtau_{\myx} = \mJ_{\myx} \vu_{\myx}
 \end{equation}
-The rows in $\mS$ corresponding to the root linear and angular velocities
+The rows in $\mJ_{\myx}$ corresponding to the root linear and angular velocities
 are all zero.
-To maintain compatability in our joint representation, we will similarly
+To maintain compatibility in our joint representation, we will similarly
 map operator ``muscle commands'' $\myo$ to operator joint torques $\vtau_{\myo}$.
 \begin{equation}
 \vtau_{\myo} = \mJ_{\myo} \vu_{\myo}
 \end{equation}
 
-The second kind of underactuation appears in exoskeletons where we rely on the
+The second kind of underactuation appears in exoskeletons when we rely on the
 operator to actuate a particular joint. For example, many lower body
 exoskeletons only actuate the joints in the sagittal plane, leaving lateral
 and twist (yaw) joints unactuated or passively actuated. 
@@ -1012,8 +1034,8 @@ such as a nonlinear spring.
 underactuation can be handled by reducing the size of the $\vu_{\myx}$ vector
 and changing the matrix $\mJ_{\myx}$ to reflect the missing actuation.
 We can have redundant actuation (more than one actuator across any particular
-joint). Here we augment $\vu_{\myx}$ and $\mJ_{\myx}$ to accomodate extra actuators.
-We can have multijoint actuation, which can be handled in $\vu_{\myx}$ 
+joint). Here we augment $\vu_{\myx}$ and $\mJ_{\myx}$ to accommodate extra actuators.
+We can have multi-joint actuation, which can be handled in $\vu_{\myx}$ 
 and $\mJ_{\myx}$ as well.
 
 The modified dynamics equations are
@@ -1048,7 +1070,10 @@ that are not controllable by the actuators is not fatal to a design.
 
 The {\bf no control} case is unchanged with underactuation.
 
-{\bf Open loop control} continues to work with underactuation
+{\bf Open loop control} 
+and
+{\bf fixed feedforward control with feedback control}
+continue to work with underactuation
 as long as a drive function can be found
 to generate the desired behavior.
 
@@ -1059,12 +1084,12 @@ the operator needs to carry the load on the unactuated degrees of freedom.
 
 Full (operator) body
 {\bf online inverse dynamics} as described in Section~\ref{sec:invdyn}
-no longer works if $\mJ_{\myx}$ is not invertable (not square or not full rank).
+no longer works if $\mJ_{\myx}$ is not invertible (not square or not full rank).
 In the underactuated and overactuated cases $\mJ_{\myx}$ is not square. 
 For a partial (operator) body
 exoskeleton we can rewrite the dynamics in terms of only those
 joints the exoskeleton actuates, and invert those dynamics to cancel exoskeleton
-effects on those joint. This is what has been done with the BLEEX exoskeleton,
+effects on those joints. This is what has been done with the BLEEX exoskeleton,
 for example.~\cite{}.
 
 However, {\bf online optimization}
@@ -1106,15 +1131,19 @@ and equality constraints
 \end{equation}
 The optimization variable $\vx$ includes accelerations $\ddot{\vq}$, actuator
 commands $\vu$, and contact forces $\vf$.
-For robots the discrepancy between actual and desired accelerations, actuator command
-magnitude, and contact force magnitude are all minimized:
+We could optimize only taking into account the exoskeleton and its dynamics,
+minimizing the discrepancy between actual and desired accelerations, actuator command
+magnitude, and contact force magnitude:
 \begin{equation}
-C_r(\vx) = (\vq - \vq_d)^{\tr} \mW_{\vq} (\vq - \vq_d) + \vtau^{\tr} \mW_{\vtau} \vtau
-+ \vf^{\tr} \mW_{\vf} \vf
+C_{\myx}(\vx) = (\vq - \vq_d)^{\tr} \mW_{\vq} (\vq - \vq_d)
++ \vu_{\myx}^{\tr} \mW_{\vu_{\myx}} \vu_{\myx}
++ \vf_{\ox}^{\tr} \mW_{\vf_{\ox}} \vf_{\ox}
++ \vf_{\xw}^{\tr} \mW_{\vf_{\xw}} \vf_{\xw}
 \end{equation}
-$\mW_{\vq}$, $\mW_{\vtau}$, and $\mW_{\vf}$ are weight matrices to trade off the
+$\mW_{\vq}$, $\mW_{\vu_{\myx}}$, $\mW_{\vf_{\ox}}$,
+and $\mW_{\vf_{\xw}}$ are weight matrices to trade off the
 different errors/magnitudes and error/magnitude directions.
-The dynamics (equation~\ref{eq:dynamics2}) are enforced as an equality constraint.
+The dynamics (equation~\ref{eq:xdynamics2}) are enforced as an equality constraint.
 Actuator limits, friction limits, center of pressure location constraints,
 and unidirectional contact constraints are all
 enforced as inequality constraints.
@@ -1122,18 +1151,58 @@ Variants of this optimization
 were performed every 1-2ms by various teams to control the
 Atlas robots in the DARPA Robotics Challenge.
 
-This approach can be used to achieve desired joint or synergy (such as center
+Alternatively, we could optimize the operator-exoskeleton combination,
+minimizing:
+\begin{equation}
+C_{\ox}(\vx) = (\vq - \vq_d)^{\tr} \mW_{\vq} (\vq - \vq_d) 
++ \vu^{\tr}_{\myx} \mW_{\vu_{\myx}} \vu_{\myx}
++ \vf_{\ow}^{\tr} \mW_{\vf_{\ow}} \vf_{\ow}
++ \vf_{\ox}^{\tr} \mW_{\vf_{\ox}} \vf_{\ox}
++ \vf_{\xw}^{\tr} \mW_{\vf_{\xw}} \vf_{\xw}
+\end{equation}
+In this case we would enforce the combined 
+dynamics (equation~\ref{eq:oxdynamics2}) as an equality constraint.
+Note that we assume the operator muscle command
+$\vu_{\myo}$ is fixed.
+We include the operator-exoskeleton force $\vf_{\ox}$ so it can be minimized or set to
+a desired value.
+
+These approaches can be used to achieve desired joint or synergy (such as center
 of mass) accelerations, center of mass dynamic behavior, center of pressure location,
 weight distribution, maintenance of a desired body part position, orientation,
 velocity, or trajectory. and joint/actuator position and velocity limits (indirectly).
 
-\subsection{Controlling operator forces and perceived exoskeleton impedance}
+\subsection{What does online optimization want from operator intent prediction?}
+\label{sec:predict}
+
+Online optimization for the current instant in time tries to match
+actual accelerations to desired accelerations, so some estimate of the desired
+acceleration $\ddot{\vq}_d$ is useful. In addition, to accurately estimate the dynamics,
+we need an estimate of the operator-exoskeleton force $\vf_{\ox}$, and the 
+operator-world force $\vf_{\ow}$. These estimates could be deterministic values
+or probability distributions. Probability distributions are more expensive to
+optimize.
+
+There are more complex versions of online optimization that consider a future
+time horizon, and use some form of receding horizon control (RHC or MPC) to
+optimize a time window on each servo tick. In this case knowledge of
+future desired accelerations is useful, as well as future operator forces.
+This knowledge could be in the form of deterministic trajectories, 
+probability distributions of desired accelerations and operator 
+forces at each future time,
+or probability distributions for trajectories of desired accelerations and
+operator forces,
+which could take into account the dependence of future desired accelerations and 
+operator forces
+on previous accelerations and forces. 
+
+\subsection{Controlling operator forces}
 
 In the case of exoskeletons, 
 part of the optimization criterion could be to
-minimize contact forces on the operator:
+minimize contact forces on the operator by including a term penalizing those forces:
 \begin{equation}
-C_e(\vx) = C_r(\vx) + \vf^{\tr}_{\ox} \mW_{\vf_{\ox}} \vf_{\ox}
+\vf^{\tr}_{\ox} \mW_{\vf_{\ox}} \vf_{\ox}
 \end{equation}
 Operator force feedback and impedance control could be implemented by specifying a
 desired operator force ${\vf_{\ox}}_d$ and adding a ``hard'' equality constraint:
@@ -1143,7 +1212,7 @@ desired operator force ${\vf_{\ox}}_d$ and adding a ``hard'' equality constraint
 or by adding a ``soft'' constraint in the form of a new term in the optimization
 criterion:
 \begin{equation}
-C_e(\vx) = C_r(\vx) + (\vf_{\ox} - {\vf_{\ox}}_d)^{\tr} \mW_{\vf_{\ox}} (\vf_{\ox} - {\vf_{\ox}}_d)
+(\vf_{\ox} - {\vf_{\ox}}_d)^{\tr} \mW_{\vf_{\ox}} (\vf_{\ox} - {\vf_{\ox}}_d)
 \end{equation}
 Force damping can be implemented by adding the following ``soft'' constraint term
 to the optimization criterion:
@@ -1151,12 +1220,38 @@ to the optimization criterion:
 \dot{\vf}_{\ox}^{\tr} W_{\dot{\vf}_{\ox}} \dot{\vf}_{\ox}
 \end{equation}
 
-Note that the same approach could be used to minimize or control internal forces
-such as skeletal forces (forces between bones) at the operator joints to protect
-the ankle, hip, and knee joints, for example.
-MORE GOES HERE.
+\subsection{Reducing operator internal forces}
 
-We can implement operator {\bf impedance control} in several ways:
+Underactuated exoskeletons may rely on operator bones and tissue to transmit forces.
+In this case, there is a risk of
+tearing tendons, ligaments, and muscle, bruising soft tissue, damaging joints, 
+and fracturing or breaking bones. Online optimization can help minimize forces
+within the operator's body. Note that it is not net joint forces (the minimal
+joint forces that are computed by inverse dynamics) that matter.
+It is local internal forces, such as forces within a bone or soft tissue.
+Since internal forces can cancel each other,
+local internal forces are usually larger than internal forces computed
+from net joint torques.
+We also note that humans often coactivate their muscles to increase joint stiffness,
+and to maintain structural integrity of their bodies under load. A prediction
+of minimal muscle activation to achieve net joint torques will often underestimate
+the amount of muscle activation, muscle forces, and the resulting forces in and on 
+bones and soft tissue.
+
+To minimize internal forces, we will create a set of internal ``virtual'' sensors
+that ``measure'' internal forces at key points, resulting in vector of internal
+forces $\vb$. In reality, we will use a neuromuscular model of the individual
+operator, their previous muscle activations, and predictions of their future
+muscle activations to calculate $\vb$.
+We can include a penalty on the deviation of $\vb$ from a desired value $\vb_d$
+in online optimization:
+\begin{equation}
+(\vb - \vb_d)^{\tr} \mW_{\vb} (\vb - \vb_d)
+\end{equation}
+
+\subsection{Controlling perceived exoskeleton impedance}
+
+We can control the exoskeleton impedance the operator feels in several ways:
 We can add 
 the impedance equations as ``hard'' equality constraints (to achieve them exactly)
 \begin{equation}
@@ -1185,10 +1280,9 @@ the equality constraint
 \begin{equation}
 \vtau_{\ox} = \mK_{\vq}( \hat{\vq} - \vq_d ) + \mK_{\dot{\vq}} \hat{\dot{\vq}}
 \end{equation}
-or is added to the optimization criterion:
+or a penalty term is added to the optimization criterion:
 \begin{equation}
-C_e(\vx) = C_r(\vx) 
-+ (\vtau_{\ox} - {\vtau_{\ox}}_d)^{\tr} \mW_{\vtau_{\ox}} (\vtau_{\ox} - {\vtau_{\ox}}_d)
+(\vtau_{\ox} - {\vtau_{\ox}}_d)^{\tr} \mW_{\vtau_{\ox}} (\vtau_{\ox} - {\vtau_{\ox}}_d)
 \end{equation}
 with
 \begin{equation}
@@ -1198,11 +1292,11 @@ with
 {\bf Mapping external forces to operator forces} can be done either with the
 ``hard'' equality constraint:
 \begin{equation}
-\vf_{\ox} = F_{ow} ( \vf_w )
+\vf_{\ox} = \mF_{\ox-\xw} ( \vf_{\xw} )
 \end{equation}
 or using the ``soft'' constraint term:
 \begin{equation}
-(\vf_{\ox} - F_{ow} ( \vf_w ))^\tr \mW_{fmap}  (\vf_{\ox} - F_{ow} ( \vf_w ))
+(\vf_{\ox} - \mF_{\ox-\xw} ( \vf_{\xw} ))^\tr \mW_{fmap} (\vf_{\ox} - \mF_{\ox-\xw} ( \vf_{\xw} ))
 \end{equation}
 
 Similar techniques are used to handle {\bf autonomous exoskeleton position, velocity,
@@ -1276,212 +1370,6 @@ contact forces, or some other (usually simple) mapping.
 \vf_d = \alpha \mJ_{ow} \vf_w
 \end{equation}
 
-\section{Specific Proposed and Implmented Exoskeleton Control Schemes}
-
-\subsection{Sensitivity Amplification Control}
-
-Sensitivity Amplification Control (SAC) used to control BLEEX
-is a dynamic cancellation technique (a.k.a.
-inverse dynamics, computed torque, or feedback linearization) that also tries
-to modify the apparent inertia of the exoskeleton (equation~\ref{eq:change-inertia1})
-using acceleration feedback. It is not clearly stated but it appears that the
-acceleration is the result of double differentiating position, as there do not
-appear to be velocity sensors on BLEEX. Low pass filtering is applied to reduce
-the high frequency noise amplified by the double differentiation process.
-
-\subsection{Integral admittance control}
-
-{\it [Exoskeletons] have the implicit property
-of causing a virtual modification of the dynamic response of
-the human limb. We use this property of the exoskeletons
-action to formulate a unified control design framework called
-Integral Admittance [torque to angle] Shaping, which designs exoskeleton con-
-trollers capable of producing the desired dynamic response
-for the assisted limb. In this framework, a virtual increase
-in the admittance of the limb is produced by coupling it
-to an exoskeleton that exhibits active behavior. Specifically,
-our framework shapes the magnitude profile of the integral
-admittance (i.e. torque-to-angle relationship) of the coupled
-human-exoskeleton system, such that the desired assistance is
-achieved. This framework also ensures that the coupled stability
-and passivity are guaranteed.}~\cite{Nagarajan_etal_2015}
-
-{\it ... the impedance of the coupled human-exoskeleton
-system needs to be reduced below that of the unassisted
-human limb. This implies that the exoskeleton needs to
-cancel its own impedance first and then compensate for
-at least a part of the human limb’s impedance. Therefore,
-the desired exoskeleton behavior must be that of a negative
-impedance ... Consequently,
-the feedback gains will all be
-positive. In other words, the exoskeleton controller uses
-positive feedback, and hence the exoskeleton exhibits active
-behavior, which is capable of performing net positive work
-on the limb. ...
-However, positive feedback naturally raises the question of
-stability, and so we now explain how coupled stability can be
-achieved. Although the exoskeleton exhibits active behavior,
-which can be potentially destabilizing, the controller can be
-designed such that the coupled human-exoskeleton system
-is stable and passive. ... 
-}~\cite{Nagarajan_etal_2015}
-
-{\it
-... Inertia compensation is more complex ...
-It can be shown that using only positive acceleration
-feedback ..., the gain margin of the coupled system
-reduces to the moment of inertia of the exoskeleton, which
-implies that the exoskeleton controller ... can at the most
-compensate for the exoskeleton’s own moment of inertia
-before going unstable. This implies that the moment of
-inertia of the coupled human-exoskeleton system cannot be
-reduced below that of the unassisted human limb, without
-compromising coupled stability. However, using low-pass
-filtered acceleration feedback, it can be shown that inertia 
-reduction can be achieved. ...
-This work uses filtered acceleration
-feedback with a second-order low-pass Butterworth filter. ...
-}~\cite{Nagarajan_etal_2015}
-
-This is a form of frequency domain virtual model control.
-
-\begin{verbatim}
-Kalman filter:
-P. Canet, “Kalman filter estimation of angular velocity and accelera-
-tion: On-line implementation,” McGill University, Montr ́eal, Canada,
-Tech. Rep. TR-CIM-94-15, Nov. 1994.
-\end{verbatim}
-
-\subsection{Dual Control Approach}
-
-This approach implements a passive swing leg in addition to Sensitivity 
-Amplification Control for the stance leg.
-
-{\it The robot utilized the dual-mode control scheme, which is
-comprised of the active control for the stance phase and the
-passive control (using bypass valves) for the swing phase, to achieve high walking
-speed in the swing phase while supporting heavy loads in
-the stance phase. To reduce the sudden change of the torque
-command at the transition from the swing phase to the stance
-phase, a smoothing method is adopted. We also implemented
-a pre-transition method to take a foot off quickly for fast
-walking by predicting the change from the swing to the stance
-in advance.}~\cite{IEEE07222598}
-
-Bypass valves implement what Sarcos calls ``dangle''.
-
-Stance: virtual joint torque control method Kazerooni et al.(2005)
-When contact location between the wearer and the
-exoskeleton is not fixed and difficult to estimate, this method
-has been shown to be an effective method to generate the
-locomotion for an exoskeleton robot.[3],[4],[21]
-\begin{verbatim}
-H. Kazerooni , Z. Racine , L. Huang and R. Steger ”On the control of
-the Berkeley lower extremity exoskeleton (BLEEX),” Proc. IEEE Int.
-Conf. Robot. Autom., pp. 4364-4371, 2005.
-Racine Jean-Louis Charles ”Control of a Lower Extrmity Exoskeleton
-for Human Performance Amplification,” University of California,2003.
-582
-Xiuxia Yang, Hongchao Zhao, Yi Zhang, Xiaowei Liu ”Carrying
-Lower Extreme Exoskeleton Rapid Terminal Sliding-Mode Robust
-Control,” Journal of computers, vol.9, No.1,202-208. 2014.
-\end{verbatim}
-
-To reduce
-sudden changes(command jump) at the phase transitions, a
-smoothing method [5],[19] is introduced and a pre-transition
-method is used to solve the swing delay due to the internal
-pressure(approx 5 bar).
-\begin{verbatim}
-H. Kazerooni , Ryan Steger, Lihua Huang ”Hybrid Control of the
-Berkeley Lower Extremity Exoskeleton (BLEEX),” Int. Journal of
-Robotics Research, pp. 561-573, 2006.
-oonbum Bae, Kyoungchul Kong, Masayoshi Tomizuka ”Gait Phase-
-Based Control for a Rotary Series Elastic Actuator Assisting the knee
-\end{verbatim}
-
-Transition Control
-
-1) Smoothing Method: During transitions of the gait
-phase, discontinuity of the control command torque are
-occurred by the different condition for the fixed coordinate
-which is on the backpack at the swing phase or the foot at
-the stance phase. In this paper, to reduce this sudden change
-due to gait phase changes, a smoothing method is proposed
-as shown in Fig. 7. An exponential function is considered
-as the weighting function for smoothing as shown in (6).
-In this case, the weighting is small at the initial stage but
-it exponentially converges to one for supporting the load
-quickly.
-
-2) Pre-transition Method: The pre-transition method is
-that the passive mode is executed in the pre-swing phase
-prior to toe off. This dramatically reduces the moving
-
-\subsection{Ground Reaction Force Control}
-
-{\it
-The ground reaction
-forces (GRF) magnitude and direction is used to command the
-actuators. In some research the GRF sensors are used
-together with other sensors in the control architectures [17],
-while in other exoskeleton the control system is based on the
-GRF merely [RoboKnee, Honda].
-}
-\begin{verbatim}
-17: K. Suzuki, G. Mito, H. Kawamoto, Y. Hasegawa, and Y. Sankai,
-"Intention-based walking support for paraplegia patients with Robot
-Suit HAL," Advanced Robotics, vol. 21, pp. 1441-1469, 2007
-\end{verbatim}
-
-\subsection{Virtual model control}
-
-The goal here is to make the exoskeleton imitate a desired (usually nonlinear)
-dynamic system,
-For running it could be a pogo stick or trampoline, for example.
-
-There are several possible versions of this type of control:
-\begin{enumerate}
-\item
-Map from operator-exoskeleton contact forces and system state
-to exoskeleton actuator or internal forces.
-\item
-Map from operator-exoskeleton contact forces and system state
-to exoskeleton acceleration.
-\item
-Map from operator-exoskeleton contact forces and system state
-to exoskeleton-world contact forces.
-\item
-Map from exoskeleton-world contact forces and system state to exoskeleton actuator or internal forces.
-\item
-Map from exoskeleton-world contact forces and system state to exoskeleton acceleration.
-\item
-Some combination of the above.
-\end{enumerate}
-
-\begin{verbatim}
-virtual model approach: hopper, compass gait (J. Pratt)
-estimate trajectory (jumping) vs. program behavior (trampoline, hopper,
-   compass gait)
-- J' control + behavior
-- Inverse dynamics + behavior
-\end{verbatim}
-
-\subsection{Task Specific Control}
-
-Task specific control can involve switching low level control modes, or abstracting
-the behavior of the exoskeleton with a hierarchy:
-\begin{enumerate}
-\item
-Task specific control: Generate desired motions and contact forces between
-the operator and the exoskeleton, and the exoskeleton and the world.
-\item
-Sometimes there are intermediate levels of control.
-\item
-Exoskeleton control: Control the exoskeleton to generate the desired motions and
-desired contact forces, with the desired impedance or admittance.
-\end{enumerate}
-
 \section{State Estimation}
 
 We have not seen a lot of discussion of state estimation of exoskeletons in
@@ -1498,7 +1386,8 @@ are also implemented.
 
 For humanoid robot state estimation (for proposed exoskeleton state estimation)
 we use extended Kalman Filtering (EKF) to perform state estimation.
-Currently, using the full body dynamics (equation~\ref{eq:dynamics2})
+Currently, using the full body dynamics 
+(equations~\ref{eq:xdynamics2} or \ref{eq:oxdynamics2})
 and any additional constraint equations for ground contacts (feet on the ground):
 \begin{equation}
 \mJ_w \ddot{\vq} + \dot{\mJ}_w \dot{\vq} = 0
@@ -1525,9 +1414,7 @@ by a separate process at a 100Hz rate.
 The joint positions are predicted by integrating the estimated velocities.
 
 For higher level (overall) state estimation,
-we developed a center of mass location and velocity estimator, and its
-application in full body inverse dynamics control, fall detection
-and fall prevention for humanoid robots and exoskeletons~\cite{}.
+we developed a center of mass location and velocity estimator~\cite{}.
 The center of mass filter is modeled as a multiple model EKF with contact switching
 to handle changes in support: single support, double support, and off the ground.
 We use the robot or exoskeleton
@@ -1550,7 +1437,7 @@ the estimator, very little tuning is done for our mass model.
 During the DARPA
 Robotics Challenge Finals
 where no safety belay was
-allowed, our fall early warning system
+allowed, our fall early warning system based on this estimator
 successfully saved our robot from
 falling on two occasions, and made us the only competitive team
 without a fall or need for a human rescue among all teams.
@@ -1749,7 +1636,7 @@ Sensitivity Amplification Control.
 
 Disturbance observers~\cite{IEEE06197032}.
 
-\section{Robustness to parametric modeling error and unmodelled dynamics}
+\section{Robustness to parametric modeling error and unmodeled dynamics}
 
 We need to be robust to parameter modeling errors such as the wrong mass,
 center of mass location, joint location,
@@ -1766,8 +1653,8 @@ There are two questions to focus on:
 \subsection{How robust are these control schemes to parametric and non-parametric
 modeling error?}
 
-This question needs to be addressed using simulation, and is deferred to a future
-white paper [robust.pdf].
+This question needs to be addressed using simulation, and is deferred to a 
+possible future white paper [robust.pdf].
 
 \subsection{How can we make control more robust?}
 
@@ -1780,9 +1667,9 @@ technical issues). If your model is good, you get good performance. If your
 model is bad, you get larger errors and have to rely on feedback control.
 You may crash the exoskeleton, or fall down, but you will not oscillate
 (except in some contrived examples) and errors do not grow exponentially in
-response to feedforward control errors.
+response to feedforward control errors (except for unstable and chaotic systems).
 So feedforward control is technically robust,  
-and we don't have to worry about it blowing up (except for chaotic systems).
+and we don't have to worry about it going wildly out of control.
 We do have to worry about performance.
 We have
 to worry about how to get good models, and what to do about stuff that varies:
@@ -1812,7 +1699,7 @@ implementations have moved with the speed and agility of a top percentile
 human athlete is disconcerting.
 
 We can ``verify'' designs using simulation, but making accurate simulations of
-the effects of contact and unmodelled dynamics is also a current research issue.
+the effects of contact and unmodeled dynamics is also a current research issue.
 There is no getting around the fact that our operators will be like the test
 pilots of early planes. The exoskeletons may crash, flail wildly, or oscillate.
 We need to plan for operator safety from day 1 of operation, not try to retrofit
@@ -1826,9 +1713,215 @@ One technique to do this is multiple-model design~\cite{acc12}.
 Note that adaptive or learning
 control does not promise to improve the kind of robustness exoskeletons need. 
 These approaches promise
-to improve performance, and try to track (slowly) changes in the operator, exoskeleton,
+to improve performance, and try to track (slow) changes in the operator, exoskeleton,
 or contacts to maintain performance. If something changes quickly, we need robust
 control design.
+
+\section{Specific Proposed and Implemented Exoskeleton Control Schemes}
+
+\subsection{Sensitivity Amplification Control}
+
+Sensitivity Amplification Control (SAC) used to control BLEEX
+is a dynamic cancellation technique (a.k.a.
+inverse dynamics, computed torque, or feedback linearization) that also tries
+to modify the apparent inertia of the exoskeleton (equation~\ref{eq:change-inertia1})
+using acceleration feedback. It is not clearly stated but it appears that the
+acceleration is the result of double differentiating position, as there do not
+appear to be velocity sensors on BLEEX. Low pass filtering is applied to reduce
+the high frequency noise amplified by the double differentiation process.
+
+\subsection{Integral admittance control}
+
+{\it [Exoskeletons] have the implicit property
+of causing a virtual modification of the dynamic response of
+the human limb. We use this property of the exoskeletons
+action to formulate a unified control design framework called
+Integral Admittance [torque to angle] Shaping, which designs exoskeleton con-
+trollers capable of producing the desired dynamic response
+for the assisted limb. In this framework, a virtual increase
+in the admittance of the limb is produced by coupling it
+to an exoskeleton that exhibits active behavior. Specifically,
+our framework shapes the magnitude profile of the integral
+admittance (i.e. torque-to-angle relationship) of the coupled
+human-exoskeleton system, such that the desired assistance is
+achieved. This framework also ensures that the coupled stability
+and passivity are guaranteed.}~\cite{Nagarajan_etal_2015}
+
+{\it ... the impedance of the coupled human-exoskeleton
+system needs to be reduced below that of the unassisted
+human limb. This implies that the exoskeleton needs to
+cancel its own impedance first and then compensate for
+at least a part of the human limb’s impedance. Therefore,
+the desired exoskeleton behavior must be that of a negative
+impedance ... Consequently,
+the feedback gains will all be
+positive. In other words, the exoskeleton controller uses
+positive feedback, and hence the exoskeleton exhibits active
+behavior, which is capable of performing net positive work
+on the limb. ...
+However, positive feedback naturally raises the question of
+stability, and so we now explain how coupled stability can be
+achieved. Although the exoskeleton exhibits active behavior,
+which can be potentially destabilizing, the controller can be
+designed such that the coupled human-exoskeleton system
+is stable and passive. ... 
+}~\cite{Nagarajan_etal_2015}
+
+{\it
+... Inertia compensation is more complex ...
+It can be shown that using only positive acceleration
+feedback ..., the gain margin of the coupled system
+reduces to the moment of inertia of the exoskeleton, which
+implies that the exoskeleton controller ... can at the most
+compensate for the exoskeleton’s own moment of inertia
+before going unstable. This implies that the moment of
+inertia of the coupled human-exoskeleton system cannot be
+reduced below that of the unassisted human limb, without
+compromising coupled stability. However, using low-pass
+filtered acceleration feedback, it can be shown that inertia 
+reduction can be achieved. ...
+This work uses filtered acceleration
+feedback with a second-order low-pass Butterworth filter. ...
+}~\cite{Nagarajan_etal_2015}
+
+This is a form of frequency domain virtual model control.
+
+\begin{verbatim}
+Kalman filter:
+P. Canet, “Kalman filter estimation of angular velocity and accelera-
+tion: On-line implementation,” McGill University, Montr ́eal, Canada,
+Tech. Rep. TR-CIM-94-15, Nov. 1994.
+\end{verbatim}
+
+\subsection{Dual Control Approach}
+
+This approach implements a passive leg swing in addition to Sensitivity 
+Amplification Control for the stance leg.
+
+{\it The robot utilized the dual-mode control scheme, which is
+comprised of the active control for the stance phase and the
+passive control (using bypass valves) for the swing phase, to achieve high walking
+speed in the swing phase while supporting heavy loads in
+the stance phase. To reduce the sudden change of the torque
+command at the transition from the swing phase to the stance
+phase, a smoothing method is adopted. We also implemented
+a pre-transition method to take a foot off quickly for fast
+walking by predicting the change from the swing to the stance
+in advance.}~\cite{IEEE07222598}
+
+%Bypass valves implement what Sarcos calls ``dangle''.
+
+Stance: virtual joint torque control method Kazerooni et al.(2005)
+When contact location between the wearer and the
+exoskeleton is not fixed and difficult to estimate, this method
+has been shown to be an effective method to generate the
+locomotion for an exoskeleton robot.[3],[4],[21]
+\begin{verbatim}
+H. Kazerooni , Z. Racine , L. Huang and R. Steger ”On the control of
+the Berkeley lower extremity exoskeleton (BLEEX),” Proc. IEEE Int.
+Conf. Robot. Autom., pp. 4364-4371, 2005.
+Racine Jean-Louis Charles ”Control of a Lower Extrmity Exoskeleton
+for Human Performance Amplification,” University of California,2003.
+582
+Xiuxia Yang, Hongchao Zhao, Yi Zhang, Xiaowei Liu ”Carrying
+Lower Extreme Exoskeleton Rapid Terminal Sliding-Mode Robust
+Control,” Journal of computers, vol.9, No.1,202-208. 2014.
+\end{verbatim}
+
+To reduce
+sudden changes(command jump) at the phase transitions, a
+smoothing method [5],[19] is introduced and a pre-transition
+method is used to solve the swing delay due to the internal
+pressure(approx 5 bar).
+\begin{verbatim}
+H. Kazerooni , Ryan Steger, Lihua Huang ”Hybrid Control of the
+Berkeley Lower Extremity Exoskeleton (BLEEX),” Int. Journal of
+Robotics Research, pp. 561-573, 2006.
+oonbum Bae, Kyoungchul Kong, Masayoshi Tomizuka ”Gait Phase-
+Based Control for a Rotary Series Elastic Actuator Assisting the knee
+\end{verbatim}
+
+Transition Control
+
+1) Smoothing Method: During transitions of the gait
+phase, discontinuity of the control command torque are
+occurred by the different condition for the fixed coordinate
+which is on the backpack at the swing phase or the foot at
+the stance phase. In this paper, to reduce this sudden change
+due to gait phase changes, a smoothing method is proposed
+as shown in Fig. 7. An exponential function is considered
+as the weighting function for smoothing as shown in (6).
+In this case, the weighting is small at the initial stage but
+it exponentially converges to one for supporting the load
+quickly.
+
+2) Pre-transition Method: The pre-transition method is
+that the passive mode is executed in the pre-swing phase
+prior to toe off. This dramatically reduces the moving
+
+\subsection{Ground Reaction Force Control}
+
+{\it
+The ground reaction
+forces (GRF) magnitude and direction is used to command the
+actuators. In some research the GRF sensors are used
+together with other sensors in the control architectures [17],
+while in other exoskeleton the control system is based on the
+GRF merely [RoboKnee, Honda].
+}
+\begin{verbatim}
+17: K. Suzuki, G. Mito, H. Kawamoto, Y. Hasegawa, and Y. Sankai,
+"Intention-based walking support for paraplegia patients with Robot
+Suit HAL," Advanced Robotics, vol. 21, pp. 1441-1469, 2007
+\end{verbatim}
+
+\subsection{Virtual model control}
+
+The goal here is to make the exoskeleton imitate a desired (usually nonlinear)
+dynamic system,
+For running it could be a pogo stick or trampoline, for example.
+
+There are several possible versions of this type of control:
+\begin{enumerate}
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton actuator or internal forces.
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton acceleration.
+\item
+Map from operator-exoskeleton contact forces and system state
+to exoskeleton-world contact forces.
+\item
+Map from exoskeleton-world contact forces and system state to exoskeleton actuator or internal forces.
+\item
+Map from exoskeleton-world contact forces and system state to exoskeleton acceleration.
+\item
+Some combination of the above.
+\end{enumerate}
+
+\begin{verbatim}
+virtual model approach: hopper, compass gait (J. Pratt)
+estimate trajectory (jumping) vs. program behavior (trampoline, hopper,
+   compass gait)
+- J' control + behavior
+- Inverse dynamics + behavior
+\end{verbatim}
+
+\subsection{Task Specific Control}
+
+Task specific control can involve switching low level control modes, or abstracting
+the behavior of the exoskeleton with a hierarchy:
+\begin{enumerate}
+\item
+Task specific control: Generate desired motions and contact forces between
+the operator and the exoskeleton, and the exoskeleton and the world.
+\item
+Sometimes there are intermediate levels of control.
+\item
+Exoskeleton control: Control the exoskeleton to generate the desired motions and
+desired contact forces, with the desired impedance or admittance.
+\end{enumerate}
 
 \section{Discussion}
 
@@ -1906,23 +1999,30 @@ performance over an exoskeleton that just carries a load and is otherwise
 
 \end{document}
 
+I have incorporated your suggestions about robustness and underactuation
+in the white paper
+www.cs.cmu.edu/~cga/exo/control.pdf
 
+State estimation (to deal with sensor noise and to fuse disparate sensors)
+is discussed in section 21 and mentioned in 5.5, 5.8, 
 
+Robustness (sensitivity to modeling error and unmodeled dynamics) is
+discussed in section 22
 
-sensitivity to
- modeling error
- sensor error
- unmodeled dynamics
-* future (after Oct 1) simulation studies
+Underactuation is discussed in section 18 and the following sections.
 
-underactuated control problem
- - how necessary is lateral actuation
-   * we don't know
- - * what is the penalty
-  weight
-  drag of actuator
-* future (after Oct 1) simulation studies
+Shared control is discussed in section 19.5
 
-how handle failure and damage 
-* after Oct 1
+********************************************
+
+A future white paper could explore using simulation studies to experimentally
+assess robustness of various control approaches.
+
+A future white paper could explore using simulation studies to numerically
+estimate:
+1) how necessary is lateral actuation
+2) what is the penalty (weight, drag of actuator, complexity, maintenance)
+
+A future white paper could explore how to handle failure and damage, again using
+simulation.
 
