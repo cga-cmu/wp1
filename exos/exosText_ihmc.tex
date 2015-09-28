@@ -33,15 +33,15 @@
 
 % \begin{document}
 \section{IHMC Mobility Assist Exoskeleton (MAE)}
-Although the IHMC MAE was primarily designed as a disabled assist exoskeleton, the literature for this device does include a ``performance enhancement" control mode and as such is within the scope of this document.  The main design principle highlighted in the IHMC MAE hardware is a recurring theme throughout the exoskeleton literature, which is that directly measuring user intent can be difficult for a number of reasons.  This issue is resolved by using a novel control and feedback system, which in the IHMC MAE is primarily based on the use of a novel actuator design. 
+Although the IHMC MAE was primarily designed as a disabled assist exoskeleton, the device is also provides a ``performance enhancement" control mode, which is within the scope of this document.  The main design principle highlighted in the IHMC MAE hardware (a recurring theme throughout exoskeleton literature) is that directly measuring user intent can be difficult for a number of reasons.  The IHMC designers resolve the issue using a new control and feedback system, which for the IHMC MAE, is primarily based on a unique actuation scheme. 
 
-The IHMC MAE uses novel series elastic actuators  (SEAs) in their hardware design mostly because they offer the ability to perform high-fidelity impedance control.  In series elastic actuators, a compliant element is placed in series after the output a motor's drive mechanism. The measured compression of the compliant element is used to calculate the force, or torque, acting on the output of the actuator.  { \bf Series elastic actuators} are generally viewed as a good way to provide {\bf accurate force feedback} information and to provide a {\bf low mechanical impedance}.  The major disadvantage of SEAs is that they have a relatively low bandwidth at high forces, as the compliant element needs time to compress before a force can be sensed and thus inherently include a delay between the time a force is applied and when the control system can react.
+The IHMC MAE uses novel series elastic actuators (SEAs) in their hardware design mostly because they offer the ability to perform high-fidelity impedance control.  In series elastic actuators, a compliant element is placed in series after the output a motor's drive mechanism. The measured compression of the compliant element is used to calculate the force, or torque, acting on the output of the actuator.  { \bf Series elastic actuators} are generally viewed as a good way to provide {\bf accurate force feedback} information and to provide a {\bf low mechanical impedance}.  The major disadvantage of SEAs is that they have a relatively low bandwidth at high forces, as the compliant element needs time to compress before a force can be sensed and thus inherently include a delay between the time a force is applied and when the control system can react.
 
 \subsection{Actuator specifications}
 
- Actuator designed around data collected from clinical gait analysis.  Specifically, the actuators at the hip and knee were designed to be able to provide 40Nm of peak torque during the stance phase of the walking gat cycle.  The rotary SEA was composed of a Moog BN34-25EU-02 brushless DC motored with the 1:100 harmonic drive, an SHD-20.  
+The IHMC actuators are designed based on data collected from clinical gait analysis.  Specifically, the actuators at the hip and knee were designed to be able to provide 40Nm of peak torque during the stance phase of the walking gait cycle.  The rotary SEA is composed of a Moog BN34-25EU-02 brushless DC motor with a 1:100 harmonic drive (SHD-20).  
  
-The spring mechanism which sits between the gearbox and joint output in the IHMC MAE design is shown in Figure \ref{fig:IHMCSEA}.  The mechanism shown uses linear die springs and an angular encoder to measure the torque in the out of the joint.  The choice of linear die spring was based on the spring's predictable force to displacement function as well as favorable energy storage to weight characteristics.  
+The spring mechanism, which sits between the gearbox and joint output, is shown in Figure \ref{fig:IHMCSEA}.  The mechanism uses linear die springs and an angular encoder to measure the joint torque output.  The choice of linear die spring was based on the spring's predictable force to displacement function as well as favorable energy storage to weight characteristics.  
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/seaAssm}
@@ -50,21 +50,15 @@ The spring mechanism which sits between the gearbox and joint output in the IHMC
  \label{fig:IHMCSEA}   
  \end{figure}
  
-Once assembled, the overall actuator had a  {\bf torque limit of 80 Nm}, with a {\bf velocity limit of 6.8 rad/s}.  As noted, the {\bf bandwidth of the actuator} is its main drawback, which limits the torque control to approximately {\bf 10 Hz at amplitudes greater than 15 Nm} and can track up to {\bf 30Hz for lower magnitude forces}. 
+Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf velocity limit of 6.8 rad/s}.  As noted, the {\bf bandwidth of the actuator} is its primary drawback, which limits the torque control to approximately {\bf 10 Hz at amplitudes greater than 15 Nm} and up to {\bf 30Hz for lower magnitude forces}. 
  
  \subsection{Exoskeleton Specifications}
  
- The IHMC MAE is a lower extremity exoskeleton with a total of ten degrees of freedom (DOF), with five each corresponding to the two legs of the system.  Of the ten DOFs only six total are actively actuated, the other four are passive.  Each of the powered joints is powered using the SEA joint discussed in the previous subsection.  A labeled diagram of the IMHC system is shown in Figure \ref{fig:IHMCSYS}.  
+ The IHMC MAE lower extremity exoskeleton includes a total of ten degrees of freedom (DOF), six of which are active and four are passive.  Five DOF correspond to the two legs of the system.  Each of the powered joints is powered using the SEA joint discussed in the previous subsection.  A labeled diagram of the IMHC system is shown in Figure \ref{fig:IHMCSYS}.  
  
- The hip ad/abduction as well as flexion/extension DOFs are actively actuated.  The hip yaw DOF consists of a curved spring-loaded roller bearing whose center of rotation is approximately at the user's hip joint.
+ The hip ad/abduction as well as flexion/extension DOFs are actively actuated.  The hip yaw DOF consists of a curved spring-loaded roller bearing whose center of rotation is approximately at the user's hip joint. The knee flexion/extension joint is connected to the hip flexion/extension joint using telescoping tubes and is also actuated.  The final DOF is the dorsal flexion at the ankle joint.  This joint is spring loaded such that it provides unidirectional torque for toe clearance during walking.
  
- The knee flexion/extension joint is connected to the hip flexion/extension joint using telescoping tubes and is also actuated.
- 
- The final DOF in the IHMC design is the dorsal flexion ankle joint.  This joint is spring loaded such that it provides unidirectional torque to provide toe clearance during walking.
- 
- In its current configuration, the IHMC exoskeleton in controlled by an off-board computer and is powered using a tether. 
- 
- The suit {\bf includes position and force sensors in the actuators in addition to two foot switches per foot}.  The foot switches are used to detect whether the system in in single or double support phase, as well as providing information on how the overall system load is approximately distributed on the stance legs.
+ In its current configuration, the IHMC exoskeleton in controlled by an off-board computer and is powered using a tether. The suit {\bf includes position and force sensors in the actuators in addition to two foot switches per foot}.  The foot switches are used to detect whether the system is in single or double support phase.  It also provides information used to estimate the load distribution to the stance legs.
  
  
  \begin{figure}[thpb]
@@ -78,7 +72,7 @@ Once assembled, the overall actuator had a  {\bf torque limit of 80 Nm}, with a 
  
  \subsection{Control Specifications}
  
- The noted control approaches of the IHMC MAE are both relatively straight forward implementations of low-level torque based control strategies.  The first control scheme takes full advantage of the SEA actuators ability to directly measure output torque and subsequently to perform closed-loop torque control, which is pictured in \ref{fig:IHMCTOR}.     
+ Both IHMC MAE control approaches noted are relatively straight forward implementations of low-level torque control.  The first control scheme takes full advantage of the SEA actuators' ability to directly measure output torque and subsequently to perform closed-loop torque control, (see \ref{fig:IHMCTOR}). 
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/torqueCon}
@@ -86,7 +80,7 @@ Once assembled, the overall actuator had a  {\bf torque limit of 80 Nm}, with a 
   \vspace{-0.2in}
  \label{fig:IHMCTOR}   
  \end{figure}
- The pictured control scheme takes in a desired torque, compares the desired value to the output torque measured at each individual actuator, then uses this value as well as its derivative to compute an actuator command signal, which in this case is a current.  The largest question in this controller, as presented in the literature, is how to define the desired torque term $\tau_\text{des}$.
+ The controller takes in a desired torque, compares the desired value to the output torque measured at each individual actuator, then uses this value as well as its derivative to compute an actuator command signal, which in this case is a current.  The largest question in this controller, as presented in literature, is how to define the desired torque term $\tau_\text{des}$.
  
  The second low-level control approach presented in the IHMC MAE literature is a combination of a position-based controller with an inner-loop torque controller.  This control scheme is presented in Figure \ref{fig:IHMCPOS}.
   \begin{figure}[thpb]
@@ -96,16 +90,16 @@ Once assembled, the overall actuator had a  {\bf torque limit of 80 Nm}, with a 
   \vspace{-0.2in}
  \label{fig:IHMCPOS}   
  \end{figure}
- The controller in Figure \ref{fig:IHMCPOS} shows an outer-loop position-based PD controller which takes in desired joint trajectories and compares them to measured joint positions.  The values are used to generate desired torque values which are fed into an inner closed-loop torque control loop.  This control scheme is a good low-level choice if high-impedance very accurate motions of the suit are desired.  Similarly to the torque-only control loop above, the main question in this control scheme is how the desired joint trajectories are defined.  
+ The controller in Figure \ref{fig:IHMCPOS} shows an outer-loop position-based PD controller that takes in desired joint trajectories and compares them to measured joint positions.  These are used to generate desired torque values which are fed into an inner closed-loop torque control loop.  This control scheme is a good low-level choice if high-impedance. accurate suit motion is desired.  Similarly to the torque-only control loop above, the main question in this control scheme is how to obtain the desired joint trajectories.  
  
- One possibility for defining either the desired torques in the first control scheme or the desired joint trajectories in the second is to use clinical gait analysis data.  In this approach the controllers highlighted in this subsection would act to play back nominal joint trajectory data.  The foot sensors in the system would be used to detect phase transitions and to dynamically adjust the prerecorded data to the user in realtime.
+ One possibility for defining either the desired torques / joint trajectories in these control schemes is to use clinical gait analysis data.  With this approach, the highlighted controllers would effectively play back nominal joint trajectory data.  The foot sensors in the system would detect phase transitions, allowing the controllers to dynamically adjust the prerecorded data to the user in realtime.
  
  
  \subsection{Opinion}
  
- The actuator design and use of series-elastic actuation is in general a good idea for many applications, but may be a problem for the highly dynamic maneuvers required by operators in the TALOS project.  In a large sense, bandwidth is everything in these suits due to the fact that behavior prediction is very complicated.  Simply put, 10Hz control bandwidth at the actuator may be too slow to safely react in dynamically changing environments. 
+ The design and use of series-elastic actuators is, in general, a good idea for many applications, but may be a problem for the highly dynamic maneuvers required by operators in the TALOS project.  In a large sense, bandwidth is everything in these suits due to the fact that behavior prediction is very complicated.  Simply put, 10Hz control bandwidth at the actuator may be too slow to safely react in dynamically changing environments. 
  
- The other issue with the IHMC work is that their control approach only addresses the lowest-level of control, and does not in general specify exactly how to generalize the process of of generating reference trajectories, whether they be torque or joint trajectories.  That said, other researchers do explicitly provided general methods for generating desired trajectories in what amounts to a mid-level of a hierarchical control scheme.  Thus combining other approaches with the low-level highly accurate torque control provided by the novel SEAs presented in this section could offer a potentially good solution at the actuator level. 
+ The other issue with the IHMC is that it only addresses low-level control.  The designers have not specified how to generalize the process of generating torque / joint reference trajectories.  That said, other researchers do explicitly provide methods for generating desired trajectories in what amounts to a mid-level of a hierarchical control scheme.  Thus combining other approaches with the low-level, highly accuracy torque control provided by the novel SEAs presented in this section could offer a potentially good solution at the actuator level. 
  
 
 % \end{document}
@@ -114,3 +108,8 @@ Once assembled, the overall actuator had a  {\bf torque limit of 80 Nm}, with a 
 % Hian Kai Kwa and Jerryll H. Noorden and Mathew Missel and Travis Craig and Jerry E. Pratt and Peter D. Neuhaus, "Development of the IHMC Mobility Assist Exoskeleton,"  International Conference on Robotics and Automation, 2009.
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../survey"
+%%% End:
