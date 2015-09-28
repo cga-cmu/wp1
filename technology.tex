@@ -26,16 +26,10 @@
 
 \input latex-commands
 
-\newcommand{\gc}{{\mbox {GravityCompensation}}}
-\newcommand{\invdyn}{{\mbox {\tiny ID}}}
-
-\newcommand{\shrinkfig}{\def\baselinestretch{1.0}\small} % 0.9 okay
-\newcommand{\shrink}{\def\baselinestretch{1.1}\small} % 0.97 % 0.95 okay
-
 \begin{document}
 
 \title{A Survey of Near-Term Exoskeleton Technology\\
-(Draft 2.1)}
+(Draft 3.0)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -54,7 +48,7 @@ Executive Summary to be written.
 
 This paper surveys near-term exoskeleton technology with an
 emphasis on control.
-A companion paper surveys implemented exoskeleton technology~\cite{}.
+A companion paper surveys implemented exoskeleton technology [survey.pdf].
 
 The focus is on near-term exoskeleton technologies that allow a
 highly trained and top percentile athletic 
@@ -67,19 +61,20 @@ We do not survey exoskeleton technology for human arms.
 We treat the torso and helmet of the exoskeleton as the payload,
 and focus on a lower body exoskeleton to support any payloads that
 are on the torso or head.
+
 We do not cover global energy storage such as batteries or liquid fuel
 or other global power system issues.
 
-A later white paper will discuss the use of propulsive forces other
+A later white paper could discuss the use of propulsive forces other
 than foot contacts, as well as additional actuation at the contacts (air
 bags, springs, other ways to rapidly apply stored energy) for
 operator safety (dodging threats, ...) and high performance (jumping, ...).
 
-A future white paper will discuss near term soft robotics technology
+A future white paper could discuss near term soft robotics technology
 for exoskeletons.
 
-A future white paper could discuss the addition of extra limbs to an
-exoskeleton~\cite{IEEE07139896}.
+A future white paper could discuss the addition of extra limbs and
+other effectors to an exoskeleton~\cite{IEEE07139896}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -87,51 +82,117 @@ exoskeleton~\cite{IEEE07139896}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{What are the specs?}
-
-Hip, knee, ankle: At least 100Nm, more is better.
-
-\subsection{What speeds and forces are needed to walk?}
-
-\subsection{What speeds and forces are needed to run?}
-
-\subsection{What operator-exoskeleton contact forces are acceptable?}
-
 \section{What performance is currently available?}
 
 \subsection{Reference Design: linear hydraulic with bypass valves}
 
-Survey state of the art using linear hydraulic actuators:
-Sarcos Primus Humanoid, Atlas(BDI), Cheetah(BDI)
+\subsubsection{What limits hydraulic performance?}
 
-{\it 140 bar(2,050 psi) and 8 lpm in total. Hydraulic cylinders
-are designed to be double-acting at the hip pitch joint and
-the knee pitch joint. The hip and knee cylinders are designed
-for a maximum thrust of 4 kN and 2 kN, respectively. The
-four three-way servo valves(M 200, Star-Hydraulic)}~\cite{IEEE07222598}
+The differential pressure of the hydraulic fluid supply vs. the fluid
+return limits the maximum force. Pressure times piston cross-sectional area
+determines actuator force.
+Many components are rated for 3000psi = 207bar (usually approximated to
+210bar).
+(Units: 1 Bar = $10^5$ newtons per square meter (pascals) = 14.5 psi).
 
-BLEEX: carries
-up to a 34 kg (75 lb) payload for the pilot and allows the pilot to
-walk at up to 1.3 m/s (2.9 mph).
+The flow capacity of the hydraulic fluid supply and return limits
+the maximum speed. Linear velocity*piston cross-sectional area determines 
+the fluid flow required.
+(Units: 1 lpm = 0.264 gpm)
 
-{\bf HyQ:}
-We normally operate at 180-200 bar. The maximum speed for the HyQ
-linear actuators with no load is 1.1m/s, I don't know about HyQ2Max.
-The maximum force for the HyQ actuators is 4000 N, and for HyQ2Max is
-6000 N.
+The power capacity of the hydraulic pump determines the maximum force
+at a given flow rate.
+
+To power our SARCOS Primus Humanoid Robot we use an
+MTS SilentFlo Hydraulic Power Unit (HPU) 515.11
+which operates at 3000psi $\approx$ 210bar,
+has a maximum flow of 41.6lpm = 11gpm, and is rated at
+18.5 kW = 25hp.
+
+There is also a thermal limit. Hydraulic systems heat up during operation,
+and there must be cooling (air or water cooling is often used)
+applied somewhere in the system. Heat is transferred by the flowing oil,
+so both the HPU, the piping and hoses, and the valves and actuators get hot.
+
+The flow capacity of a hydraulic valve also limits the maximum flow.
+The MOOG Type 30 Series 30 Nozzle-Flapper Flow Control Servovalves
+are popular on hydraulic humanoids. Their maximum flow is
+12lpm = 3.1gpm at 3000psi $\approx$ 210bar.
+You might want to get a higher capacity valve. To do this, you
+would sacrifice valve bandwidth and flow leakage.
+The bandwidth of the MOOG Type 30
+Series 30 is about 200Hz, and the leakage ranges from
+0.3 to 3gpm. Leakage in this case is internal to the hydraulic
+system, from the valve fluid supply port to the valve fluid return port.
+Valve leakage is flow and thus power and force
+not available to the actuation.
+A humanoid robot might have 30 of these valves,
+so it would not take a lot of leakage per valve to completely
+use up the flow capacity of the HPU.
+
+A linear hydraulic actuator (a piston, for example) has a cross sectional
+area ($A$) and a moment arm ($M$). Maximum torque of a single actuator
+is $P*A*M$ where $P$ is the operating pressure.
+Maximum velocity is $F/(A*M)$ where $F$ is the maximum flow at the
+actuator.
+Flow, unfortunately, is divided across multiple actuators,
+so more moving actuators would reduce this limit.
+
+Here is a simple actuator design:
+\begin{equation}
+A = 10cm^2 = 10^{-3}m^2, \; \; \; M = 0.01m
+\end{equation}
+Maximum torque is
+\begin{equation}
+P*A*M = 210*10^5N*m^{-2}*10^{-3}m^2*0.01m = 210Nm 
+\end{equation}
+Maximum angular velocity is
+\begin{equation}
+F/(A*M) = 0.2lps*(1000cm^3/l)/(10cm^2*1cm) = 20r/s
+\end{equation}
+
+The Sarcos Primus Humanoid (which uses the MOOG valve described
+above) and the Atlas humanoid (which uses similar custom MOOG valves)
+are both designed
+for maximum joint velocities of about 2 revolutions/second (12.5radians/s).
+and generate joint torques of up to around 400Nm.
+Doubling the maximum speed would half the maximum torque, which matches
+our simple actuator design.
+
+Can we expect a major improvement in hydraulics?
+There has been incremental improvement on HPUs and valves since
+the 1950s. Rapid prototyping and 3D printing are leading to
+easier integration of valves, actuators, and sensors (see following
+paragraph). Current high performance are flow control valves. It
+is possible that lower leakage valves could be developed. It is possible
+that pressure control valves would reduce the need for high bandwidth
+force control, and thus high bandwidth valves. Pressure control valves
+could also greatly improve exoskeleton safety if pressure control was
+implemented physically rather than computationally, since physical
+mechanisms are less likely to ``go unstable''.
+Bypass mechnisms (a form of clutch) would allow hydraulic systems
+to be backdriven without oil flow at high force, which would reduce
+the power load on the HPU and the need for high performance force control.
+Any valves or additional hydraulic circuitry
+would have to have low internal leakage, and previous attempts at
+pressure control valves have had leakage problems.
+Gear shifts and variable transmissions would allow the maximum torque
+and maximum no-load speed of the joint to be increased.
 
 {\bf Integrated Moog hydraulic actuator:}
-The integrated Moog system is still very experimental,� there are
+Moog is developing an integrated hydraulic actuator with built-in
+sensors and valves. Our colleagues report:
+{\it The integrated Moog system is still very experimental,� there are
 only two working prototypes right now.� Our lab is working closely
 with Moog to develop the firmware for the builtin controllers. I
 think it is a little early to say how well they work, but it looks
-promising.
-
+promising.}
+\url{http://www.designnews.com/document.asp?doc_id=277754&dfpPParams=ht_13,kw_robotics,kw_41,aid_277754&dfpLayout=article}
 
 \subsection{Reference Design: linear electric}
 
 Survey state of the art using linear electric actuators (typically ballscrews):
-Roboray (Samsung)
+RoboKnee, Roboray (Samsung)
 
 \subsection{Reference Design: rotary electric}
 
