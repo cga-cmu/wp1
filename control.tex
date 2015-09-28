@@ -1316,6 +1316,8 @@ weight matrices similar.
 Another approach to shared control is allocating time slices or providing assistance
 on an as-needed basis~\cite{IEEE07140030}.
 
+This recent paper discusses shared control \url{http://www.ri.cmu.edu/pub_files/2015/7/Javdani15Hindsight.pdf}
+
 \subsection{Full robot implementations.}
 
 Point to DRC papers by multiple groups.
@@ -1549,9 +1551,24 @@ contact forces, or some other (usually simple) mapping.
 
 \section{State Estimation}
 
+We use the operator state (the set of all joint angles and velocities
+as well as a root position and velocity to represent operator location
+and orientation in the world) as the basis of inverse dynamics and
+online optimization-based control.
+In a full-body exoskeleton
+(not necessarily fully actuated), the
+exoskeleton can be used to measure operator positions, and velocities.
+For partial exoskeletons,
+it may be the case that additional sensors such as distributed 
+angle sensors (goniometers), tachometers, or inertial measurement units (IMUs)
+are attached to the operator or part of the operator's clothing.
+A major goal of state estimation is to process these measurements to
+produce a useful estimate of operator state.
+
 We have not seen a lot of discussion of state estimation of exoskeletons in
 the literature.
-We will discuss our approach to state estimation on humanoid robots here.
+In lieu of that,
+we will discuss our approach to state estimation on humanoid robots here.
 State estimation to deal with sensor noise,
 disturbance estimation, and incomplete or
 redundant sensing is a separate process and is as independent as possible
