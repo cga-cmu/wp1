@@ -78,22 +78,45 @@ other effectors to an exoskeleton~\cite{IEEE07139896}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{design-goals.tex}
+%\input{design-goals.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Specifications}
+
+We would like to find actuation that can keep up with human
+speeds and provide forces or torques comparable to human capabilities:
+\begin{enumerate}
+\item
+2-4 revolutions/second maximum joint speed.
+\item
+200-400Nm maximum torque at a joint.
+\end{enumerate}
+
+{\it Dennis E. Anderson, Michael L. Madigan, Maury A. Nussbaum,
+“Maximum voluntary joint torque as a function of joint angle and
+angular velocity: Model development and application to the lower
+limb”, Journal of Biomechanics, 2007, Volume. 40, Issue 14, Pages
+3105-3113} says max knee torque is around 350Nm. They only consider
+max knee angular velocities around 2revolutions/second.
 
 \section{What performance is currently available?}
 
 \subsection{Reference Design: linear hydraulic with bypass valves}
 
-\subsubsection{What limits hydraulic performance?}
+This section considers hydraulics using linear actuators (pistons).
+It is possible that rotary hydraulics, such as vane motors,
+can do better, but we are not aware of non-proprietary examples
+to discuss.
 
-The differential pressure of the hydraulic fluid supply vs. the fluid
+\subsubsection{What limits performance?}
+
+The differential pressure of the hydraulic fluid supply vs.\ the fluid
 return limits the maximum force. Pressure times piston cross-sectional area
 determines actuator force.
 Many components are rated for 3000psi = 207bar (usually approximated to
 210bar).
-(Units: 1 Bar = $10^5$ newtons per square meter (pascals) = 14.5 psi).
+(Units: 1 bar = $10^5$ newtons per square meter (pascals) = 14.5 psi).
 
 The flow capacity of the hydraulic fluid supply and return limits
 the maximum speed. Linear velocity*piston cross-sectional area determines 
@@ -130,6 +153,20 @@ A humanoid robot might have 30 of these valves,
 so it would not take a lot of leakage per valve to completely
 use up the flow capacity of the HPU.
 
+The size and weight of an HPU, and how to power it are limiting.
+There have been examples of portable HPUs driven by electric and IC motors.
+The Atlas humanoid
+robot had an HPU driven by batteries (don't have specs).
+Max pressure was around 2600psi.
+We have specifications for a portable 
+5kW HPU with 4gpm at 3000psi; 170V, 30A input; weighing
+40lb and 15x10x10in in size.
+A heat exchanger is an additional 14x28x6in in size.
+Batteries to power this would be also take up space and 
+add weight.
+
+\subsubsection{A reference design}
+
 A linear hydraulic actuator (a piston, for example) has a cross sectional
 area ($A$) and a moment arm ($M$). Maximum torque of a single actuator
 is $P*A*M$ where $P$ is the operating pressure.
@@ -148,7 +185,7 @@ P*A*M = 210*10^5N*m^{-2}*10^{-3}m^2*0.01m = 210Nm
 \end{equation}
 Maximum angular velocity is
 \begin{equation}
-F/(A*M) = 0.2lps*(1000cm^3/l)/(10cm^2*1cm) = 20r/s
+F/(A*M) = 0.2lps*(1000cm^3/l)/(10cm^2*1cm) = 20r/s = 3.2rev/s
 \end{equation}
 
 The Sarcos Primus Humanoid (which uses the MOOG valve described
@@ -159,25 +196,44 @@ and generate joint torques of up to around 400Nm.
 Doubling the maximum speed would half the maximum torque, which matches
 our simple actuator design.
 
-Can we expect a major improvement in hydraulics?
+\subsubsection{What have we learned from implementations?}
+
+High performance force control has been demonstrated many times
+on many hydraulic robots (Sarcos, Atlas, HyQ, ...)
+
+However, on the Atlas robot differential oil pressure is used
+to estimate actuator force, as this form of force sensing
+is quite mechanically robust (low maintenance).
+This measurement is before the piston
+seals and transmission, so it does not capture those sources
+of friction. The joint torques are off by up to 10Nm at each joint.
+The Sarcos robot uses load cells in the actuator to joint transmissions.
+
+On the Atlas humanoid robot there was electromagnetic interactions between
+nearby valves.
+
+\subsubsection{Can we do better?}
+
+Can we expect major improvements in hydraulics?
 There has been incremental improvement on HPUs and valves since
 the 1950s. Rapid prototyping and 3D printing are leading to
 easier integration of valves, actuators, and sensors (see following
-paragraph). Current high performance are flow control valves. It
+paragraph). Current high performance valves are flow control valves. It
 is possible that lower leakage valves could be developed. It is possible
 that pressure control valves would reduce the need for high bandwidth
 force control, and thus high bandwidth valves. Pressure control valves
 could also greatly improve exoskeleton safety if pressure control was
 implemented physically rather than computationally, since physical
 mechanisms are less likely to ``go unstable''.
-Bypass mechnisms (a form of clutch) would allow hydraulic systems
+Bypass mechanisms (a form of clutch) would allow hydraulic systems
 to be backdriven without oil flow at high force, which would reduce
 the power load on the HPU and the need for high performance force control.
 Any valves or additional hydraulic circuitry
 would have to have low internal leakage, and previous attempts at
 pressure control valves have had leakage problems.
 Gear shifts and variable transmissions would allow the maximum torque
-and maximum no-load speed of the joint to be increased.
+and maximum no-load speed of the joint to be increased (also true
+for all other actuation types).
 
 {\bf Integrated Moog hydraulic actuator:}
 Moog is developing an integrated hydraulic actuator with built-in
@@ -189,116 +245,136 @@ think it is a little early to say how well they work, but it looks
 promising.}
 \url{http://www.designnews.com/document.asp?doc_id=277754&dfpPParams=ht_13,kw_robotics,kw_41,aid_277754&dfpLayout=article}
 
-\subsection{Reference Design: linear electric}
-
-Survey state of the art using linear electric actuators (typically ballscrews):
-RoboKnee, Roboray (Samsung)
-
 \subsection{Reference Design: rotary electric}
 
-Survey state of the art using rotary electric actuators:
-Schaft~\cite{shaft_foot_placement,shaft_push_recov}, Cheetah(MIT)
+This section considers heavily geared rotary electric motors.
 
-Maxon dc flat brushless motor EC45 and servo controller
-Elmo. The servomotor emulates the kinematic profile of every
-joint and sends a digital signal to the Elmo to form feedbacks.
-In order to enhance the impedance capability, harmonic trans-
-mission drivers are implemented (model SHD-17-100-2SH
-for joints 1 and 2, model SHD-14-100-2SH for joints 3 and 4,
-and CSF-32-50-2A-GR for joint 5).~\cite{IEEE07128705}
+\subsubsection{What limits performance?}
 
-\subsection{Reference Design: linear pneumatic}
+Electric motors are much more flexible than hydraulics in terms of voltages
+and currents, as there is not a standard voltage equivalent to the 3000psi
+design point in hydraulics.
 
-Survey state of the art using linear pneumatic actuators:
+Ultimately, electric motors, gears, and other drive train elements such
+as clutches and variable transmissions are limited by size and weight.
 
-\begin{verbatim}
-07139975, 07131568, 07251430.pdf
-2015 IEEE International Conference on Robotics and Automation (ICRA)
-Towards Balance Recovery Control for Lower Body Exoskeleton Robots
-with Variable Stiffness Actuators: Spring-Loaded Flywheel Model
-Corinne Doppmann, Barkan Ugurlu, Masashi Hamaya, Tatsuya Teramae,
-Tomoyuki Noda, and Jun Morimoto
-\end{verbatim}
+One limitation on electrical current
+is thermal. Motors overheat and windings melt.
+A typically 
+higher limit on electrical current is demagnetization of motor magnets.
 
-\section{Sensing}
+\subsubsection{A reference design}
 
-\begin{verbatim}
-sensing
- actuator length/angle
- actuator velocity
- actuator force/torque 
-n-line loadcells(31E-05KNO,
-Sensotec) are equipped on each cylinder tube end for the
-actuator force.~\cite{IEEE07222598}
- actuator sensing is pre-transmission
-  joint backlash
-  joint play
-  structural flexibility
-  actuator and transmission friction (10 Nm in Atlas)
- joint angle
-three high precision(17 bit) encoders(DS-25-16, Net-
-zer) are used to measure the robots joint angles(hip, knee,
-ankle pitch angle).~\cite{IEEE07222598}
- joint velocity
- joint torque
- IMUs all over
- cameras all over
-\end{verbatim}
+The JST lab at the University of Tokyo pushed the design of water
+cooled electric motors and motor drivers. This led to the high
+performance of the Schaft robot, a spinoff from that lab.
 
-{\it foot sensors, which are comprised
-of four one-axis(normal force) loadcells(CBFSB-200, Bong-
-shin), are adopted to detect the gait phase. The placement
-of each loadcell is chosen from the analysis of GRF for
-level walking : Hallux(toe), first Metatarsal(inside), fourth
-Metatarsal(outside), and Heel similar to [20], as shown in
-Fig. 2(a). The Gait phase detection is simply classified
-into two phases by the threshold method using the sum
-of the load cells: Single Stance (Left Stance(LS) or Right
-Stance(RS)), Double Stance(DS). The result of gait detection
-while walking is shown in Fig. 2(b).}~\cite{IEEE07222598}
-20: Kong K, Tomizuka M. ”A gait monitoring system based on air pressure
-sensors embedded in a shoe,” IEEE/ASME Trans Mechatron, 358 - 370.
-2009.
+The water cooled motor driver they developed is capable of 80V and
+80A continuous.~\cite{IEEE05649683}
+
+They modified
+MAXON EC-powermax30 200W brush-less motors, and added harmonic drives
+to make an integrated actuator.
+The maximum speed of these actuators was 3 revolutions/second.
+The maximum torque using 2 drivers/motor was theoretically 400Nm, but
+we have only seen 300Nm in the published data. 2 rev/s can be achieved
+at peak torque (Fig~\ref{f:s1}).~\cite{IEEE05649683}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{tech-figs/s1}
+\caption{Water cooled actuator capabilities.}
+\label{f:s1}
+\end{figure}
+
+Peak currents are in the range of 100-150A.
+{\it
+``High current load on Li-ion or Ni-MH batteries affects life
+span or cause damage. They cannot be charged with high
+current rate. Electrical double layer capacitors are suitable for
+such instantaneous current supply because they can supply
+high current without degradation for high current while
+their power capacity is not large. Capacitors can be charged
+with high current. Combination of an electrical double layer
+capacitor and battery is adopted. The robot carries a capacitor
+developed for it by Shizuki Electric Co. Inc. Specifications of
+the developed capacitor are shown in Tab.II.''}~\cite{IEEE05649683}
+Note that this capacitor weighs 9 kg (Fig~\ref{f:s2}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{tech-figs/s2}
+\caption{Capacitor specifications.}
+\label{f:s2}
+\end{figure}
+
+\subsubsection{What have we learned from implementations?}
+
+This effort ``went dark'' after Google bought the spinoff company
+Schaft, so there is a lot we don't know.
+
+There are concerns about motor lifetime with this pattern of utilization.
+
+This approach relies on transient loading of the motor, which needs
+to be planned in advance to avoid not having thermal capacity
+when more high performance is needed.
+It is not clear how much this approach helps with 
+steady state behaviors such as running.
+
+Driving the motors this hard generates a lot of electromagnetic interference,
+so they went with optical fiber for information transmission in their
+robots.
+
+We don't know whether these actuators can be made backdrivable with
+high performance torque control. Pre-Schaft, the researchers were exploring
+nonlinear series elastic actuation (big springs)
+to help handle impacts and large force
+transients~\cite{IEEE06651562}.
+
+\subsubsection{Can we do better?}
+
+This idea is a relatively new one, so there is probably useful unexplored
+territory in the design space.
 
 \section{Energy Storage}
 
 We will only address energy storage
-in terms of control issues.
+in terms of control issues. We are particularly interested in the
+possibilities of joint-level or local energy storage.
 
-\subsection{Global energy storage}
+Systems whose global energy storage is batteries waste
+less energy driving electrical systems, but there are plenty of electrically
+driven hydraulic systems on robots.
+Systems whose global energy storage is liquid fuel (gasoline etc)
+waste less energy driving a hydraulic system.
 
-\begin{verbatim}
- battery
- gasoline/jet fuel/diesel
- chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
- pressurized gas
- other?
- energy boost systems (jump, escape response in biology)
-  chemical (explosive actuation: solid fuel rocket, liquid fuel rocket)
-  pressurized gas
-  spring
-  other?
-\end{verbatim}
+\subsection{Joint and synergy-level energy storage}
 
-\subsection{Joint-level/local energy storage (on joint or synergy)}
+Can we use local energy storage to assist control: charging batteries or
+supercapacitors, pressurizing accumulators, using springs, ... ?
+The reference electrical design used a big capacitor to help handle
+peak loads. We believe that many behaviors ``slosh'' potential and
+kinetic energy back and forth.
+Running exchanges vertical velocity and energy storage in spring-like
+tissue.
+Walking exchanges forward velocity and gravitational storage.
+We also believe that energy storage can be used to start and stop
+highly dynamic transient behaviors.
+Jumping stilts and pogo sticks are an excellent demonstration
+of the use of energy storage to enhance human
+capabilities.
+\url{https://www.youtube.com/watch?v=lbp41vWP4o4},
+\url{https://www.youtube.com/watch?v=9ZOd7yEyhwI}
 
-Can we use local energy storage to assist control: charging batteries,
-pressurizing accumulators, using springs, ... ?
-
-{\it incorporation of physical
-compliance is of importance when it comes to dependability,
-low mechanical impedance, locomotion efficiency, inherent
-safety and enhanced environmental interaction capabilities}~\cite{IEEE07139975}
-
-\begin{verbatim}
- accumulator (really an air spring)
- physical springs/damping
- supercapacitor/battery/electrical for local electric braking
-\end{verbatim}
+In addition, physical springs protect the exoskeleton from damage
+and contribute to system dependability.
+The JST lab was exploring human-scale jumping robots
+with 
+nonlinear series elastic actuation (big springs)
+to help handle impacts and large force
+transients~\cite{IEEE06651562}.
 
 \section{Actuation}
-
-Survey possible actuation systems.
 
 What role do physical properties of actuation play in control? Highly
 geared electric systems and hydraulic systems are inherently very
@@ -309,36 +385,30 @@ compliant/backdrivable, which may reduce the performance
 needed from the sensors and control system, but may not be able to
 produce needed forces and speeds.
 
-\subsection{Global actuation}
-
-\begin{verbatim}
- hydraulic pump 
- gas (air) pump
-\end{verbatim}
-
-\subsection{Joint-level/synergy/local actuation}
-
-\begin{verbatim}
- rotary electric
-  motor
- linear electric
-  ball screw (both motor and transmission)
- linear hydraulic
-  moog thing
- rotary hydraulic
- linear pneumatic
- rotary pneumatic
- linear or rotary impulsive actuation (IC engine style actuation)
- energy boost systems (jump, escape response in biology)
-  chemical (air bag style: explosive actuation: solid/liquid fuel rocket)
-  pressurized gas
-  spring
-  other?
-\end{verbatim}
+Here are some actuation types that have not been adequately explored
+in humanoid robots and exoskeletons.
 
 \subsection{Flywheels}
 
-Energy storage and actuation for high manueverability.
+Energy storage and actuation for superhuman manueverability.
+\url{http://www.ric.org/app/files/public/4898/LemusVallery_GyroscopicBackpack_EMBC2014pdf.pdf}
+\url{http://www.ncbi.nlm.nih.gov/pubmed/22169384}
+
+
+\subsection{Internal combustion actuators}
+
+Several labs have explored using the piston of an internal combustion
+engine as a stand-alone linear or rotary actuator. In this case
+the combustion event would be carefully metered and timed. Repetitive
+combustion events combined with mechanical filtering could lead to smooth
+output forces. This approach inherits the desirable energy storage capacity
+of liquid fuels. 
+\url{http://softroboticstoolkit.com/book/combustion-driven-actuators}
+\url{http://www.nature.com/articles/srep04296}
+\url{http://arxiv.org/abs/1402.7101}
+\url{http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20100021938.pdf}
+% https://smartech.gatech.edu/bitstream/handle/1853/19873/warta_brett_j_200712_mast.pdf
+\url{http://www.msoe.edu/servlet/JiveServlet/previewBody/5589-102-1-7785/Sarah_Swanson_Final_Paper.pdf}
 
 \subsection{Hybrid actuation}
 
@@ -348,89 +418,44 @@ storage and actuation. Slow pneumatics and fast electric motors~\cite{Morimoto,U
 Mini/Macro~\cite{Stanford}. In this view, the human operator is just
 one more set of actuators to be added to the combined system.
 
-\begin{verbatim}
-parallel combinations - weak fast actuator needs to hit joint limit and then be strong.
- (leads to chattering) or just lock in position to exert big force
-series combination - strong actuator needs to clutch out of circuit to move fast
-\end{verbatim}
+We can consider the following combinaitons:
+\begin{itemize}
+\item
+parallel combinations - fast but weak  actuator needs to hit joint limit and then be strong. (leads to chattering) or just lock in position to exert big force
+\item
+series combination - strong but slow actuator needs to clutch out of circuit to move fast
+\end{itemize}
 
-\section{Transmissions and Drive Trains}
-
-\subsection{How can clutches and gear shifts help?}
+\section{How can clutches and gear shifts help?}
 
 How can we implement a gear shifting system (the crucial mechanical
 system missing in current robots)? How do we switch from manipulation
 while standing, walking, running, other rapid movement (dodging), and
-power movements (jumping, moving through doors and walls)?
+power movements (getting up from a squat or chair,
+jumping, moving through doors and walls, pushing large objects
+with full body while standing or seated)?
 
-Stance leg requires a large torque and
-relatively low bandwidth during the support period. However,
-the swing leg undergoes a large motion, but it only supports
-its own weight during the swing period. Therefore, the swing
-leg requires a relatively small torque. Thus, a dual-mode
-approach is very useful for an exoskeleton robot control.
-In this paper, a dual-mode control method using a hydraulic
-system is proposed,~\cite{IEEE07222598}
+Examples:~\cite{IEEE07222598}
 
-Rise from squat, chair.
-push large objects out of the way (standing full body push
-or seated using legs to push)
+\section{Discussion}
 
-\subsection{Global Transmission}
+{\bf Non-rigid systems:}
+Light exoskeletons will have a lot of structural flexibility,
+and will be poorly defined kinematically. This is not a
+problem for applying forces, but it is a problem for determining
+positions and velocities, such as center of mass position and velocity.
 
-\begin{verbatim}
- electric circuit
- hydraulic circuit
- gas (air) circuit
-\end{verbatim}
-
-\subsection{Joint-level/synergy/local transmission}
-
-\begin{verbatim}
- rigid
-  gears
-   planetary
-   other
-  harmonic drive
-  ball screw
-  cosine attachment
-  Sarcos Primus Humanoid knee - to reduce moment arm variation with angle
- Bowden cable
- tendon drives (can go slack)
- hydraulic/pneumatic circuit
- variable
-  belts
-  cones
-  fluid
-  adjustable moment arm
-   linear slider
-   XY slider for actuation and ``joint'' on foot.
- series elastic actuation
-\end{verbatim}
-
-\section{Address what is the complexity penalty, weight penalty, 
-and ``drag'' of actuator on individual joint motion.}
-
-\section{System issues}
-
-Things that don't fit well elsewhere.
-
-\begin{verbatim}
- bearing play, structural flexibility: +/- 2cm COM uncertainty
- how attached to human (exoskeleton)
- air bags
-\end{verbatim}
-
+{\bf How exoskeleton attached to human:}
 The human and exoskeleton limbs are typically connected to each
 other with straps or padding. These connections typically have substantial
 compliance and play, and may or may not have appropriate damping.
 Typically the human and the exoskeleton do not move the same way:
 pose, and linear and angular velocities and accelerations are not the same.
 
-Heat exhaust. Heatsink cooling, Force air cooling, Water cooling.
-Will housing and structure get too hot and fry operator?
-
-\section{Discussion}
+{\bf Heat exhaust:}
+Will actuators, housing, and structure get too hot and fry operator?
+Heatsink cooling, Force air cooling, Water cooling.
+Hot material ejection.
 
 {\bf Weight distribution:}
 There is a weight distribution issue. Ideally the exoskeleton should
@@ -476,30 +501,30 @@ hostile sites, and deflect or disable projectiles.
 \section{Conclusions and Recommendations}
 
 1) We recommend the exploration of how to implement and utilize practical
-gear shifts and clutches (or equivalents). For hydraulics and air, this might mean
+{\bf gear shifts and clutches} (or equivalents). For hydraulics and air, this might mean
 bypass or other special valve features.
 For electric motors and gears, this might mean special purpose clutch mechanisms
 built into gearing or harmonic drives. For linear actuators, antagonistic actuation
 combined with tendons that can go slack can be used for clutching.
 
-2) We recommend exploring the combination of passive energy storage (springs,
+2) We recommend exploring the combination of {\bf passive energy storage} (springs,
 accumulators, supercapacitors, ...) with active actuation. One form of this
 is series elastic actuation. 
 
 3) We also recommend exploring storing energy with
-a ``catch'' and ``explosive release'' for overdrive capabilities. 
+a ``catch'' and ``explosive release'' for {\bf overdrive capabilities}. 
 
-4) We recommend the exploration of hybrid actuation, where slow and strong actuators
+4) We recommend the exploration of {\bf hybrid actuation,} where strong but slow actuators
 are combined with fast but weak actuators either in parallel or serial.
 
-5) We recommend the exploration of multi-joint or synergy actuation, where an actuator
+5) We recommend the exploration of {\bf multi-joint or synergy actuation}, where an actuator
 might cross two or more joints.
 
-6) We recommend the exploration of integrated actuation units using 3D printing
+6) We recommend the exploration of {\bf modular integrated sensing/actuation units} using 3D printing
 or other rapid prototyping techniques, such as the integrated Moog hydraulic
 actuator for HyQ.
 
-7) We recommend applying as many sensors as possible, and asking the performers
+7) We recommend applying {\bf as many sensors as possible,} and asking the performers
 to make it easy to add more by making the sensor network available in the design.
 This maximizes the probability of success
 by enabling multiple control
@@ -525,10 +550,6 @@ oil pressure on each side of the piston head.
 A possible objection to this is additional cost. We feel it is a false
 economy to skimp on sensing. Leaving practical sensing out greatly increases
 the risk of poor performance.
-
-8) Do we recommend flywheels?
-
-More Conclusions and Recommendations to be written.
 
 \bibliographystyle{plain}
 \bibliography{exo}
