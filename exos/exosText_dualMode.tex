@@ -33,6 +33,8 @@
 
 % \begin{document}
 \section{Hydraulic Lower Extremity Exoskeleton}
+\label{dualMode}
+\begin{refsection}[exos/dualMod.bib]
 
 The Hydraulic Lower Extremity Exoskeleton suit was originally developed for military uses, specifically to allow operators to perform motions without incurring muscle fatigue.  The exoskeleton uses a new {\bf virtual joint torque control} approach, which has been shown to be effective for controlling human robot interaction in situations where the connections between the users and hardware system are relatively unknown or can dramatically change as a function of time.
 
@@ -42,10 +44,11 @@ A picture of the Hydraulic Lower Extremity Exoskeleton is presented in Figure \r
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/exoSuit}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Exoskeleton robot system.}
+%  \vspace{-0.2in}
  \label{fig:exoSuit}   
  \end{figure} 
+ 
 
 \subsection{Actuator specifications}
 
@@ -56,8 +59,8 @@ A picture of the Hydraulic Lower Extremity Exoskeleton is presented in Figure \r
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/hydraulicSys}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Dual-mode control}
+%  \vspace{-0.2in}
  \label{fig:hydraulicSys}   
  \end{figure} 
 
@@ -85,8 +88,8 @@ A picture of the Hydraulic Lower Extremity Exoskeleton is presented in Figure \r
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=5.in]{exos/figs/hydLowerExrem/dualModeDia}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Locomotion control strategy during gait : Smoothing method ! Active mode ! Pre-transition method ! Passive mode}
+%  \vspace{-0.2in}
  \label{fig:dualModeDia}   
  \end{figure}
 The control design principle for the Hydraulic Lower Extremity Exoskeleton is based on the concept that, for walking gaits, the {\bf stance and swing controllers should be considered separately}.  To this end, the control designers developed an active-passive control method called {\bf Dual-Mode Control}.  Active control is used during stance phases whereas the passive control is used to quickly and freely control the system's legs during swing phases.  Additionally, to handle the inherently discontinuous jumps in the command signals that occur in this dual mode abstraction, a smoothing method is used in conjunction with a pre-transition method that solves for the swing delay due to internal cylinder pressure.  A diagram which highlights the different modes in this control strategy is in Figure \ref{fig:dualModeDia}.   
@@ -95,16 +98,16 @@ Various components of the dual-mode control strategy, at the hardware level, are
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/suitDia}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Overall control block diagram.}
+%  \vspace{-0.2in}
  \label{fig:suitDia}   
  \end{figure}
 This figure contains a {\bf gait phase estimation block}, which uses the foot sensors to estimate the stance mode of the system, a {\bf human intention block}, which uses angular encoders and joint force sensors to estimate the motion of the operator, a {\bf torque controller}, and a {\bf gravity compensation} block.  Note that these various components of the control system are used to support the general assumption of the dual mode controller, i.e., 
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/torAssist}
-  \caption{}
-  \vspace{-0.2in}
+%  \caption{Simplified virtual joint torque control block diagram}
+%  \vspace{-0.2in}
 % \label{fig:suitDia}   
  \end{figure}
  %
@@ -128,8 +131,8 @@ where $\mM_n$, $\mC_n$, and $\mG_n$ are the nominal models of the true inertia, 
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/blockDia}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Simplified virtual joint torque control block diagram.}
+%  \vspace{-0.2in}
  \label{fig:blockDia}   
  \end{figure}
  Note that $\mG_a$ represents the dynamics of the the system and $\mG_a'$ the inverse dynamics model in Figure \ref{fig:blockDia}.
@@ -140,7 +143,7 @@ The Hydraulic Lower Extremity Exoskeleton uses a novel scheme to manage transiti
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/hydLowerExrem/weightingForm}
-  \caption{}
+%  \caption{Simplified virtual joint torque control block diagram.}
 %  \vspace{-0.2in}
 % \label{fig:suitDia}   
  \end{figure}
@@ -160,6 +163,12 @@ One potential drawback of this hardware is the power system.  The documentation 
 
 The control system for this hardware followed a relatively straight-forward design, effectively creating a ``get out of the way design" using the torque sensed at the joints only.  In the short-term, this type of policy seems to be a good strategy.  The other highlight of the outlined control policy was the smoothing function which was used during phase transitions in the walking gait cycle.  A similar type of smoothing will most likely be beneficial in terms of operator experience for a varity of different operational modes in which different phase transitions occur, e.g., running, jumping, etc.
  
+The figures as well as hardware and control specifications in this section are taken from \cite{dual_mode_2015}.
+ 
+\printbibliography[heading=subbibliography]
+
+\end{refsection}
+
  
  % \end{document}
 

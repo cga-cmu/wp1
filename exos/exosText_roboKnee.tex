@@ -33,6 +33,9 @@
 
 % \begin{document}
 \section{RoboKnee}
+\label{roboKnee}
+\begin{refsection}[exos/roboKnee.bib]
+
 
 The RoboKnee is a prototype system designed to enhance human strength, endurance and speed.  To achieve these goals, RoboKnee uses a low-impedance mechanical system that incorporates a natural user interface, long life, and is comfortable to wear.  The suit's controller implements a ``get out of the way'' control scheme, where the system interacts with the user through a low-impedance interface.  This section focuses on RoboKnee's linear series elastic actuator design and the novel control method the device employs to coordinate its single powered knee joint.
 
@@ -44,8 +47,8 @@ The actuator used in the RoboKnee device (see Figure \ref{fig:roboAct}) consists
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/roboKnee/roboSEA}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Exploded view of a series-elastic actuator.}
+%  \vspace{-0.2in}
  \label{fig:roboAct}   
  \end{figure}
 
@@ -61,8 +64,8 @@ The force control bandwidth of the RoboKnee actuator is dependent on the magnitu
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/roboKnee/roboBrace}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{RoboKnee design.}
+%  \vspace{-0.2in}
  \label{fig:roboKnee}   
  \end{figure}
  The exact length between actuator attachment points is not listed in the literature, but it appears as though the attachment points are at a minimum of one actuator stroke displacement away from each other. Thus, we assume a {\bf minimum moment arm of 30.5 cm} is a reasonable approximation.
@@ -86,7 +89,14 @@ The force control bandwidth of the RoboKnee actuator is dependent on the magnitu
  
  The RoboKnee is a relatively simple system that highlights several intelligent hardware and control design concepts.  The use of a linear ball screw with a series elastic element that enables high-fidelity force control is a very good idea. The idea of using the measured ground reaction forces to produce the desired knee joint torque is also interesting in the sense that it is very simple and relies on a minimal amount of information.
  
- The overall design of the RoboKnee mechanism is most likely not the greatest, as it significantly increases the effective volume of the operator-system leg, but as a prototype, this concept offers interesting benefits.
+ The overall design of the RoboKnee mechanism is most likely not optimal, as it significantly increases the effective volume of the operator-system leg, but as a prototype, this concept offers interesting benefits.
+ 
+ The discussion as well as figures in this section are respectively based on and taken from \cite{robo_knee_2004}.  
+ 
+\printbibliography[heading=subbibliography]
+
+\end{refsection}
+
  
  % \end{document}
  

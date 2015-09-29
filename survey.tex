@@ -49,26 +49,34 @@ Carnegie Mellon University}
 \maketitle
 
 \begin{abstract}
-Abstract to be written.
+In the simplest case, where the environment around a robotic system remains relatively fixed, controlling the dynamic interaction between the robot and the environment to achieve a specific physical objective is difficult.  In the case where an operator effectively wears the robot, i.e., a robotic exoskeleton, and would like to move through unknown and dynamically evolving environments, the situation becomes very complicated; the robotic system needs to account for for the dynamics of multiple fundamentally linked systems and that are for the most part difficult to model.  The goal of this document is to provide a survey of the literature on the design, modeling, and control of robotic exoskeletons and to highlight what we believe are several of the most promising currently existing approaches to the complicated goal of enabling dynamic yet safe interaction between operators, exoskeletons, and the environment.  Where information was available, we summarize specific contributions related to actuation, power storage and generation, sensor type and distribution, mechanical architecture, as well as control system design for a number of different exoskeleton hardware systems.  Included as part of this report are recommendations on what we see as helpful components as well as potentially problematic issues in current systems and control approaches. 
 \end{abstract}
 
 \section{Executive Summary}
 
-Executive Summary to be written.
+This document summarizes what we have found to be several of the most relevant exoskeleton hardware systems and the associated controllers used to enable the hardware to effectively and safely interact with human operators.  As we further elaborate on in this document, the different systems that we summarize range from the relatively simple and dramatically underactuated single joint mechanisms to extremely complex and fully actuated whole-body solutions.  The controllers associated with these systems also ranged from solutions that implemented conceptually simple designs to those which made use of very novel design techniques and/or relatively developmental sensing and actuation technologies. 
 
-\section{Scope: What is this paper about?}
+While this document does try to provide a relatively wide overview of existing exoskeleton technology, we did focus our efforts in this report to hardware systems meant to provide power augmentation and magnification as opposed the somewhat larger subset of exoskeletons designed primarily for rehabilitation.  This choice was made relative to both hardware as well as control system design considerations.  Exoskeletons designed for rehabilitation are not typically designed as stand-alone systems and are generally limited in the scope of operational modes in which they are capable of reliably providing assistance.  The hardware designed for the TALOS program will need to be high-powered with a power source that is capable of being carried such that the suit is a completely stand alone unit and will need to run a control system that is capable of providing transparent support to the operator in a large variety operational scenarios.
 
-This paper surveys exoskeleton control architectures and
-algorithms.
-The focus is on exoskeleton control that allows a
-highly trained and top percentile athletic 
-operator to carry a payload that weighs approximately the same amount
-as the operator. We envisage these types of exoskeletons to be useful
-in carrying protective and safety equipment for SWAT teams, police,
-firefighters, and soldiers. 
-We also 
-focus this survey on exoskeleton control for lower body tasks (standing, walking,
-running, jumping, kicking, dodging, ...).
+To this end, the hardware systems that we chose to include summaries of in this document where the BLEEX, HAL, XOR, Body Extender, Hydraulic Lower Etremety, IHMC Mobility Assist, MIT, and RoboKnee exoskeletons.  The different systems covered many of the possible choices of actuation strategies, ranging from DC powered electric motors, to hydraulics, to pneumatics, and combinations thereof.  Several of the systems used standard to more novel transmission strategies as well, focusing on both efficient as well as high-fidelity force control implementations.  The transmission strategies included included standard hydraulic systems, hydraulic systems with actively controlled bypass valves, ball-screw mechanisms that include series elastic components, as well as pneumatically actuated pulley-tendon and belt-drive mechanisms. 
+
+In terms of sensing and control technologies, the different exoskeletons covered in this report employed a wide variety of the spectrum of available options.  Sensors were used to measure everything from standard information, like angular displacement of the hardware system's joints, to more novel information, like muscle activity of the user using EMG technology.  Sensor information was used as the basis for a variety of different closed and open-loop control system designs, ranging from straight-forward force control and trajectory following to novel approaches of fully actuated feedback linearization and sensitivity amplification strategies.  
+
+Each of these component technologies are reviewed as they relate to the hardware systems discussed in this report.  Recommendations on what we feel are the best approaches in these reviews are also provided.  We provide a summary of these recommendations at the end of this document.
+
+%\section{Scope: What is this paper about?}
+%
+%This paper surveys exoskeleton control architectures and
+%algorithms.
+%The focus is on exoskeleton control that allows a
+%highly trained and top percentile athletic 
+%operator to carry a payload that weighs approximately the same amount
+%as the operator. We envisage these types of exoskeletons to be useful
+%in carrying protective and safety equipment for SWAT teams, police,
+%firefighters, and soldiers. 
+%We also 
+%focus this survey on exoskeleton control for lower body tasks (standing, walking,
+%running, jumping, kicking, dodging, ...).
 
 \input{exos/bleex}
 
@@ -86,12 +94,6 @@ running, jumping, kicking, dodging, ...).
 
 \input{exos/exosText_roboKnee}
 
-% \input{exos/exo-ul7}
-
-
-\section{Discussion}
-
-Discussion to be written.
 
 \section{Conclusions and Recommendations}
 
@@ -100,10 +102,30 @@ All the (strength augmentation) exoskeletons we reviewed can be categorized into
 While sensitivity amplification strategies avoid these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for a combat exoskeleton.
 
 
+
+\end{document}
+
+
+
+
+% \input{exos/exo-ul7}
+
+
+%\section{Discussion}
+%
+%Discussion to be written.
+%
+%\section{Conclusions and Recommendations}
+%
+%All the (strength augmentation) exoskeletons we reviewed can be categorized into one of two general control categories.  The exoskeleton either directly measures user intent (e.g., from EMG data or human-exoskeleton interaction forces), or it estimates intent from measurements at exoskeleton joints and applies a sensitivity amplification strategy to shadow the wearer.  The first strategy is difficult to implement using standard sensing modalities.  For instance, EMG data is notoriously noisy and presents both modeling and calibration challenges.  It would also be extremely difficult to keep these sensors in place to obtain accurate readings in a combat scenario.  Similarly, many avoid the use of load cells for measurement of the human-exoskeleton interface fores to avoid outfitting the complicated sensor network required to accurate obtain interaction forces / torques (humans are compliant thus rigid attachment assumptions are typically inadequate).
+%
+%While sensitivity amplification strategies avoid these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for a combat exoskeleton.
+%
+
 % \bibliographystyle{plain}
 % \bibliography{exo}
 
-\end{document}
+%\end{document}
 
 
 %%% Local Variables:

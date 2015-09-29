@@ -33,9 +33,13 @@
 
 % \begin{document}
 \section{IHMC Mobility Assist Exoskeleton (MAE)}
+\label{ihmc}
+\begin{refsection}[exos/ihmc.bib]
+
 Although the IHMC MAE was primarily designed as a disabled assist exoskeleton, the device is also provides a ``performance enhancement" control mode, which is within the scope of this document.  The main design principle highlighted in the IHMC MAE hardware (a recurring theme throughout exoskeleton literature) is that directly measuring user intent can be difficult for a number of reasons.  The IHMC designers resolve the issue using a new control and feedback system, which for the IHMC MAE, is primarily based on a unique actuation scheme. 
 
 The IHMC MAE uses novel series elastic actuators (SEAs) in their hardware design mostly because they offer the ability to perform high-fidelity impedance control.  In series elastic actuators, a compliant element is placed in series after the output a motor's drive mechanism. The measured compression of the compliant element is used to calculate the force, or torque, acting on the output of the actuator.  { \bf Series elastic actuators} are generally viewed as a good way to provide {\bf accurate force feedback} information and to provide a {\bf low mechanical impedance}.  The major disadvantage of SEAs is that they have a relatively low bandwidth at high forces, as the compliant element needs time to compress before a force can be sensed and thus inherently include a delay between the time a force is applied and when the control system can react.
+
 
 \subsection{Actuator specifications}
 
@@ -45,8 +49,8 @@ The spring mechanism, which sits between the gearbox and joint output, is shown 
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/seaAssm}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Schematic of the RSEA elastic mechanism design, shown in the zero force position. The encoder reads a scale tape on the curved cylindrical surface. Note that the actuator housing and bearing have been omitted for clarity.}
+%  \vspace{-0.2in}
  \label{fig:IHMCSEA}   
  \end{figure}
  
@@ -64,8 +68,8 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/ihmcSys}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Side view of the IHMC Mobility Assist Exoskeleton showing the powered and passive degrees of freedom.}
+%  \vspace{-0.2in}
  \label{fig:IHMCSYS}   
  \end{figure}
  
@@ -76,8 +80,8 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/torqueCon}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Torque control loop in the actuator control system.}
+%  \vspace{-0.2in}
  \label{fig:IHMCTOR}   
  \end{figure}
  The controller takes in a desired torque, compares the desired value to the output torque measured at each individual actuator, then uses this value as well as its derivative to compute an actuator command signal, which in this case is a current.  The largest question in this controller, as presented in literature, is how to define the desired torque term $\tau_\text{des}$.
@@ -86,8 +90,8 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/positionCon}
-  \caption{}
-  \vspace{-0.2in}
+  \caption{Control system diagram for an actuator. The torque feedback is fed to an inner control loop while the position is fed back to the overall position controller.}
+%  \vspace{-0.2in}
  \label{fig:IHMCPOS}   
  \end{figure}
  The controller in Figure \ref{fig:IHMCPOS} shows an outer-loop position-based PD controller that takes in desired joint trajectories and compares them to measured joint positions.  These are used to generate desired torque values which are fed into an inner closed-loop torque control loop.  This control scheme is a good low-level choice if high-impedance. accurate suit motion is desired.  Similarly to the torque-only control loop above, the main question in this control scheme is how to obtain the desired joint trajectories.  
@@ -101,6 +105,12 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
  
  The other issue with the IHMC is that it only addresses low-level control.  The designers have not specified how to generalize the process of generating torque / joint reference trajectories.  That said, other researchers do explicitly provide methods for generating desired trajectories in what amounts to a mid-level of a hierarchical control scheme.  Thus combining other approaches with the low-level, highly accuracy torque control provided by the novel SEAs presented in this section could offer a potentially good solution at the actuator level. 
  
+All of the figures as well as hardware and control specifications in this section are taken from \cite{ihmc_2009}.
+ 
+\printbibliography[heading=subbibliography]
+
+\end{refsection}
+
 
 % \end{document}
 
