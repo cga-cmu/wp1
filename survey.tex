@@ -109,12 +109,22 @@ While sensitivity amplification strategies circumvent these sensing issues by es
 
 We emphasize that user intent is critical, and current sensing challenges must be addressed in order to develop dynamic exoskeletons capable of serving in combat scenarios.  As a stop-gap, it may be possible to combine low information density EMG (thresholded on/off muscle activation signals) and human force/torque or angular measurements to filter user intent.  Such an approach may prove useful in a hybrid strategy, filtering external disturbance forces during sensitivity amplification control.  As a longer term solution, we highlight research in the area of MEMs and nano-fabrication, which has lead to the development of new, flexible ``robotic skin'' sensing arrays.  Integrating these sensing arrays into operator clothing (or attaching directly to the exoskeleton), it may be possible to directly measure human interaction forces (i.e., estimating pressure / force and exoskeleton contact locations), which was not feasible in the recent past.  Dense sensing arrays add redundancy and can improve measurement reliability. We recommend further study and the development of more advanced sensory systems to address the challenges inherent in dynamic exoskeleton control.
 
-In addition to capturing user intent, it is important to develop accurate models of the human/exoskeleton system.  Feedback strategies, especially those based on force/torque control loops and series elastic actuation, are limited in bandwidth. Highly dynamic behaviors require feedforward models to reduce reliance on feedback and to allow lower-impedance feedback, which reduces resistive forces acting on the user.
+In addition to capturing user intent, it is important to develop accurate models of the human/exoskeleton system.  Feedback strategies, especially those based on force/torque control loops and series elastic actuation, are limited in bandwidth. 
+%
+It is important that an exoskeleton's control bandwidth stays well above (typically $2-3\times$) the human control bandwidth ($2-5\,$Hz), to track dynamic motion.  Several of exoskeletons controllers come close to this human bandwidth threshold under no-load conditions, and so can interfere in dynamic tasks.
+%
+Highly dynamic behaviors require predictive, feedforward models to reduce reliance on feedback and to allow a lower-impedance control response.  
+Such feedforward, model-based controllers depend heavily on accurate exoskeleton / human dynamics and so modeling efforts must be emphasized.
 
+% Finally, we note that 
+Many of the common model-based control methods in this survey employ feedback linearization and inverse dynamics strategies for dynamic exoskeleton control.  
+These methods (incorrectly) assume the exoskeleton is fully actuated and require users to provide certain torques at uncontrolled joints.  There are more advanced control schemes that extend to underactuated systems and may apply here (e.g., optimization-based controllers or virtual model control).  However, we note that there is a balance between feedback and feedforward control.  The better one is, the less reliant the system is on the other.
+Improved feedback and direct sensing of user intent / human interaction forces therefore also offers to reduce sensitivity to high accuracy models and the fully actuated assumptions in inverse dynamics control. 
 
 %% OTHER POINTS:
 % Model-based approaches are heavily reliant on accurate models 
 % Underactuated -- feedback linearization typically assumes fully actuated systems.
+% human bandwidth vs control bandwidth
 
 
 
