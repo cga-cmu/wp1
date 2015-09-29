@@ -72,7 +72,7 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
  
  \subsection{Control Specifications}
  
- Both IHMC MAE control approaches noted are relatively straight forward implementations of low-level torque control.  The first control scheme takes full advantage of the SEA actuators' ability to directly measure output torque and subsequently to perform closed-loop torque control, (see \ref{fig:IHMCTOR}). 
+ Both IHMC MAE control approaches noted are relatively straight forward implementations of low-level torque control.  The first control scheme takes full advantage of the SEA actuators' ability to directly measure output torque and subsequently to perform closed-loop torque control, (see Fig~\ref{fig:IHMCTOR}). 
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/ihmc/torqueCon}
@@ -95,7 +95,7 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
  One possibility for defining either the desired torques / joint trajectories in these control schemes is to use clinical gait analysis data.  With this approach, the highlighted controllers would effectively play back nominal joint trajectory data.  The foot sensors in the system would detect phase transitions, allowing the controllers to dynamically adjust the prerecorded data to the user in realtime.
  
  
- \subsection{Opinion}
+ \subsection{Assessment and Recommendations}
  
  The design and use of series-elastic actuators is, in general, a good idea for many applications, but may be a problem for the highly dynamic maneuvers required by operators in the TALOS project.  In a large sense, bandwidth is everything in these suits due to the fact that behavior prediction is very complicated.  Simply put, 10Hz control bandwidth at the actuator may be too slow to safely react in dynamically changing environments. 
  

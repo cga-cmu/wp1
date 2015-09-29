@@ -2,7 +2,7 @@
 \label{exo:bleex}
 \begin{refsection}[exos/bleex.bib]
 
-keywords: sensitivity amplification; strength augmentation.\\
+% keywords: sensitivity amplification; strength augmentation.\\
 
 The Berkeley lower extremity exoskeleton (BLEEX) is an anthropomorphic, powered exoskeleton designed for human strength augmentation.  It is described as the first field-operational robotic system to allow its operator to carry significant loads over unstructured terrain without external power \cite{bleex_design_2006}.
 
@@ -52,22 +52,22 @@ In its sensitivity amplification implementation, BLEEX controllers attempt to mi
   \includegraphics[width=3.5in]{exos/figs/bleex_1dof_ex.png}
 \end{figure}
 
-The BLEEX sensitivity amplification control strategy models the torque applied by the human pilot on the exoskeleton as $d$ (assuming no outside disturbances).   Neglecting gravity, the exokeleton angular velocity is modeled as 
-\[v = G r + S d ,\] 
-where $G$ is the transfer function from actuator inputs ($G$ is the exoskeleton's dynamics), $r$ is the actuator input, and $S$ is the sensitivity or transfer function from human torque to exokeleton angular velocity. 
+The BLEEX sensitivity amplification control strategy models the torque applied by the human pilot on the exoskeleton as ${\bf d}$ (assuming no outside disturbances).   Neglecting gravity, the exokeleton angular velocity is modeled as 
+\[\vv = \mG \vr + \mS {\bf d} ,\] 
+where $\mG$ is the transfer function from actuator inputs ($\mG$ is the exoskeleton's dynamics), $\vr$ is the actuator input, and $\mS$ is the sensitivity or transfer function from human torque to exokeleton angular velocity. 
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=4.0in]{exos/figs/bleex_control_diag_1.png}
 \end{figure}
 
-The goal is to maximize sensitivity to $d$ \emph{without direct measurement.}  Sensitivity amplification accomplishes this by creating a feedback loop from a controller, $C$, acting only on exoskeleton variables.  A new sensitivity equation,
-\[S_{new} = \frac{v}{d} = \frac{S}{1 + G C} ,\]
-is maximized by applying positive feedback.  To achieve a large sensitivity, BLEEX uses $C = (1-\alpha^{-1})G^{-1}$ so that $\alpha$ provides a direct (scalar) amplification factor. A low-pass filter is often added to the $C$ term in order to damp out high frequency dynamics of the exoskeleton, which are not captured in these models.  Note that the controller depends on an inverse dynamic model of the exoskeleton, $G^{-1}$.  Since the model is hybrid, these dynamics switch according to gait phases (single support, double support, stance).  BLEEX detects these transitions using foot sensors.  Assuming the single leg support dynamics are in the form,
+The goal is to maximize sensitivity to ${\bf d}$ \emph{without direct measurement.}  Sensitivity amplification accomplishes this by creating a feedback loop from a controller, $\mC$, acting only on exoskeleton variables.  A new sensitivity equation,
+\[\mS_{new} = \frac{\vv}{{\bf d}} = \frac{\mS}{1 + \mG \mC} ,\]
+is maximized by applying positive feedback.  To achieve a large sensitivity, BLEEX uses $\mC = (1-\alpha^{-1})\mG^{-1}$ so that $\alpha$ provides a direct (scalar) amplification factor. A low-pass filter is often added to the $\mC$ term in order to damp out high frequency dynamics of the exoskeleton, which are not captured in these models.  Note that the controller depends on an inverse dynamic model of the exoskeleton, $\mG^{-1}$.  Since the model is hybrid, these dynamics switch according to gait phases (single support, double support, stance).  BLEEX detects these transitions using foot sensors.  Assuming the single leg support dynamics are in the form,
 \begin{equation}
 \mM({\bf\theta})\ddot{{\bf \theta}} + \mC({\bf\theta},\dot{{\bf\theta}}) \dot{{\bf \theta}} + \mV({\bf\theta}) = {\bf T} + {\bf d} ,
 \end{equation}
-where ${\bf T}$ is a vector of actuator torques, the BLEEX control torque would be
+where ${\bf T}$ is a vector of actuator torques and $\mM({\bf\theta})$, $\mC({\bf\theta},\dot{{\bf\theta}})$, and $\mV({\bf\theta})$ are the mass, Coriolis, and gravity terms (respectively), the BLEEX control torque would be
 \begin{equation}
 {\bf T} = \mV({\bf\theta}) + (1 - \alpha^{-1}) \big [ \mM({\bf\theta})\ddot{{\bf \theta}} + \mC({\bf\theta},\dot{{\bf\theta}}) \dot{{\bf \theta}} \big ] .
 \end{equation}
@@ -96,3 +96,7 @@ Sensitivity amplification is a current best-in-class control strategy.  The exos
 The figures in this section were obtained from \cite{sesitivityAmpPaper2005}. Materials presented are based on the references above.
 
 \end{refsection}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../survey"
+%%% End:

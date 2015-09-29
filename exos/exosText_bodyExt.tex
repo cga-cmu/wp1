@@ -108,7 +108,7 @@ In the case where the exoskeleton arm is manipulating a load, the feedback linea
 The main difference in this case is that the controller here explicitly compensates for the measured human-robot interaction force $\vF_s$, and the controller includes the un-sensed forces $\vF_a$ which arise from the object being manipulated.  The object interaction forces thus need to be estimated.  The ability to estimate these forces is the first fundamental assumption on which the Body Extender's control scheme relies.  Because the point at which the manipulator arm and object are connected is assumed to be well known, and the arm is instrumented with inertial sensors, estimating the interaction forces of the manipulated object is be assumed to be equivalent to estimating its inertial properties.  As outlined in \cite{}, this is accomplished using a standard regressor which uses the input and output of the feedback linearizing controller as the basis for the regression.  The details of this process are left to \cite{}.
 
  
-\subsection{Opinion}
+\subsection{Assessment and Recommendations}
 
 The Body Extender suit is one of the only full-body exoskeletons available today, and as such is a somewhat remarkable system. In terms of how the Body Extender system is designed and how it is controlled, the suit may be limited. Clearly, for the task of handling heavy objects a fully actuated suit may be the best option, but, generally speaking, this seems almost like an over engineered solution.  The Body Extender is a heavy, overly clunky suit.  This suit may be alright for quasi-static operations, but it is unlikely that it will be useful for more than pick and place type operations.  Again, seeing as this is basically what it was designed for, that seems alright.
 

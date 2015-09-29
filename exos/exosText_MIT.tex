@@ -84,7 +84,7 @@ The MIT exoskeleton controllers use the fact that desired actuation and active d
   \vspace{-0.2in}
  \label{fig:walkingCycle} 
  \end{figure} 
-The walking cycle around which the MIT control scheme was designed is shown in Figure \ref{fig:walkingCycle}.  The individual control strategies in the various phases of the walking cycle are highlighted in Figure \ref{fig:walkingCycle}.  For the hip there are four distinct strategies.  During the thrust phase, the hip exerts a torque that helps to raise the center of mass of the system.  During the extension spring phase, a virtual spring stiffness allows energy to be virtually stored while the center of mass moves forward.  During the swing assist phase the virtual energy is released, resulting in a torque being applied which assists in swinging the leg forward.  Finally, in leg retraction a torque is applied to help with foot placement and weight acceptance.  A diagram that illustrates how the sensors in the shank and hip joint are used to switch between these various phases is show in Figure \ref{fig:hipControl} 
+The walking cycle around which the MIT control scheme was designed is shown in Figure \ref{fig:walkingCycle}.  The individual control strategies in the various phases of the walking cycle are highlighted in Figure \ref{fig:walkingCycle}.  For the hip there are four distinct strategies.  During the thrust phase, the hip exerts a torque that helps to raise the center of mass of the system.  During the extension spring phase, a virtual spring stiffness allows energy to be virtually stored while the center of mass moves forward.  During the swing assist phase the virtual energy is released, resulting in a torque being applied which assists in swinging the leg forward.  Finally, in leg retraction a torque is applied to help with foot placement and weight acceptance.  A diagram that illustrates how the sensors in the shank and hip joint are used to switch between these various phases is show in Figure \ref{fig:hipControl}.
  \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/MIT/hipControl}
@@ -93,7 +93,7 @@ The walking cycle around which the MIT control scheme was designed is shown in F
  \label{fig:hipControl} 
  \end{figure}  
  
- The knee controller in the MIT exoskeleton effectively functions independently from he hip controller.  During knee strike, the variable damper in the knee exerts a torque proportional to the rotational velocity of the knee joint.  A residual magnetic field remains in the knee joint after it is turned off, creating a resistive torque.  The knee therefore needs to be actively demagnetized at full extension during the last phase of stance to allow it to swing freely during the subsequent swing phase.  The state machine diagram that illustrates how the various phase transitions for the knee joint were implemented using the exoskeleton's on-board sensors is in Figure \ref{fig:kneeControl} 
+ The knee controller in the MIT exoskeleton effectively functions independently from he hip controller.  During knee strike, the variable damper in the knee exerts a torque proportional to the rotational velocity of the knee joint.  A residual magnetic field remains in the knee joint after it is turned off, creating a resistive torque.  The knee therefore needs to be actively demagnetized at full extension during the last phase of stance to allow it to swing freely during the subsequent swing phase.  The state machine diagram that illustrates how the various phase transitions for the knee joint were implemented using the exoskeleton's on-board sensors is in Figure \ref{fig:kneeControl}.
   \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/MIT/kneeControl}
@@ -113,7 +113,7 @@ The walking cycle around which the MIT control scheme was designed is shown in F
 % 
  
  
- \subsection{Opinion}
+ \subsection{Assessment and Recommendations}
  
  The MIT hardware and control system present a very well designed and thought-out system that focuses primarily on efficiency in design.  The series elastic linear ball screw hardware design seems to be a very smart way to implement efficient drives as well as to perform high fidelity force control.  The use of a strain gauge in the shank was also a novel means of measuring ground reaction forces.  This design may offer benefits in terms of repeatability over different operators as foot fall patterns for different users may include significant variations.
  
