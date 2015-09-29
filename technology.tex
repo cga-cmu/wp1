@@ -231,9 +231,8 @@ the power load on the HPU and the need for high performance force control.
 Any valves or additional hydraulic circuitry
 would have to have low internal leakage, and previous attempts at
 pressure control valves have had leakage problems.
-Gear shifts and variable transmissions would allow the maximum torque
-and maximum no-load speed of the joint to be increased (also true
-for all other actuation types).
+It is possible that operating at higher pressures would lead to improved
+system performance.
 
 {\bf Integrated Moog hydraulic actuator:}
 Moog is developing an integrated hydraulic actuator with built-in
@@ -244,6 +243,17 @@ with Moog to develop the firmware for the builtin controllers. I
 think it is a little early to say how well they work, but it looks
 promising.}
 \url{http://www.designnews.com/document.asp?doc_id=277754&dfpPParams=ht_13,kw_robotics,kw_41,aid_277754&dfpLayout=article}
+
+Simple attachements of a linear actuator to a rotary joint lead to
+a sinusoidal dependence of the moment arm on the joint angle.
+The moment arm can be made more constant or programmed with
+a different dependence of moment arm on angle (a static gear shift)
+by using multi-bar transmissions,
+or by using tendon attachments with antagonistic actuators.
+Note that the actuators do not need to be symmetric.
+Gear shifts and variable transmissions would allow the maximum torque
+and maximum no-load speed of the joint to be increased (also true
+for all other actuation types).
 
 \subsection{Reference Design: rotary electric}
 
