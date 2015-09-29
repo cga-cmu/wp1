@@ -32,9 +32,9 @@ A challenge in using air muscles is that force reduces quadratically as a functi
   \includegraphics[width=3.5in]{exos/figs/xor_air_muscle_force_vs_contraction.png}
 \end{figure}
 
-In implementation, the XoR uses rubber air muscles (MDSP-40) connected to pulleys via tendons and to EP regulators in the backpack (a constant pressure and cam system is being tested to reduce weight required for backpack air valves).  The electric actuator is a geared, 200W brushless DC motor (Maxon EC powermax 30) rated at 4.7 A, which transmits power to joints through a belt and pulley system with a 57.5 gear ratio. The motor is backdrivable with 0.12 Nm output torque and up to 34.5 Nm (for short duration) at every joint.  The design yields a relatively high range of motion (up to 120 degrees) with a 150 Nm load capacity.  However, experiments reveal the need for bi-directional pneumatic actuation at hip joints.
+In implementation, the XoR uses rubber air muscles (MDSP-40) connected to pulleys via tendons and to electro-pneumatic regulators in the backpack (a constant pressure and cam system is being tested to reduce weight required for backpack air valves).  The electric actuator is a geared, 200W brushless DC motor (Maxon EC powermax 30) rated at 4.7 A, which transmits power to joints through a belt and pulley system with a 57.5 gear ratio. The motor is backdrivable with 0.12 Nm output torque and up to 34.5 Nm (for short duration) at every joint.  The design yields a relatively high range of motion (up to 120 degrees) with a 150 Nm load capacity.  However, experiments reveal the need for bi-directional pneumatic actuation at hip joints.
 
-For sensing, XoR is equipped with \textbf{rotary encoders} at joints, an \textbf{IMU} in the backpack, \textbf{load cells} in the feet, and is networked to servers capable of providing \textbf{EMG}, NIRS, and EEG data.  A control PC running at 1 KHz, pulse counter, amplifiers, Digital IO are external and so not included in the weight of the unit.  Human operators are outfitted with a \textbf{goniometer}.
+For sensing, XoR is equipped with \textbf{rotary encoders} at joints, an \textbf{IMU} in the backpack, \textbf{load cells} in the feet, and is networked to servers capable of providing \textbf{EMG}, NIRS (near-infrared spectroscopy), and EEG (electroencephalogram) data.  A control PC running at 1 KHz, pulse counter, amplifiers, Digital IO are external and so not included in the weight of the unit.  Human operators are outfitted with a \textbf{goniometer}.
 
 
 \subsubsection{Control}
@@ -58,7 +58,7 @@ In hip tracking experiments, the team found EMG data to be helpful.  When using 
 
 \subsection{Assessment and Recommendations}
 
-The XoR prototype uses a promising hybrid actuation scheme to achieve both fast peak torque response and higher sustained torque while remaining lightweight.  It tracks human motion with feedback from a goniometer and feedforward control provided by EMG data.  These human intention / sensing modalities are both difficult to implement due to noise and calibration issues.  However, capturing the user intent is important, especially in the presence of external disturbances.  If the sensory system were improved (e.g, wearable ``robot skin'' sensing arrays), this exoskeleton design could be highly effective. 
+The XoR prototype uses a promising hybrid actuation scheme to achieve both fast peak torque response and higher sustained torque while remaining lightweight.  It tracks human motion with feedback from a goniometer and feedforward control provided by EMG data.  These human intention / sensing modalities are both difficult to implement due to noise and calibration issues.  However, capturing the user intent is important, especially in the presence of external disturbances.  If the sensory system were improved (see the discussion in Section~\ref{survey:recommend}), this exoskeleton design could be highly effective. 
 
 \nocite{*}
 \printbibliography[heading=subbibliography]

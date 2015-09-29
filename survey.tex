@@ -96,53 +96,29 @@ Each of these component technologies are reviewed as they relate to the hardware
 
 
 \section{Conclusions and Recommendations}
+\label{survey:recommend}
 
-All the (strength augmentation) exoskeletons we reviewed can be categorized into one of two general control categories.  The exoskeleton either directly measures user intent (e.g., from EMG data or human-exoskeleton interaction forces), or it estimates intent from measurements at exoskeleton joints and applies a sensitivity amplification strategy to shadow the wearer.  The first strategy is difficult to implement using standard sensing modalities.  For instance, EMG data is notoriously noisy and presents both modeling and calibration challenges.  It would also be extremely difficult to keep these sensors in place to obtain accurate readings in a combat scenario.  Similarly, many avoid the use of load cells for measurement of the human-exoskeleton interface fores to avoid outfitting the complicated sensor network required to accurate obtain interaction forces / torques (humans are compliant thus rigid attachment assumptions are typically inadequate).
+All the (strength augmentation) exoskeletons we reviewed can be categorized into two general control categories.  The exoskeleton either directly measures user intent (e.g., from EMG data or human-exoskeleton interaction forces), or it estimates intent from measurements at exoskeleton joints and applies a sensitivity amplification strategy to shadow the wearer.  The first strategy is difficult to implement using standard sensing modalities.  For instance, EMG data is notoriously noisy and presents both modeling and calibration challenges.  It would also be extremely difficult to keep these sensors in place to obtain accurate readings in dynamic environments or combat scenarios.  Similarly, many avoid the use of load cells for measurement of human-exoskeleton interface forces and the complicated sensor network required to accurately obtain interaction forces / torques (humans are compliant thus rigid attachment assumptions are typically inadequate).
 
-While sensitivity amplification strategies avoid these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for a combat exoskeleton.
+While sensitivity amplification strategies circumvent these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for highly dynamic exoskeletons operating in contact-rich environments.
+
+We emphasize that user intent is critical, and current sensing challenges must be addressed in order to develop dynamic exoskeletons capable of serving in combat scenarios.  As a stop-gap, it may be possible to combine low information density EMG (thresholded on/off muscle activation signals) and human force/torque or angular measurements to filter user intent.  Such an approach may prove useful in a hybrid strategy, filtering external disturbance forces during sensitivity amplification control.  As a longer term solution, we highlight research in the area of MEMs and nano-fabrication, which has lead to the development of new, flexible ``robotic skin'' sensing arrays.  Integrating these sensing arrays into operator clothing (or attaching directly to the exoskeleton), it may be possible to directly measure human interaction forces (i.e., estimating pressure / force and exoskeleton contact locations), which was not feasible in the recent past.  Dense sensing arrays add redundancy and can improve measurement reliability. We recommend further study and the development of more advanced sensory systems to address the challenges inherent in dynamic exoskeleton control.
+
+In addition to capturing user intent, it is important to develop accurate models of the human/exoskeleton system.  Feedback strategies, especially those based on force/torque control loops and series elastic actuation, are limited in bandwidth. Highly dynamic behaviors require feedforward models to reduce reliance on feedback and to allow lower-impedance feedback, which reduces resistive forces acting on the user.
+
+
+%% OTHER POINTS:
+% Model-based approaches are heavily reliant on accurate models 
+% Underactuated -- feedback linearization typically assumes fully actuated systems.
 
 
 
 \end{document}
 
 
-
-
-% \input{exos/exo-ul7}
-
-
-%\section{Discussion}
-%
-%Discussion to be written.
-%
-%\section{Conclusions and Recommendations}
-%
-%All the (strength augmentation) exoskeletons we reviewed can be categorized into one of two general control categories.  The exoskeleton either directly measures user intent (e.g., from EMG data or human-exoskeleton interaction forces), or it estimates intent from measurements at exoskeleton joints and applies a sensitivity amplification strategy to shadow the wearer.  The first strategy is difficult to implement using standard sensing modalities.  For instance, EMG data is notoriously noisy and presents both modeling and calibration challenges.  It would also be extremely difficult to keep these sensors in place to obtain accurate readings in a combat scenario.  Similarly, many avoid the use of load cells for measurement of the human-exoskeleton interface fores to avoid outfitting the complicated sensor network required to accurate obtain interaction forces / torques (humans are compliant thus rigid attachment assumptions are typically inadequate).
-%
-%While sensitivity amplification strategies avoid these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for a combat exoskeleton.
-%
-
-% \bibliographystyle{plain}
-% \bibliography{exo}
-
-%\end{document}
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
-
 Notes:
 
 See if the Hydraulic Lower Extremity Exo is sensitivity amp and if so change opinion so we don't favor the approach.
-
-Coordinate notes about sEMG and user intention -- BLEEX;
-
-Discussion blurb -- all these exos either measure user intention directly and have sensor noise and calibration challenges, or measure at the suit and perform amplification.  The amplification strategy is highly susceptible to outside disturbances and therefore not appropriate in combat situations.
-Combine the two with filtering or directly address the sensing challenge.
-
-Discussion blurb (pertains to IHMC and probably others) -- issues with high impedance torque control in practice.
 
 Talk a lot about drawbacks of SEAs in IHMC.  Are these included in MIT / RoboKnee?  (low control bandwidth is mentioned in RoboKnee).  
 We should have a blurb about the strengths/weakness of SEAs and possible options -- stiffer springs for force measurement and spring emulation for compliant control? 
