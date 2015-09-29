@@ -95,7 +95,10 @@ Discussion to be written.
 
 \section{Conclusions and Recommendations}
 
-Conclusions and Recommendations to be written.
+All the (strength augmentation) exoskeletons we reviewed can be categorized into one of two general control categories.  The exoskeleton either directly measures user intent (e.g., from EMG data or human-exoskeleton interaction forces), or it estimates intent from measurements at exoskeleton joints and applies a sensitivity amplification strategy to shadow the wearer.  The first strategy is difficult to implement using standard sensing modalities.  For instance, EMG data is notoriously noisy and presents both modeling and calibration challenges.  It would also be extremely difficult to keep these sensors in place to obtain accurate readings in a combat scenario.  Similarly, many avoid the use of load cells for measurement of the human-exoskeleton interface fores to avoid outfitting the complicated sensor network required to accurate obtain interaction forces / torques (humans are compliant thus rigid attachment assumptions are typically inadequate).
+
+While sensitivity amplification strategies avoid these sensing issues by estimating human intent from exoskeleton joint readings, they cannot distinguish between user generated torques and those produced by the environment.  As such, they end up amplifying noise and the user must react to stabilize the system.  This is also unacceptable for a combat exoskeleton.
+
 
 % \bibliographystyle{plain}
 % \bibliography{exo}

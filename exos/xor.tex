@@ -47,7 +47,7 @@ The XoR control strategy applied in \cite{XoRkinemExtraction2012} has two main c
 \end{figure}
 
 To avoid relying on high gain feedback, XoR incorporates user intent through EMG data.  The controller rectifies and low pass filters (10 Hz cut-off) data measured in the pilot's quadriceps femoris, tensor fasciae latate, gluteus medius, and tibialis anterior. 
-It sets desired joint angles and velocities, ${\bf x} = ({\bf \theta}, \dot{\bf \theta})$, from the EMG data, ${\bf u} = (EMG_1 \dots EMG_n)$, using a linear prediction model, 
+It sets desired joint angles and velocities, ${\bf x} = ({\bf \theta}, \dot{\bf \theta})$, from the EMG data, ${\bf u} = (EMG_1, \dots , EMG_n)$, using a linear prediction model, 
 \[{\bf x}(k+1) = \mA{\bf x}(k)+\mB{\bf u}(k),\].  
 The controller uses the angular measurements required to perform CCA and EMG data to derive the model's $\mA$ and $\mB$ terms.  The predicted state from EMG model provides the desired input to yet another PD controller: 
 \[\tau_i = K_p (\theta_i^d - \theta_i) + K_d (\dot\theta_i^d - \dot \theta_i),\] 
@@ -66,3 +66,7 @@ The XoR prototype uses a promising hybrid actuation scheme to achieve both fast 
 The figures in this section were obtained from \cite{xorDesign2011,XoRkinemExtraction2012}. Materials presented are based on the references above.
 
 \end{refsection}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../survey"
+%%% End:
