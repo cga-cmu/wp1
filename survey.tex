@@ -44,9 +44,9 @@
 
 \begin{document}
 
-\title{A Survey of Exoskeleton Control Architectures and
+\title{A Survey of Current Exoskeletons and Their Control Architectures and
 Algorithms\\
-(Draft 3.0)}
+(Draft 3.1)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
@@ -58,6 +58,29 @@ In the simplest case, where the environment around a robotic system remains rela
 \end{abstract}
 
 \section{Executive Summary}
+
+This paper surveys the following exoskeletons in detail:
+\begin{itemize}
+\item
+BLEEX: a ``minimal-sensing'' and aggressive model-based control design point.
+\item
+HAL: an EMG controlled exoskeleton.
+\item
+XoR: a hybrid Pneumatic/Electric-motor system.
+\item
+Body Extender: a fully actuated full body exoskeleton.
+\item
+IHMC MAE: an SEA-based torque controlled exoskeleton.
+\item
+MIT Exoskeleton: an attempt to take advantage of the passive dynamics
+of walking.
+\item
+Roboknee: an example of a single-joint exoskeleton.
+\end{itemize}
+
+We then list other systems in a variety of categories.
+
+\section{Introduction}
 
 This document summarizes what we have found to be several of the most relevant exoskeleton hardware systems and the associated controllers used to enable the hardware to effectively and safely interact with human operators.  As we further elaborate on in this document, the different systems that we summarize range from the relatively simple and dramatically underactuated single joint mechanisms to extremely complex and fully actuated whole-body solutions.  The controllers associated with these systems also ranged from solutions that implemented conceptually simple designs to those which made use of very novel design techniques and/or relatively developmental sensing and actuation technologies. 
 
@@ -99,6 +122,7 @@ Each of these component technologies are reviewed as they relate to the hardware
 
 \input{exos/exosText_roboKnee}
 
+\input{survey-atkeson}
 
 \section{Conclusions and Recommendations}
 \label{survey:recommend}
