@@ -68,8 +68,9 @@ The force control bandwidth of the RoboKnee actuator is dependent on the magnitu
 %  \vspace{-0.2in}
  \label{fig:roboKnee}   
  \end{figure}
- The exact length between actuator attachment points is not listed in the literature, but it appears as though the attachment points are at a minimum of one actuator stroke displacement away from each other. Thus, we assume a {\bf minimum moment arm of 30.5 cm} is a reasonable approximation.
- 
+ The exact length between actuator attachment points is not listed in the literature, but it appears that the attachment points are at minimum the
+stroke displacement (30.5cm) of the actuator away from each other.
+   
  RoboKnee uses a \textbf{linear potentiometer} spanning the spring retaining plates to measure displacement in the springs and subsequently to measure force at the actuator output.  The forces between the users foot and the ground are also measured using \textbf{single axis load cells}.  Potentiometers which measure the knee joint angle are also employed in this design.     
  
  The single actuator as well as control and sensor electronics are run using {\bf 4 kg of nickel-metal-hydride batteries, which give the system only about 30-60 minutes of heavy use}.
@@ -87,9 +88,9 @@ The force control bandwidth of the RoboKnee actuator is dependent on the magnitu
  
  \subsection{Assessment and Recommendations} 
  
- The RoboKnee is a relatively simple system that highlights several intelligent hardware and control design concepts.  The use of a linear ball screw with a series elastic element that enables high-fidelity force control is a very good idea. The idea of using the measured ground reaction forces to produce the desired knee joint torque is also interesting in the sense that it is very simple and relies on a minimal amount of information.
+ The RoboKnee is single-joint system that highlights several hardware and control design concepts that we generally support.  We again support the use of a linear ball screw with a series elastic element to enable high mechanical efficiency and high-fidelity force control in low to medium speed maneuvers. The concept of using measured ground reaction forces to directly produce desired knee joint torque is interesting in the sense that it is simple and relies on minimal information.
  
- The overall design of the RoboKnee mechanism is most likely not optimal, as it significantly increases the effective volume of the operator-system leg, but as a prototype, this concept offers interesting benefits.
+The largest potential issues with the RoboKnee are that the forces of the mechanism and any load carried by the operator are fully transferred through the users musculoskeletal structure.  Additionally, the large moment arm of the actuator significantly increases the effective volume of the operator-system leg, and as such may reduce overall mobility in densely-packed areas.
  
  The discussion as well as figures in this section are respectively based on and taken from \cite{robo_knee_2004}.  
  

@@ -101,9 +101,9 @@ Fully assembled, the actuator has a  {\bf torque limit of 80 Nm}, with a {\bf ve
  
  \subsection{Assessment and Recommendations}
  
- The design and use of series-elastic actuators is, in general, a good idea for many applications, but may be a problem for the highly dynamic maneuvers required by operators in the TALOS project.  In a large sense, bandwidth is everything in these suits due to the fact that behavior prediction is very complicated.  Simply put, 10Hz control bandwidth at the actuator may be too slow to safely react in dynamically changing environments. 
+The design of the IHMC MAE is in many ways centered around being able to perform high-fidelity force control.  In general we support the ability to perform force control using a direct measurement (or near direct) of the force/torque at the output of the transmission system.  Series-elastic actuators may provide a solution to this problem for a number of operational scenarios, but caution should be taken when considering this solution for highly dynamic behaviors, as the control bandwidth at the actuator may be too slow to safely react in dynamically changing environments. 
  
- The other issue with the IHMC is that it only addresses low-level control.  The designers have not specified how to generalize the process of generating torque / joint reference trajectories.  That said, other researchers do explicitly provide methods for generating desired trajectories in what amounts to a mid-level of a hierarchical control scheme.  Thus combining other approaches with the low-level, highly accuracy torque control provided by the novel SEAs presented in this section could offer a potentially good solution at the actuator level. 
+One potential other issue with the IHMC control design is that they only appear to address low-level control.  The designers have not specified how to generalize the process of generating torque / joint reference trajectories, in other words there is a lack of information with respect to the typical ``mid-level" of a hierarchical control scheme.  Thus combining other approaches with the low-level, highly accuracy torque control provided by the novel SEAs presented in this section could offer a potentially beneficial control solution.
  
 All of the figures as well as hardware and control specifications in this section are taken from \cite{ihmc_2009}.
  
