@@ -44,22 +44,23 @@
 
 \begin{document}
 
-\title{A Survey of Possible Exoskeleton Control Architectures and
-Algorithms\\
-(Draft 3.1)}
+\title{Possible Exoskeleton Control Architectures and Algorithms\\
+(Draft 4.0)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
 
 \maketitle
 
-\begin{abstract}
-Abstract to be written.
-\end{abstract}
-
 \section{Executive Summary}
 
-Executive Summary to be written.
+We recommend a red team that explores frequency domain control system
+design, as well as an emphasis on ``modern'' control in this paper.
+
+\section{Clickable web links}
+
+The web links (URLs) below can be clicked on to view, if your PDF viewer/browser supports that. On our browsers you actually have to click on the black
+part of a letter, not just in the blue box (if present).
 
 \section{Scope: What is this paper about?}
 
@@ -69,7 +70,8 @@ One goal is to address the question:
 {\it How do exoskeleton control approaches compare with 
 approaches to humanoid robot control?}
 A companion paper surveys implemented exoskeleton control architectures
-and algorithms [survey.pdf].
+and algorithms.\\
+\url{http://www.cs.cmu.edu/~cga/exo/survey.pdf}
 
 The focus is on exoskeleton control that allows a
 highly trained and top percentile athletic 
@@ -119,6 +121,14 @@ It is entirely possible that simple local low dimensional controllers
 designed using traditional (frequency domain) techniques will do
 quite well, especially if the appropriate sensors (such as 
 operator-exoskeleton force sensors) are available.
+It may even be the case that frequency domain techniques will handle
+structural modeling error (jello-like human operators, deformable materials
+(straps and pads, wires and hoses), and structural deformation and joint
+play in lightweight frames) better than the state space oriented techniques
+advocated here.
+
+We recommend a red team that explores frequency domain control system
+design, as well as an emphasis on ``modern'' control here.
 
 \subsection{Let's keep it simple}
 
@@ -151,7 +161,8 @@ Same for optimization methods.
 
 Same for constraint enforcement (such as avoiding self-collisions)
 in either optimization or feedback control (barrier
-Lyapunov functions (BLF)~\cite{IEEE06911561}).
+Lyapunov functions (BLF).\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6911561}
 
 Stability proofs of any of these methods should be viewed skeptically due
 to the unmodeled operator-exoskeleton and exoskeleton-world contact dynamics, 
@@ -188,13 +199,15 @@ to make it lower impedance and more like a force source as well.
 \section{Recommended Control Architecture}
 \label{sec:architecture}
 
-We recommend the following hierarchical control architecture~\cite{IEEE06907051}:
+We recommend the following hierarchical control architecture.
+% review? \url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6907051}
 
 \subsection{Low Level Control (LLC)}
 
 Low level control presents an API (Application Programmer Interface)
 for higher control levels
-to access the actuators, sensors, and other robot hardware~\cite{IEEE07271219}.
+to access the actuators, sensors, and other robot hardware.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7271219}\\
 It implements high servo rate processing including feedback control and online
 optimization.
 This level provides an idealization of the exoskeleton in two ways: 
