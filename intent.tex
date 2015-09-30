@@ -32,27 +32,36 @@
 \begin{document}
 
 \title{Estimating Operator Intent\\
-(Draft 3.0)}
+(Draft 4.0)}
 
 \author{Alex Ansari, Christopher G. Atkeson, Howie Choset, and Matthew Travers\\
 Carnegie Mellon University}
 
 \maketitle
 
-\begin{abstract}
-Abstract to be written.
-\end{abstract}
-
 \section{Executive Summary}
 
-Executive Summary to be written.
+\begin{enumerate}
+\item
+We recommend using a Bayesian {\bf (probabilistic) framework}
+for intent recognition and prediction.
+\item
+We recommend developing an intent prediction system that can use
+as {\bf many sensors and measurements} of the operator as are possible.
+\item
+We recommend each exoskeleton controller
+to be used by and {\bf optimized for a single operator.}
+A substantial investment in capturing the operators normal behavior,
+operator training and learning, and controller customization should be made.
+\end{enumerate}
 
 \section{Scope: What is this paper about?}
 
 This paper surveys state of the art technology to recognize
 and predict exoskeleton
 operator intent.
-A companion paper surveys current operator/exoskeleton interfaces [survey.pdf].
+A companion paper surveys current operator/exoskeleton interfaces.\\
+\url{http://www.cs.cmu.edu/~cga/exo/survey.pdf}
 
 The focus is on intent estimation that allows a
 highly trained and top percentile athletic 
@@ -82,7 +91,9 @@ tracking tissue parameters or implanted markers.
 Predictive models of human motion, a major topic of robot learning from\\
 observation/demonstration/imitation and computer animation,
 could be the subject of a future white
-paper~\cite{IEEE06913830}
+paper.\\
+%~\cite{IEEE06913830}
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6913830}\\
 \url{http://www.ri.cmu.edu/publication_view.html?pub_id=7891}
 
 \section{Introduction: Our point of view}
@@ -99,7 +110,7 @@ You are allowed to instrument your opponent. What sensors would you use?
 How would you interpret the sensors?
 
 Here is an example of a robot seeing and moving faster than a human, and
-consistantly beating a human opponent in rock-paper-scissors.
+consistantly beating a human opponent in rock-paper-scissors.\\
 \url{https://www.youtube.com/watch?v=Qb5UIPeFClM&feature=player_embedded}
 
 \section{Who is the customer of intent predictions?}
@@ -107,10 +118,10 @@ consistantly beating a human opponent in rock-paper-scissors.
 One customer of intent estimation is an exoskeleton control system.
 Other possible customers are online operator situation awareness,
 cognitive assistance
-and physical guidance,
+and physical guidance;
 command and squad visualization, situation awareness,
-coordination, and cognitive assistance,
-after-action reports, and new operator training and
+coordination, and cognitive assistance;
+after-action reports; and new operator training and
 operator learning from practice and coaching,
 We will focus on exoskeleton control in this paper.
 
@@ -153,7 +164,7 @@ running, jumping, kicking, and dodging.
 It may be useful to maintain a probability distribution of possible
 behaviors and reflexes at all times.
 
-I have attached an Appendix with pointers to online behavior
+We have attached an Appendix with pointers to online behavior
 recognition in related fields.
 
 \subsection{Utility functions}
@@ -167,7 +178,7 @@ optimization criteria and one-step-cost functions in optimal control.
 Estimated utility functions may have a predetermined form and unknown
 parameters and weights.
 Predicting optimization criteria is known as ``inverse optimal control''
-in optimal control and reinforcement learning.
+in optimal control and reinforcement learning.\\
 \url{http://www.ri.cmu.edu/publication_view.html?pub_id=7800}
 
 \subsection{Operator mental state}
@@ -260,13 +271,13 @@ Detection reaction time (the delay between an anticipated
 stimulus and the onset of movement) 
 for the operators we are interested in (young adults)
 is about
-190ms for visual input,
-160ms for auditory stimulus in a detection task,
+190ms for visual input and
+160ms for auditory stimulus in a detection task.
 It takes longer to recognize a signal from a set of ongoing events,
 and even longer if the operator has to make a choice based on the signal
 (go left or right, for example).
 Reaction times for complex actions are longer that reaction times
-for simple actions.
+for simple actions.\\
 \url{https://en.wikipedia.org/wiki/Mental_chronometry}.
 
 Reflexes in response to a changing load have the following approximate reaction times:
@@ -310,11 +321,12 @@ actually occur at the same time.�
 Typically, (full) force production trails EMG by about 30ms in fast
 muscles (electromechanical delay, due to calcium ion dynamics
 traveling from sarkoplasmatic reticulum to cross bridge binding
-sites, \url{http://www.ncbi.nlm.nih.gov/pubmed/527577})
+sites,\\
+\url{http://www.ncbi.nlm.nih.gov/pubmed/527577})
 \item
 total: 30-40ms (which is consistent with a reported 42ms delay
 between mechanical disturbance at ankle joint with Bowden cable jerk
-and resulting EMG.
+and resulting EMG.\\
 \url{http://jn.physiology.org/content/76/2/1112.short}
 \end{itemize}
 
@@ -324,7 +336,8 @@ and resulting EMG.
 
 We could have the control computer aware of the external world
 available to the operator. These sensors are described in
-a companion paper [technology.pdf].
+a companion paper.\\
+\url{http://www.cs.cmu.edu/~cga/exo/technology.pdf}
 
 \subsection{Brain signals}
 
@@ -333,23 +346,46 @@ It is possible that external measurements of brain activity
 even more usefully, operator decision making.
 It is also possible that implanted measurement devices could improve
 greatly over external measurement devices in terms of specificity,
-timing, and reliability of brain signal measurements.
-\url{https://en.wikipedia.org/wiki/Electroencephalography}
-Measurement of brain signals,
+timing, and reliability of brain signal measurements.\\
+\url{https://en.wikipedia.org/wiki/Electroencephalography}\\
+
+You can take two views of using brain signals to control robots or
+exoskeletons.
+The first view is that there is great promise, based on demos like
+the one at the recent World Cup:\\
+\url{https://www.youtube.com/watch?t=3&v=myNRcDIgfjw}\\
+\url{www.livescience.com/51940-mind-controlled-exoskeleton-robot.html}\\
+\url{http://www.ibtimes.co.uk/scientists-develop-mind-controlled-robotic-exoskeleton-that-uses-leds-help-paraplegics-walk-1516834}\\
+
+The second view is that the field is full of crap. In the above demo,
+the user looked at LEDs in order to get a measurable brain signal.
+This means that one could have just tracked where the user was looking
+(no brain signals used at all) to figure out what to do.
+In general the bit rate coming out of any brain-machine interface is
+very very low, so decoding the signal is going to be very very slow
+(probably longer than the reaction time of an athletic subject).
+
+Nevertheless, a middle of the road view might be beneficial. It is possible
+that brain signals,
 in the context of a wide range of other measurements,
 might improve overall intent estimation.
-
+It may be that brain signals are useful to tell us {\bf when} a behavior
+is happening, if they are not very useful for telling us {\bf what}
+behavior is happening.
 
 \subsection{EMG}
 
 Muscle electrical activity can be measured by surface electrodes
 (not very specific to particular muscles), needle electrodes (painful,
-especially during movement), and implanted electrodes~\url{http://www.medscape.com/viewarticle/542356_2}.
+especially during movement), and implanted electrodes.\\
+\url{http://www.medscape.com/viewarticle/542356_2}.\\
 Typical processing is to 
 high-pass filter at 20 Hz, rectify, low-pass filter at 6 Hz,
 offset by a small value, and amplify by some scaling factor
-to get a muscle activation estimate~\cite{IEEE07139980}.
-One can apply pattern recogntion to this signal~\cite{IEEE07222568}.
+to get a muscle activation estimate.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7139980}\\
+One can apply pattern recogntion to this signal.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7222568}\\
 
 Electromyography 
 signals are noisy and it is not easy to extract
@@ -362,6 +398,9 @@ Muscle movement leads to surface electrodes losing good contact,
 fully detaching, or
 even ripping off (especially for large fast
 movements, the worst time).
+
+Off the shelf electronics:\\
+\url{http://www.advancertechnologies.com/p/muscle-sensor-v3.html}
 
 \subsection{Operator-exoskeleton force sensing}
 
@@ -381,9 +420,15 @@ or through the arm (including various forms of reflective and transmissive
 ultrasound imaging tracking tissue parameters or implanted markers).
 Some or all operator-exoskeleton forces may not be measured, and must
 be estimated with some sort of Kalman filter.
-Muscle activation can be measured (electromyography (EMG))
-and force dynamics can be estimated to predict future operator-exoskeleton
-forces.
+EMG and FMG can be usefully combined.
+
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6913842}\\
+
+\begin{verbatim}
+[8] K. Kong and M. Tomizuka, “A Gait Monitoring System Based on Air
+Pressure Sensors Embedded in a Shoe,” IEEE/ASME Transactions on
+Mechatronics, vol. 14, pp. 358–370, 2009.
+\end{verbatim}
 
 \subsection{Operator state and motion}
 
@@ -401,15 +446,16 @@ We recommend each exoskeleton controller
 to be used by and optimized for a single operator.
 A substantial investment in capturing the operators normal behavior,
 operator training and learning, and controller customization should be made.
-This paper discusses ways to model individual movement style
-\url{http://humanmotion.ict.ac.cn/papers/2015P1_StyleTransfer/details.htm}
-This paper discusses activity forecasting
+This paper discusses ways to model individual movement style.\\
+\url{http://humanmotion.ict.ac.cn/papers/2015P1_StyleTransfer/details.htm}\\
+This paper discusses activity forecasting.\\
 \url{http://www.ri.cmu.edu/publication_view.html?pub_id=7250}
 
 Predictive models of human motion, a major topic of robot learning from\\
 observation/demonstration/imitation and computer animation,
 could be the subject of a future white
-paper~\cite{IEEE06913830}
+paper.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6913830}\\
 \url{http://www.ri.cmu.edu/publication_view.html?pub_id=7891}
 
 \section{Can the operator help?}
@@ -432,11 +478,7 @@ pointing to the side and rear or line of sight secure communications,
 for example. What about other controls, such as power assist level or
 thermal control? It is an open question
 how an operator can naturally express intent and
-control these additional degress of freedom?
-
-\section{Discussion}
-
-Discussion to be written.
+control these additional degress of freedom.
 
 \section{Conclusions and Recommendations}
 
@@ -463,56 +505,54 @@ to be used by and optimized for a single operator.
 A substantial investment in capturing the operators normal behavior,
 operator training and learning, and controller customization should be made.
 
-More Conclusions and Recommendations to be written.
-
 \section{Appendix: Online Behavior Recognition}
 
 \subsection{Review articles}
 
-{\it 3D Gestural Interaction: The State of the Field,}
-J. LaViola Jr.
+{\it 3D Gestural Interaction: The State of the Field,}\\
+J. LaViola Jr.\\
 \url{http://www.eecs.ucf.edu/~jjl/pubs/3dgesture.pdf}
 
 \subsection{On-line (streaming) action recognition/detection in videos}
 
 {\it Human Activity Prediction: Early Recognition of Ongoing Activities
-from Streaming Videos,}
-M. S. Ryoo
+from Streaming Videos,}\\
+M. S. Ryoo\\
 \url{http://michaelryoo.com/papers/iccv11_prediction_ryoo.pdf}
 
-{\it Max-Margin Early Event Detectors,}
-M. Hoai and F. De la Torre
+{\it Max-Margin Early Event Detectors,}\\
+M. Hoai and F. De la Torre\\
 \url{http://www.robots.ox.ac.uk/~minhhoai/papers/MMED_IJCV14.pdf}
 
 \subsection{On-line (streaming) action recognition/detection using (Kinect) pose data}
 
 {\it Exploring the Trade-off Between Accuracy and Observational Latency in
-Action Recognition,}
-C. Ellis, S. Z. Masood, M. Tappen, J. LaViola Jr., R. Sukthankar
+Action Recognition,}\\
+C. Ellis, S. Z. Masood, M. Tappen, J. LaViola Jr., R. Sukthankar\\
 \url{http://www.cs.ucf.edu/~mtappen/pubs/2012/ellis-et-al-ijcv-2012.pdf}
 
 {\it The Moving Pose: An Efficient 3D Kinematic Descriptor for Low-Latency
-Action Recognition and Detection,}
-M. Zanfir, M. Leordeanu, C. Sminchisescu
+Action Recognition and Detection,}\\
+M. Zanfir, M. Leordeanu, C. Sminchisescu\\
 \url{http://www.cv-foundation.org/openaccess/content_iccv_2013/papers/Zanfir_The_Moving_Pose_2013_ICCV_paper.pdf}
 
-{\it Real-time Classification of Dance Gestures from Skeleton Animation,}
-M. Raptis, D. Kirovski, H. Hoppe
+{\it Real-time Classification of Dance Gestures from Skeleton Animation,}\\
+M. Raptis, D. Kirovski, H. Hoppe\\
 \url{http://vision.ucla.edu/papers/raptisKH11.pdf}
 
 \subsection{Accelerometer-based and other sensors}
 
-{\it Activity Recognition on Streaming Sensor Data,}
-N. Krishnan, D. Cook
+{\it Activity Recognition on Streaming Sensor Data,}\\
+N. Krishnan, D. Cook\\
 \url{http://www.eecs.wsu.edu/~cook/pubs/pmc12.pdf}
 
 {\it Macro-class Selection for Hierarchical kNN Classification of Inertial
-Sensor Data,}
-C. McCall, K. Reddy, M. Shah
+Sensor Data,}\\
+C. McCall, K. Reddy, M. Shah\\
 \url{http://crcv.ucf.edu/papers/PECCS_2012.pdf}
 
 {\it Audio-based Human Activity Recognition Using Non-Markovian Ensemble
-Voting}
+Voting}\\
 \url{http://www2.informatik.uni-freiburg.de/~spinello/storkROMAN12.pdf}
 
 \bibliographystyle{plain}

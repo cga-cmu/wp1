@@ -54,8 +54,28 @@ Carnegie Mellon University}
 
 \section{Executive Summary}
 
-We recommend a red team that explores frequency domain control system
-design, as well as an emphasis on ``modern'' control in this paper.
+\begin{enumerate}
+\item
+We recommend using {\bf online optimization.} This architecture allows
+a wide variety of control approaches to be implemented and work together.
+\item
+We also recommend a {\bf red team} that explores traditional 
+{\bf frequency domain} control system
+design.
+\item
+We recommend applying as {\bf many sensors} as possible, and asking the performers
+to make it easy to add more by making the sensor network available in the design.
+This maximizes the probability of success
+with respect to control architectures and algorithms by enabling multiple control
+approaches to be implemented, refined, and support each other.
+\item
+We recommend a {\bf ``symbiotic'' control system design} should be used as a backup,
+in case more aggressive design philosophies such as ``invisible'' and ``natural''
+control system designs are not achievable.
+The ``symbiotic'' control system design
+expects the operator to adapt to the exoskeleton and its control,
+and has the control customized for the operator.
+\end{enumerate}
 
 \section{Clickable web links}
 
@@ -94,7 +114,7 @@ and focus on a lower body exoskeleton to support any payloads that
 are on the torso or head.
 
 %\section{Symbiosis and Autonomy, Handling Errors, and Superhuman Reflexes}
-A later white paper could discuss
+A future white paper could discuss
 possible combinations of response to user and exoskeleton
 autonomy including balance control; response to trips, slips,
 stumbles, and fumbles; task assistance and guidance (guide operator to
@@ -102,14 +122,40 @@ doorknob, button, or light switch); superhuman response to external
 perturbations such as projectiles and explosions; and autonomous
 execution (operator/exoskeleton symbiosis with multi-tasking)?
 
-A later white paper could discuss how to handle exoskeleton
+A future white paper could discuss how to handle exoskeleton
 malfunctions and damage to the
 system. Basically this boils down to fault detection, and switch over to
 an appropriate safe mode of operation.
 
-A later white paper could evaluate using simulation
+A future white paper could evaluate using simulation to assess
 the various control approaches' robustness to modeling error and unmodeled
 dynamics.
+
+A future white paper could survey human learning with respect to exoskeletons
+and teleoperation.\\
+\url{https://www.newscientist.com/article/dn28155-exoskeleton-reveals-the-lengths-we-go-to-save-energy-when-walking/}\\
+
+\begin{verbatim}
+K. E. Gordon, C. R. Kinnaird, and D. P. Ferris, “Locomotor adaptation
+to a soleus emg-controlled antagonistic exoskeleton,” J. Neurophysiol.,
+vol. 109, no. 7, pp. 1804–1814, 2013.
+\end{verbatim}
+
+A future white paper could survey adaptive control of exoskeletons.\\
+{\it
+The relationship between physical human-exoskeleton interaction and
+dynamic factors: using a learning approach for control applications}\\
+\url{http://info.scichina.com/sciFe/EN/abstract/abstract516165.shtml}
+
+A future white paper could survey the role of phase estimation, behavioral clocks,  phase reset events such as impacts, central pattern generators,
+and oscillator approaches in robot and exoskeleton control.
+
+\subsection{Related Surveys}
+
+Active Exoskeleton Control Systems: State of the Art (2012)\\
+\url{http://www.sciencedirect.com/science/article/pii/S1877705812026732}\\
+Our copy:\\
+\url{http://www.cs.cmu.edu/~cga/exo/info/Anam2012.pdf}
 
 \subsection{Bias}
 
@@ -124,11 +170,12 @@ operator-exoskeleton force sensors) are available.
 It may even be the case that frequency domain techniques will handle
 structural modeling error (jello-like human operators, deformable materials
 (straps and pads, wires and hoses), and structural deformation and joint
-play in lightweight frames) better than the state space oriented techniques
-advocated here.
+play in lightweight frames) better than the state space oriented 
+and other advanced techniques advocated here.
 
-We recommend a red team that explores frequency domain control system
-design, as well as an emphasis on ``modern'' control here.
+We recommend a red team that explores traditional 
+frequency domain control system
+design, as well as an emphasis on advanced control approaches.
 
 \subsection{Let's keep it simple}
 
@@ -313,11 +360,12 @@ or other types of feedforward reference tracking control.
 \subsubsection{LLC: Existing examples}
 
 Typically low level control is implemented
-by a high sampling rate global servo~\cite{Atlas-robot}
-or distributed limb or joint-level high sampling rate servos~\cite{Sarcos-robot}.
+by a high sampling rate global servo [Boston Dynamics Atlas humanoid]
+or distributed limb or joint-level high sampling rate servos
+[Sarcos Primus humanoid].
 Often, this controller is provided by the manufacturer of the robot
 or exoskeleton and runs on a separate computer system from the
-``user's'' or task/application controller~\cite{Sarcos,Atlas}.
+``user's'' or task/application controller.
 
 \subsection{``Phoneme'' Control}
 
@@ -366,7 +414,8 @@ or is completely done by the operator.
 In this architecture, state estimation to deal with sensor noise,
 disturbance estimation, and incomplete or
 redundant sensing is a separate process and is as independent as possible
-from the control method~\cite{certainty-eq,separation-prin}.
+from the control method.
+%~\cite{certainty-eq,separation-prin}.
 This makes evaluating different control methods much easier.
 Disturbance observers for disturbances such as
 moving support surfaces, contact or wind forces, and model errors
@@ -383,7 +432,8 @@ at all of these levels.
 The recommended control architecture is intuitive, abstracts the hardware 
 and lower level control in a straightforward way, is easy to program, and is
 commonly used. Variants of this architecture were used by almost all teams
-in the DARPA Robotics Challenge~\cite{}.
+in the DARPA Robotics Challenge.
+%~\cite{}.
 
 \subsection{What are the alternatives?}
 
@@ -405,10 +455,13 @@ due to the success and popularity of function approximation such as
 deep learning.
 
 An alternative approach to state estimation is to design state estimation
-and control laws simultaneously~\cite{LQG-LTR}. Another alternative is
+and control laws simultaneously.
+%~\cite{LQG-LTR}. 
+Another alternative is
 to have a controller with internal state, and design or learn a policy
 that works well, but does not have an explicit state estimation 
-part~\cite{lead-lag}.
+part.
+%~\cite{lead-lag}.
 
 \section{Operator and exoskeleton dynamics}
 
@@ -757,7 +810,8 @@ Computed torque control and feedback linearization are forms of online
 inverse dynamics.
 
 A key question is where does the desired acceleration $\ddot{\vq}_d$ come from?
-This is discussed in a companion paper [intent.pdf].
+This is discussed in a companion paper.
+\url{http://www.cs.cmu.edu/~cga/exo/intent.pdf}
 
 \section{Operator-Exoskeleton Impedance Control}
 
@@ -1114,7 +1168,8 @@ For a partial (operator) body
 exoskeleton we can rewrite the dynamics in terms of only those
 joints the exoskeleton actuates, and invert those dynamics to cancel exoskeleton
 effects on those joints. This is what has been done with the BLEEX exoskeleton,
-for example.~\cite{}.
+for example.
+%~\cite{}.
 
 However, {\bf online optimization}
 as described in the next Section can be used to perform full (operator)
@@ -1123,7 +1178,9 @@ finding desirable combinations of accelerations $\ddot{\vq}$, contact forces $\v
 and actuator commands $\vu_{\myx}$.
 
 Another approach to solving this problem is prioritized control, which does
-not include optimization~\cite{}. For reasons we will describe, we believe
+not include optimization.
+%~\cite{}
+For reasons we will describe, we believe
 online optimization is much more flexible and can handle programming exoskeleton
 behavior much better, so we will not discuss prioritized control further.
 
@@ -1140,7 +1197,9 @@ using quadratic programming.
 This approach is used
 to implement and trade off among the many control objectives described so far.
 
-Quadratic programming~\cite{Wikipedia} solves the following problem:
+Quadratic programming
+%~\cite{Wikipedia} 
+solves the following problem:
 Minimize
 \begin{equation}
 \vx^{\tr} \mQ \vx + c^{\tr} \vx
@@ -1338,27 +1397,31 @@ control by making their respective
 weight matrices similar.
 
 Another approach to shared control is allocating time slices or providing assistance
-on an as-needed basis~\cite{IEEE07140030}.
+on an as-needed basis.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7140030}
 
-This recent paper discusses shared control \url{http://www.ri.cmu.edu/pub_files/2015/7/Javdani15Hindsight.pdf}
+This recent paper discusses shared control\\
+\url{http://www.ri.cmu.edu/pub_files/2015/7/Javdani15Hindsight.pdf}
 
 \subsection{Full robot implementations.}
 
-Point to DRC papers by multiple groups.
+More details on our work and pointers to other work are in the papers at:\\
+\url{http://www.cs.cmu.edu/~cga/drc}.
 
 Figure~\ref{f:cga1} shows the architecture of our robot control based on hierarchical optimization. 
 It was successfully tested on our SARCOS Primus Humanoid
 and ATLAS (Boston Dynamics) platforms. Our ATLAS robot demonstrated rough terrain walking, ladder climbing, and full body manipulation in the DARPA Robotics Challenge (DRC) Trials of 2013. This work also received 
-a ``Best Oral Paper Award'' at Humanoids 2013~\cite{Feng/etal13}. Figure~\ref{fig:terrain_pic} shows a sequence of snapshots of ATLAS 
+a ``Best Oral Paper Award'' at Humanoids 2013. Figure~\ref{fig:terrain_pic} shows a sequence of snapshots of ATLAS 
 walking on rough terrain and plots of measured trajectories of the feet and the center of mass (CoM) for the DRC Trials.
 Figure~\ref{fig:ladder_pic} shows similar data for ladder climbing.
 In the DARPA Robotics Challenge Finals in 2015 our robot was the only
 biped that did not fall down or need to be rescued by 
-humans during the two days of the evaluations~\cite{cga-hum15}.
+humans during the two days of the evaluations.
 Our robot performance was also the most consistent across the two days.
 Because of the way the evaluations were run, we have only limited data
 from the actual evaluations. Videos of our robot's performance during the
-DRC Finals are available~\cite{cga-web-page}.
+DRC Finals are available.\\
+\url{http://www.cs.cmu.edu/~cga/drc}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1419,18 +1482,24 @@ contact force ($\mbox{contacts}_d(t)$) trajectories,
 and value, heuristic cost, or utility functions ($V_c(t)$)
 specifying tradeoffs between these quantities.
 We optimize with a time horizon of several seconds
-using Differential Dynamic Programming~\cite{ddp}.
+using Differential Dynamic Programming.
+%~\cite{ddp}.
 
 For walking, our planner is similar in spirit to Kajita's Preview Control for a Linear Inverted
-Pendulum Model (LIPM)~\cite{kajita03}. We are also using a CoM
+Pendulum Model (LIPM)
+%~\cite{kajita03}.
+We are also using a CoM
 model, reason about Zero Moment Point (ZMP), and use future information 
 to guide the current trajectory. However, our planner can be generalized to 
 nonlinear models and adjust foot steps while optimizing the CoM 
 trajectory. 
 %We explicitly add the vertical height in our  CoM model to handle height variations on rough terrain. 
-Like capture point methods~\cite{capture_pt}, we take the 
+Like capture point methods,
+%~\cite{capture_pt}, 
+we take the 
 next few steps into consideration but
-do not plan to come to rest at the end. Ogura et al.~\cite{wabian2} 
+do not plan to come to rest at the end. Ogura et al.
+%~\cite{wabian2} 
 investigated generating human-like walking with heel-strike and toe-off by 
 parameterizing the swing foot trajectory. In contrast, we use very simple rules to guide the low level controller to achieve the same behaviors.
 
@@ -1451,16 +1520,20 @@ The module performs inverse kinematics and dynamics to provide us with
 compliant motions and dynamic behaviors, while compensating for the
 effects of modeling errors.
 
-For the QP, we use a formulation developed in our group 
-\cite{Stephens-thesis,Whitman10,Whitman-thesis}. Unlike~\cite{mistry10,usc_id1} who 
-use orthogonal decomposition to project the allowable motions into the null 
+For the QP, we use a formulation developed in our group.
+%\cite{Stephens-thesis,Whitman10,Whitman-thesis}. 
+Unlike those
+% ~\cite{mistry10,usc_id1}
+who use orthogonal decomposition to project the allowable motions into the null 
 space of the constraint Jacobian, and minimize costs in the contact constraints and the commands, we directly 
 optimize a quadratic cost in terms of state accelerations, torques and contact 
 forces on the full robot model. This design choice allows us to trade off physical quantities of 
 interest. We are also able to directly reason about inequality constraints 
 such as center of pressure within the support polygon, friction, and torque 
 limits. Although it becomes a bigger QP problem, we are still able to solve it 
-in real time. Hutter el al.~\cite{eth_id} resolved redundancy in inverse 
+in real time. Hutter el al.
+%~\cite{eth_id}
+resolved redundancy in inverse 
 dynamics using a kinematic task prioritization approach that ensures lower 
 priority tasks always exist in the null space of higher priority ones. In 
 contrast to their strictly hierarchical approach, we minimize a sum of 
@@ -1521,7 +1594,9 @@ The coupled controller runs at 1kHz on SARCOS and 500Hz on ATLAS.
 
 Figure~\ref{f:cga1} does not include our state estimator, which provides
 appropriate state information to all other modules. The details of this work on state estimation are
-described in~\cite{xinji_com_est,Xinjilefu-thesis}.
+described in.
+\url{http://www.cs.cmu.edu/~cga/drc}.
+%~\cite{xinji_com_est,Xinjilefu-thesis}.
 
 \section{Operator-Exoskeleton Force Control using position controlled actuation}
 
@@ -1543,7 +1618,9 @@ to exoskeleton velocities or angular velocities.
 \end{equation}
 where $\dot{\vq}_d$ are the commanded exoskeleton joint velocities,
 $\mJ$ is an appropriate Jacobian matrix, $\mK_1$ is a gain matrix,
-and $\vf$ is the force vector to be controlled~\cite{IEEE06990981}.
+and $\vf$ is the force vector to be controlled.\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6990981}
+%~\cite{IEEE06990981}.
 
 Inverting a Jacobian matrix is problematic when the matrix is
 nearly singular.
@@ -1596,7 +1673,8 @@ we will discuss our approach to state estimation on humanoid robots here.
 State estimation to deal with sensor noise,
 disturbance estimation, and incomplete or
 redundant sensing is a separate process and is as independent as possible
-from the control method~\cite{certainty-eq,separation-prin}.
+from the control method
+%~\cite{certainty-eq,separation-prin}.
 This makes evaluating different control methods much easier.
 Disturbance observers for disturbances such as
 moving support surfaces, contact or wind forces, and model errors
@@ -1626,13 +1704,16 @@ quality IMU at the pelvis, and multiple low quality (but cheap) MEMs IMUs
 spread throughout the robot or exoskeleton. We also take into account feet and hand
 contact forces, which
 are measured. We use the full internal dynamics as the process model,
-assuming the root dynamics are known. See Chapter 3 of~\cite{Xinjelefu-thesis}.
+assuming the root dynamics are known. See Chapter 3 of\\
+\url{http://www.cs.cmu.edu/~xxinjile/pdf/main.pdf}\\
+%~\cite{Xinjelefu-thesis}.
 The internal dynamics are linearized and covariances updated
 by a separate process at a 100Hz rate.
 The joint positions are predicted by integrating the estimated velocities.
 
 For higher level (overall) state estimation,
-we developed a center of mass location and velocity estimator~\cite{}.
+we developed a center of mass location and velocity estimator.
+%~\cite{}.
 The center of mass filter is modeled as a multiple model EKF with contact switching
 to handle changes in support: single support, double support, and off the ground.
 We use the robot or exoskeleton
@@ -1664,7 +1745,8 @@ without a fall or need for a human rescue among all teams.
 The most significant contribution of the external force estimator is that it
 can detect when a large external force is being applied that might
 push the robot or exoskeleton over.
-We compute a ``corrected capture point'' (CCP)~\cite{capture},
+We compute a ``corrected capture point'' (CCP),
+%~\cite{capture},
 which is an offset to the current capture point.
 The offset 
 takes into account the estimated external force, represented as an offset
@@ -1698,8 +1780,8 @@ Our extended Kalman filter estimates $\hat{c}$, $\hat{\dot{c}}$, and
 $\hat{\Delta}$,
 taking into account the
 current center of mass height $z$. We assume a constant center of mass height
-in estimating the corrected capture point based on the estimated capture point
-as described in~\cite{capture}:
+in estimating the corrected capture point based on the estimated capture point:
+% as described in~\cite{capture}:
 \begin{equation}
 \widehat{CCP} = \widehat{CP} + \hat{\Delta} 
 = \hat{c} + \hat{\dot{c}}\hat{z}/g + \hat{\Delta}
@@ -1849,10 +1931,12 @@ joints are not well defined suggest this approach can be improved with actual
 acceleration measurements.
 It is now possible to distribute MEMs IMUs throughout the exoskeleton to
 improve both velocity and 
-acceleration estimation~\cite{Xinjilefu-thesis}, which should improve
+acceleration estimation
+%~\cite{Xinjilefu-thesis}, 
+which should improve
 Sensitivity Amplification Control.
 
-Disturbance observers~\cite{IEEE06197032}.
+% Disturbance observers~\cite{IEEE06197032}.
 
 \section{Robustness to parametric modeling error and unmodeled dynamics}
 
@@ -1872,7 +1956,7 @@ There are two questions to focus on:
 modeling error?}
 
 This question needs to be addressed using simulation, and is deferred to a 
-possible future white paper [robust.pdf].
+possible future white paper.
 
 \subsection{How can we make control more robust?}
 
@@ -1894,7 +1978,8 @@ to worry about how to get good models, and what to do about stuff that varies:
 contacts, operator body, operator behavior, payloads, attachments, etc.
 
 On the other hand, feedback control can lead to steady state or growing
-oscillation, which we colloquially refer to as being unstable or instability.
+oscillations, which we colloquially refer to as being unstable or an
+instability.
 Since walking and running are also oscillations which we refer to as stable
 behaviors, the technical meaning of the word ``stable'' is more complex than
 just ``it keeps moving'' or ``it doesn't do what the operator wants''.
@@ -1926,7 +2011,9 @@ it later.
 If the robustness of online optimization is not adequate, an alternative is
 combining feedforward and feedback control into one function and using gradient
 descent in simulation to improve the control robustness.
-One technique to do this is multiple-model design~\cite{acc12}.
+One technique to do this is multiple-model design.
+%~\cite{acc12}.
+\url{http://www.cs.cmu.edu/~cga/papers/acc2012-tr.pdf}
 
 Note that adaptive or learning
 control does not promise to improve the kind of robustness exoskeletons need. 
@@ -1950,6 +2037,11 @@ the high frequency noise amplified by the double differentiation process.
 
 \subsection{Integral admittance control}
 
+Integral admittance control is a refinement of 
+sensitivity amplification control.
+This section is quotes from:\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7139989}
+
 {\it [Exoskeletons] have the implicit property
 of causing a virtual modification of the dynamic response of
 the human limb. We use this property of the exoskeletons
@@ -1963,7 +2055,8 @@ our framework shapes the magnitude profile of the integral
 admittance (i.e. torque-to-angle relationship) of the coupled
 human-exoskeleton system, such that the desired assistance is
 achieved. This framework also ensures that the coupled stability
-and passivity are guaranteed.}~\cite{Nagarajan_etal_2015}
+and passivity are guaranteed.}
+%~\cite{Nagarajan_etal_2015}
 
 {\it ... the impedance of the coupled human-exoskeleton
 system needs to be reduced below that of the unassisted
@@ -1983,7 +2076,8 @@ achieved. Although the exoskeleton exhibits active behavior,
 which can be potentially destabilizing, the controller can be
 designed such that the coupled human-exoskeleton system
 is stable and passive. ... 
-}~\cite{Nagarajan_etal_2015}
+}
+%~\cite{Nagarajan_etal_2015}
 
 {\it
 ... Inertia compensation is more complex ...
@@ -2000,7 +2094,8 @@ filtered acceleration feedback, it can be shown that inertia
 reduction can be achieved. ...
 This work uses filtered acceleration
 feedback with a second-order low-pass Butterworth filter. ...
-}~\cite{Nagarajan_etal_2015}
+}
+%~\cite{Nagarajan_etal_2015}
 
 This is a form of frequency domain virtual model control.
 
@@ -2025,7 +2120,9 @@ command at the transition from the swing phase to the stance
 phase, a smoothing method is adopted. We also implemented
 a pre-transition method to take a foot off quickly for fast
 walking by predicting the change from the swing to the stance
-in advance.}~\cite{IEEE07222598}
+in advance.}\\
+%~\cite{IEEE07222598}
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7222598}
 
 %Bypass valves implement what Sarcos calls ``dangle''.
 
@@ -2141,22 +2238,25 @@ Exoskeleton control: Control the exoskeleton to generate the desired motions and
 desired contact forces, with the desired impedance or admittance.
 \end{enumerate}
 
-\section{Discussion}
+%\section{Discussion}
 
-Discussion to be written.
+%Discussion to be written.
 
 \section{Conclusions and Recommendations}
 
-Conclusions and Recommendations to be written.
+0) We recommend a red team that explores traditional 
+frequency domain control system
+design, as well as an emphasis on advanced control approaches.
 
-1) We recommend a particular control 
-overall architecture in Section~\ref{sec:architecture}.
+1) We recommend a particular overall control 
+architecture in Section~\ref{sec:architecture}.
 We do not expect this to be controversial.
 
 2) We recommend actuation that can be treated as force or torque sources.
 This is a potential problem for revolute electric actuation, as it
 is difficult to get necessary performance at low gear ratios (20-50)
 and fit the necessary torque sensing.
+We do not expect this to be controversial.
 
 3) We recommend the use of dynamic models of the exoskeleton, as has been done
 for the last decade starting with the BLEEX exoskeleton.
@@ -2202,45 +2302,17 @@ the risk of poor performance.
 
 6) We recommend a ``symbiotic'' control system design should be used as a backup,
 in case more aggressive design philosophies such as ``invisible'' and ``natural''
-control system designs are not achievable.,
+control system designs are not achievable.
 The ``symbiotic'' control system design
 expects the operator to adapt to the exoskeleton and its control,
 and has the control customized for the operator.
 
-7) We recommend making use of virtual model control specialize
+7) We recommend making use of virtual model control specialized
 for the various tasks. This can greatly increase operator/exoskeleton system
 performance over an exoskeleton that just carries a load and is otherwise
 ``invisible''.
 
-\bibliographystyle{plain}
-\bibliography{exo}
+%\bibliographystyle{plain}
+%\bibliography{exo}
 
 \end{document}
-
-I have incorporated your suggestions about robustness and underactuation
-in the white paper draft 3.1 now at:
-www.cs.cmu.edu/~cga/exo/control.pdf
-
-State estimation (to deal with sensor noise and to fuse disparate sensors)
-is discussed in section 21 and mentioned in 5.5, 5.8, 
-
-Robustness (sensitivity to modeling error and unmodeled dynamics) is
-discussed in section 22
-
-Underactuation is discussed in section 18 and the following sections.
-
-Shared control is discussed in section 19.5
-
-********************************************
-
-A future white paper could explore using simulation studies to experimentally
-assess robustness of various control approaches.
-
-A future white paper could explore using simulation studies to numerically
-estimate:
-1) how necessary is lateral actuation
-2) what is the penalty (weight, drag of actuator, complexity, maintenance)
-
-A future white paper could explore how to handle failure and damage, again using
-simulation.
-
