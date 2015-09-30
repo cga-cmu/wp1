@@ -52,7 +52,7 @@ A picture of the Hydraulic Lower Extremity Exoskeleton is presented in Figure \r
 
 \subsection{Actuator specifications}
 
-The Hydraulic Lower Extremity Exoskeleton's actuators were designed based on human walking data obtained at 4km/h with a 45 kg load.  Based on this data, the hydraulic capacity system was designed to provide 2050psi and 8lpm.  The individual actuators were designed to be double acting at the hip and knee flexion/extension joints. They provide a {\bf hip maximum thrust of 4 kN} and {\bf knee maximum thrust of 4 kN}.  Each joint joint includes three-way servo valves (M 200, Star-Hydraulic) to control rate and direction of bi-directionality, and bypass valves to connect the pump path to tank path for fast, energy-efficient motion during swing phases.   
+The Hydraulic Lower Extremity Exoskeleton's actuators were designed based on human walking data obtained at 4 km/h with a 45 kg load.  Based on this data, the hydraulic capacity system was designed to provide 2050 psi and 8 LPM.  The individual actuators were designed to be double acting at the hip and knee flexion/extension joints. They provide a {\bf hip maximum thrust of 4 kN} and {\bf knee maximum thrust of 4 kN}.  Each joint joint includes three-way servo valves (M 200, Star-Hydraulic) to control rate and direction of bi-directionality, and bypass valves to connect the pump path to tank path for fast, energy-efficient motion during swing phases.   
 
 The hydraulic system for each joint is shown in Figure \ref{fig:hydraulicSys}.
 A picture of the Hydraulic Lower Extremity Exoskeleton is presented in Figure \ref{fig:exoSuit}.
@@ -157,11 +157,11 @@ In addition to phase transition smoothing, a pre-transition control method is ap
  
  \subsection{Assessment and Recommendations}
  
-The mechanical as well as control design of the Hydraulic Lower Extremity Exoskeleton was straight-forward and contained many aspects which we support.  In particualr, we supported the use of off-the-shelf components in the hardware design and the addition of bypass valves to take advantage of passive dynamics during walking to produce more energy conscious behaviors.    
+The mechanical as well as control design of the Hydraulic Lower Extremity Exoskeleton was straight-forward and contained many aspects which we support.  In particular, we supported the use of off-the-shelf components in the hardware design and the addition of bypass valves to take advantage of passive dynamics during walking to produce more energy conscious behaviors.    
 
 The control system for this hardware effectively created a ``get out of the way design" using the torque sensed at the joints only.  In the short-term, this type of policy seems to be a good strategy.  The other highlight of the outlined control policy was the smoothing function which was used during phase transitions in the walking gait cycle.  A similar type of smoothing will most likely be beneficial in terms of operator experience for a variety of different operational modes in which different phase transitions occur, e.g., running, jumping, etc.
 
-One potential drawback of this hardware is the power system.  The documentation in \cite{dual_mode_2014} was sparse with respect to the exact specifications of the motor and energy storage device which powers the hydraulic system.  Additionally, in the long-term control design strategy, pure get out of the way control using measurements of the suit only has drawbacks, as mentioned previously.  This strategy will ultimately lead to a ``sensitivity amplification" -like behavior.  This strategy will thus be positively sensitive to user intended motion and negatively sensitive to external disturbances.  
+One potential drawback of this hardware is the power system.  The documentation in \cite{dual_mode_2015} was sparse with respect to the exact specifications of the motor and energy storage device which powers the hydraulic system.  Additionally, in the long-term control design strategy, pure get out of the way control using measurements of the suit only has drawbacks, as mentioned previously.  This strategy will ultimately lead to a ``sensitivity amplification" -like behavior.  This strategy will thus be positively sensitive to user intended motion and negatively sensitive to external disturbances.  
  
 The figures as well as hardware and control specifications in this section are taken from \cite{dual_mode_2015}.
  
