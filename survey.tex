@@ -54,7 +54,7 @@ Carnegie Mellon University}
 \maketitle
 
 \begin{abstract}
-In the simplest case, where the environment around a robotic system remains relatively fixed, controlling the dynamic interaction between the robot and the environment to achieve a specific physical objective is difficult.  In the case where an operator effectively wears the robot, i.e., a robotic exoskeleton, and would like to move through unknown and dynamically evolving environments, the situation becomes very complicated; the robotic system needs to account for the dynamics of multiple fundamentally linked systems and that are for the most part difficult to model.  The goal of this document is to provide a survey of the literature on the design, modeling, and control of robotic exoskeletons and to highlight what we believe are several of the most promising currently existing approaches to the complicated goal of enabling dynamic yet safe interaction between operators, exoskeletons, and the environment.  Where information was available, we summarize specific contributions related to actuation, power storage and generation, sensor type and distribution, mechanical architecture, as well as control system design for a number of different exoskeleton hardware systems.  Included as part of this report are recommendations on what we see as helpful components as well as potentially problematic issues in current systems and control approaches. 
+In the simplest case, where the environment around a robotic system remains relatively fixed, controlling the dynamic interaction between the robot and the environment to achieve a specific physical objective is difficult.  In the case where an operator effectively wears the robot, i.e., a robotic exoskeleton, and would like to move through unknown and dynamically evolving environments, the situation becomes very complicated; the robotic system needs to account for the dynamics of multiple fundamentally linked systems that are for the most part difficult to model.  The goal of this document is to provide a survey of the literature on the design, modeling, and control of robotic exoskeletons and to highlight what we believe are several of the most promising currently existing approaches to the complicated goal of enabling dynamic yet safe interaction between operators, exoskeletons, and the environment.  Where information was available, we summarize specific contributions related to actuation, power storage and generation, sensor type and distribution, mechanical architecture, as well as control system design for a number of different exoskeleton hardware systems.  Included as part of this report are recommendations on what we see as helpful components as well as potentially problematic issues in current systems and control approaches. 
 \end{abstract}
 
 \section{Executive Summary}
@@ -62,33 +62,39 @@ In the simplest case, where the environment around a robotic system remains rela
 This paper surveys the following exoskeletons in detail:
 \begin{itemize}
 \item
-{\bf BLEEX:} a ``minimal-sensing'' and aggressive model-based control design point.
+{\bf BLEEX:} a ``minimal-sensing'' and aggressive model-based control design that has influenced many subsequent exoskeletons.
 \item
-{\bf HAL:} an EMG controlled exoskeleton.
+{\bf HAL:} an EMG controlled exoskeleton, emphasizing recognizing operator intent.
 \item
-{\bf XoR:} a hybrid Pneumatic/Electric-motor system.
+{\bf XoR:} a hybrid Pneumatic/Electric-motor system, emphasizing the
+value of using multiple actuator types.
 \item
-{\bf Body Extender:} a fully actuated full body exoskeleton.
+{\bf Body Extender:} a fully actuated full body exoskeleton. This is the
+Iron Man option.
 \item
-{\bf HLEE:} uses torque control approach.
+{\bf HLEE:} a nice and well presented example of a torque control approach.
 \item
-{\bf IHMC MAE:} an SEA-based torque controlled exoskeleton.
+{\bf IHMC MAE:} an SEA-based torque controlled exoskeleton, emphasizing
+the value of mixing passive mechanisms (local energy storage) and active
+actuation.
 \item
 {\bf MIT Exoskeleton:} an attempt to take advantage of the passive dynamics
 of walking.
 \item
-{\bf Roboknee:} an example of a single-joint exoskeleton.
+{\bf RoboKnee:} an example of a single-joint exoskeleton. Powerful single-joint
+or minimal exoskeletons are one way to enable operators to move fast
+and naturally, and greatly increase their strength.
 \end{itemize}
 
 We then list other exoskeletons in a variety of categories.
 
 \section{Introduction}
 
-This document summarizes what we have found to be several of the most relevant exoskeleton hardware systems and the associated controllers used to enable the hardware to effectively and safely interact with human operators.  As we further elaborate on in this document, the different systems that we summarize range from the relatively simple and dramatically underactuated single joint mechanisms to extremely complex and fully actuated whole-body solutions.  The controllers associated with these systems also ranged from solutions that implemented conceptually simple designs to those which made use of very novel design techniques and/or relatively developmental sensing and actuation technologies. 
+This document summarizes what we have found to be several of the most relevant exoskeleton hardware systems and the associated controllers used to enable the hardware to effectively and safely interact with human operators.  As we further elaborate, the different systems that we summarize range from the relatively simple and dramatically underactuated single joint mechanisms to extremely complex and fully actuated whole-body solutions.  The controllers associated with these systems also ranged from solutions that implemented conceptually simple designs to those which made use of novel and more complex design techniques and/or relatively untried sensing and actuation technologies. 
 
-While this document does try to provide a relatively wide overview of existing exoskeleton technology, we did focus our efforts in this report to hardware systems meant to provide power augmentation and magnification as opposed the somewhat larger subset of exoskeletons designed primarily for rehabilitation.  This choice was made relative to both hardware as well as control system design considerations.  Exoskeletons designed for rehabilitation are not typically designed as stand-alone systems and are generally limited in the scope of operational modes in which they are capable of reliably providing assistance.  The hardware designed for the TALOS program will need to be high-powered with a power source that is capable of being carried such that the suit is a completely stand alone unit and will need to run a control system that is capable of providing transparent support to the operator in a large variety operational scenarios.
+While this document does try to provide a relatively wide overview of existing exoskeleton technology, we did focus our efforts in this report on hardware systems meant to provide power augmentation and magnification as opposed the somewhat larger subset of exoskeletons designed primarily for rehabilitation.  This choice was made relative to both hardware as well as control system design considerations.  Exoskeletons designed for rehabilitation are not typically designed as stand-alone systems and are generally limited in the scope of operational modes in which they are capable of reliably providing assistance.  The hardware designed for athletic operators and extreme tasks will need to be high-powered with a power source that is capable of being carried such that the suit is a completely stand alone unit and will need to run a control system that is capable of providing transparent support to the operator in a large variety of operational scenarios.
 
-To this end, the hardware systems that we chose to include summaries of in this document where the BLEEX, HAL, XOR, Body Extender, Hydraulic Lower Etremety, IHMC Mobility Assist, MIT, and RoboKnee exoskeletons.  The different systems covered many of the possible choices of actuation strategies, ranging from DC powered electric motors, to hydraulics, to pneumatics, and combinations thereof.  Several of the systems used standard to more novel transmission strategies as well, focusing on both efficient as well as high-fidelity force control implementations.  The transmission strategies included included standard hydraulic systems, hydraulic systems with actively controlled bypass valves, ball-screw mechanisms that include series elastic components, as well as pneumatically actuated pulley-tendon and belt-drive mechanisms. 
+To this end, the hardware systems that we chose to include summaries of in this document were the BLEEX, HAL, XoR, Body Extender, Hydraulic Lower Extremety, IHMC Mobility Assist, MIT, and RoboKnee exoskeletons.  The different systems cover many of the possible choices of actuation strategies, ranging from electric motors, to hydraulics, to pneumatics, and combinations thereof.  Several of the systems used novel transmission strategies as well, focusing on both efficient as well as high-fidelity force control implementations.  The transmission strategies included standard hydraulic systems, hydraulic systems with actively controlled bypass valves, ball-screw mechanisms that include series elastic components, as well as pneumatically actuated pulley-tendon and belt-drive mechanisms. 
 
 In terms of sensing and control technologies, the different exoskeletons covered in this report employed a wide variety of the spectrum of available options.  Sensors were used to measure everything from standard information, like angular displacement of the hardware system's joints, to more novel information, like muscle activity of the user using EMG technology.  Sensor information was used as the basis for a variety of different closed and open-loop control system designs, ranging from straight-forward force control and trajectory following to novel approaches of fully actuated feedback linearization and sensitivity amplification strategies.  
 
