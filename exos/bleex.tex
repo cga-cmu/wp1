@@ -38,23 +38,23 @@ total rotation internal & $35^\circ$ & N/A & N/A \\ \hline
 
 \subsubsection{Control}
 
-The BLEEX team has successfully implemented both sensitivity amplification \cite{sesitivityAmpPaper2005} and a hybrid assitive control scheme \cite{bleex_hybrid_control_2006} that switches (based on gait phase) between sensitivity amplification and a position control regulating desired torque. This section focuses on sensitivity amplification, as the hybrid assitive strategy did not perform as well in walking trials.
+The BLEEX team has successfully implemented both sensitivity amplification \cite{sesitivityAmpPaper2005} and a hybrid assistive control scheme \cite{bleex_hybrid_control_2006} that switches (based on gait phase) between sensitivity amplification and a position control regulating desired torque. This section focuses on sensitivity amplification, as the hybrid assistive strategy did not perform as well in walking trials.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=3.5in]{exos/figs/bleex_support_phases.png}
 \end{figure}
 
-In its sensitivity amplification implementation, BLEEX controllers attempt to minimize interaction forces between the human pilot and the exoskeleton. However, the BLEEX team makes a point to avoid direct measurements of the interaction force between the human and the exoskeleton suit.  They highlight difficulties in properly outfitting humans with necessary sensing equipment and challenges in modeling the interaction between the human and exoskeleton (e.g., non-rigid, non-fixed contact points).  Instead, the team develops controllers based on an inverse dynamic model (in the saggital plane) of only the exoskeleton.  
+In its sensitivity amplification implementation, BLEEX controllers attempt to minimize interaction forces between the human pilot and the exoskeleton. However, the BLEEX team makes a point to avoid direct measurements of the interaction force between the human and the exoskeleton suit.  They highlight difficulties in properly outfitting humans with necessary sensing equipment and challenges in modeling the interaction between the human and exoskeleton (e.g., non-rigid, non-fixed contact points).  Instead, the team develops controllers based on an inverse dynamic model (in the sagittal plane) of only the exoskeleton.  
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=3.5in]{exos/figs/bleex_1dof_ex.png}
 \end{figure}
 
-The BLEEX sensitivity amplification control strategy models the torque applied by the human pilot on the exoskeleton as ${\bf d}$ (assuming no outside disturbances).   Neglecting gravity, the exokeleton angular velocity is modeled as 
+The BLEEX sensitivity amplification control strategy models the torque applied by the human pilot on the exoskeleton as ${\bf d}$ (assuming no outside disturbances).   Neglecting gravity, the exoskeleton angular velocity is modeled as 
 \[\vv = \mG \vr + \mS {\bf d} ,\] 
-where $\mG$ is the transfer function from actuator inputs ($\mG$ is the exoskeleton's dynamics), $\vr$ is the actuator input, and $\mS$ is the sensitivity or transfer function from human torque to exokeleton angular velocity. 
+where $\mG$ is the transfer function from actuator inputs ($\mG$ is the exoskeleton's dynamics), $\vr$ is the actuator input, and $\mS$ is the sensitivity or transfer function from human torque to exoskeleton angular velocity. 
 
 \begin{figure}[ht]
   \centering

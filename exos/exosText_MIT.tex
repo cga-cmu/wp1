@@ -67,13 +67,13 @@ The team selected a {\bf 150W Maxon RE40 Brushed DC motor} for the actuator  bas
  \label{fig:MITsuit}   
  \end{figure} 
 % 
- The interface between the suit and operator consists of shoulder straps, a compliant waist belt, thigh cuffs, and a shoe connection.  The MIT exoskeleton employs a custom-built sensor that measures the interaction force between the exoskeleton and the operator?s thigh. The sensor consisted of a spring pack, where the deflection of the passive springs was measured with a spring-loaded linear potentiometer.  
+ The interface between the suit and operator consists of shoulder straps, a compliant waist belt, thigh cuffs, and a shoe connection.  The MIT exoskeleton employs a custom-built sensor that measures the interaction force between the exoskeleton and the operator's thigh. The sensor consisted of a spring pack, where the deflection of the passive springs was measured with a spring-loaded linear potentiometer.  
 
- The exoskeleton implements a {\bf variable damper knee mechanism} in the flexion/extension degree of freedom using a magnetorheological damper.  The damper can exert a {\bf maximum braking torque of 60 Nm and consums on average 1W of electrical power}.  Additionally, a linear spring at the ankles captures negative energy during dorsilflexion.  The energy stored is released during plantar flexion to add energy to the system as the foot comes off the ground. A urethane spring (247 kN/m) is used as a liner spring in a lever compression assembly.  With a lever arm of 0.0381 m, the assembly yields a spring rotary stiffness of 356 Nm/rad. 
+ The exoskeleton implements a {\bf variable damper knee mechanism} in the flexion/extension degree of freedom using a magnetorheological damper.  The damper can exert a {\bf maximum braking torque of 60 Nm and consumes on average 1W of electrical power}.  Additionally, a linear spring at the ankles captures negative energy during dorsilflexion.  The energy stored is released during plantar flexion to add energy to the system as the foot comes off the ground. A urethane spring (247 kN/m) is used as a liner spring in a lever compression assembly.  With a lever arm of 0.0381 m, the assembly yields a spring rotary stiffness of 356 Nm/rad. 
  
  A unidirectional spring assembly is also used in the hip ab/adduction degree of freedom.  The spring allows the hip to freely abduct.  The effective rotary stiffness of the spring assembly is 96 Nm/rad in order to provide the 8 Nm required during adduction.
 
-The suit uses a 48V battery pack and is instrumented with \textbf{rotary potentiometers} at the hip and knee.  Additionally, \textbf{strain gauges} were placed on the structure of the exoskeleton shank to measured sagittal bending moment and compression force.
+The suit uses a 48V battery pack and is instrumented with \textbf{rotary potentiometers} at the hip and knee.  Additionally, \textbf{strain gages} were placed on the structure of the exoskeleton shank to measured sagittal bending moment and compression force.
  
  
  \subsection{Control Specifications}
@@ -96,7 +96,7 @@ The walking cycle around which the MIT control scheme was designed is shown in F
  \label{fig:hipControl} 
  \end{figure}  
  
- The knee controller in the MIT exoskeleton effectively functions independently from he hip controller.  During knee strike, the variable damper in the knee exerts a torque proportional to the rotational velocity of the knee joint.  A residual magnetic field remains in the knee joint after it is turned off, creating a resistive torque.  The knee therefore needs to be actively demagnetized at full extension during the last phase of stance to allow it to swing freely during the subsequent swing phase.  The state machine diagram that illustrates how the various phase transitions for the knee joint were implemented using the exoskeleton's on-board sensors is in Figure \ref{fig:kneeControl}.
+ The knee controller in the MIT exoskeleton effectively functions independently from the hip controller.  During knee strike, the variable damper in the knee exerts a torque proportional to the rotational velocity of the knee joint.  A residual magnetic field remains in the knee joint after it is turned off, creating a resistive torque.  The knee therefore needs to be actively demagnetized at full extension during the last phase of stance to allow it to swing freely during the subsequent swing phase.  The state machine diagram that illustrates how the various phase transitions for the knee joint were implemented using the exoskeleton's on-board sensors is in Figure \ref{fig:kneeControl}.
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=3.in]{exos/figs/MIT/kneeControl}
@@ -118,7 +118,7 @@ The walking cycle around which the MIT control scheme was designed is shown in F
  
  \subsection{Assessment and Recommendations}
  
- The MIT hardware and control system present a well designed system that focuses primarily on efficiency in design.  We generally support the series-elastic linear ball screw hardware design for their mechanical efficiency as well as ability to perform high fidelity force control.  Although, these drives will again be limited by bandwidth issues in highly-dynamic maneuvers.  The use of a strain gauge in the shank was also a novel means of measuring ground reaction forces.  This design may offer benefits in terms of repeatability over different operators, as foot fall patterns may include significant variations for different users or even in the same user in different environments.
+ The MIT hardware and control system present a well designed system that focuses primarily on efficiency in design.  We generally support the series-elastic linear ball screw hardware design for their mechanical efficiency as well as ability to perform high fidelity force control.  Although, these drives will again be limited by bandwidth issues in highly-dynamic maneuvers.  The use of a strain gage in the shank was also a novel means of measuring ground reaction forces.  This design may offer benefits in terms of repeatability over different operators, as foot fall patterns may include significant variations for different users or even in the same user in different environments.
  
  The details on the controllers were somewhat sparse in the sense that, at least in \cite{mit_control_2006}, the exact means through which the added torques discussed above were derived was not provided.  Overall, we support the design of the controllers in the sense that they explicitly took the biomechanics of walking into account in their design and implementation.  A similar approach for a variety of different behaviors may be very beneficial.
  

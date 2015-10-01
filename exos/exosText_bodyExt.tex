@@ -82,7 +82,9 @@ The authors in \cite{body_control_2012} use a decoupling strategy in their contr
 \end{equation}
 where, ${\bf V_T}$ is the trunk velocity, $\mG_{iT}$ the gravitational effect of the trunk on the limb, $\mB_{iT}$ the inertia of the trunk acting on the limb, and $\mC_{iT}$ the trunk Coriolis and centrifugal term.  Note that ${\bf V_T}$ and $\dot{{\bf V}}_{\bf T}$ are directly measured through the accelerometer and gyroscope in the trunk.
 
-The feedback linearizing controller in \cite{} operates under two fundamental assumptions and only appears to relate directly to the case of a single manipulator arm.  The first assumption of the controller is that the mass and inertial properties of an object being manipulated are estimated online.  The second is that the forces measured between the operator and suit can be modeled as
+The feedback linearizing controller in 
+%\cite{}
+operates under two fundamental assumptions and only appears to relate directly to the case of a single manipulator arm.  The first assumption of the controller is that the mass and inertial properties of an object being manipulated are estimated online.  The second is that the forces measured between the operator and suit can be modeled as
 \begin{equation}
 \vF_s = \mM_p \dot{\vV}_e + \vG_p,
 \label{eq:forceEq}
@@ -113,13 +115,16 @@ The main difference in this case is that the controller here explicitly compensa
  
 \subsection{Assessment and Recommendations}
 
-The Body Extender suit is one of the only fully-actuated upper and lower extremity exoskeletons available today.  Clearly, for the task of handling extremely heavy objects, a fully actuated suit may be the best option, but, generally speaking, having the addition weight due to actuating every degree of freedom in the suit is not ideal when considering dynamic operation.  
+The Body Extender suit is one of the only fully-actuated upper and lower extremity exoskeletons available today.  Clearly, for the task of handling extremely heavy objects, a fully actuated suit may be the best option, but, generally speaking, having the additional weight due to actuating every degree of freedom in the suit is not ideal when considering dynamic operation.  
 
 The controllers highlighted in \cite{body_control_2012} do present some novel components.  For example, using a regressor to estimate unknown external forces may be an idea which is directly applicable to a variety of different projects.  Note that in the case of the Body Extender, this regression is dependent on knowing the location of the external force relative to the suit, the manipulator end effectors.  Thus, an extension of this idea, possibly using a lager distribution of sensors to measure external forces, is necessary to extend this approach more generally.  
 
 The way that the Body Extender control uses operator-robot measured interaction forces to generate desired trajectories around which a stabilizing controller is designed is generally an idea that we support.  Note that, like any of the model-based control approaches outlined in the exoskeleton literature the feedback linearizing controller in this work is dependent on knowing the model of the robot hardware with a relatively high-level of fidelity.  
 
 In terms of the controlling of the overall suit, i.e., locomotion in addition to manipulation, it was difficult to find any papers that discussed more than upper-body single-arm control of a manipulated object for the Body Extender hardware.  The stated strategy of decoupling the individual limbs from each other seems somewhat feasible, but is limited relative to coordinated limb control. 
+
+The speed of the actuators (approximately 60 deg/s) is far to slow for
+dynamic human movement.
 
  The mechanical specifications as well as figures related to mechanical design for the Body Extender system discussed in this section are based on and taken from \cite{body_design_2011}.  The discussion of the control system is based on work presented in \cite{body_control_2012}.
 

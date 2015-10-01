@@ -16,9 +16,9 @@ The XoR is a prototype light-weight, lower-body exoskeleton that uses a hybrid p
   \includegraphics[width=3.5in]{exos/figs/xor_joint_rom.png}
 \end{figure}
 
-The XoR weighs 30kg and includes 10 DOF with 6 active joints (flexion / extension of hip, knee, and ankles) and 6 passive (hip abduction/adduction joints, hip rotation, and ankle adduction/abduction).  The active joints are powered by \textbf{hybrid actuators} comprised of an \textbf{air muscle} and an \textbf{electric motor}.  The hybrid actuation scheme uses a unilateral air muscle layout to compensate for gravity and bilateral electric motors with relatively small gear ratio (57.5) to serve as the dynamic compensator.
+The XoR weighs 30kg and includes 10 DOF with 6 active joints (flexion / extension of hip, knee, and ankles) and 6 passive (hip abduction/adduction joints, hip rotation, and ankle adduction/abduction).  The active joints are powered by \textbf{hybrid actuators} comprised of an \textbf{air muscle} and an \textbf{electric motor}.  The hybrid actuation scheme uses a unilateral air muscle layout to compensate for gravity and bilateral electric motors with a relatively small gear ratio (57.5) to serve as the dynamic compensator.
 
-The actuation scheme is complementary in that the electric motors have a quick response time and produce high peak torque for short amounts of time, while air muscles have a delayed response (true of pneumatic systems in general due to the compressibility of air) with better power density and sustained torque.  The hybrid drive system sums the two to develop a desired torque profile that achieves the benefits of both and reduces weight and motor size.  The system offers high torque control with negligable stick-slip and backdrivability.
+The actuation scheme is complementary in that the electric motors have a quick response time and produce high peak torque for short amounts of time, while air muscles have a delayed response (true of pneumatic systems in general due to the compressibility of air) with better power density and sustained torque.  The hybrid drive system sums the two to develop a desired torque profile that achieves the benefits of both and reduces weight and motor size.  The system offers high torque control with negligible stick-slip and backdrivability.
 
 \begin{figure}[ht]
   \centering
@@ -48,12 +48,12 @@ The XoR control strategy applied in \cite{XoRkinemExtraction2012} has two main c
 
 To avoid relying on high gain feedback, XoR incorporates user intent through EMG data.  The controller rectifies and low pass filters (10 Hz cut-off) data measured in the pilot's quadriceps femoris, tensor fasciae latate, gluteus medius, and tibialis anterior. 
 It sets desired joint angles and velocities, ${\bf x} = ({\bf \theta}, \dot{\bf \theta})$, from the EMG data, ${\bf u} = (EMG_1, \dots , EMG_n)$, using a linear prediction model, 
-\[{\bf x}(k+1) = \mA{\bf x}(k)+\mB{\bf u}(k),\].  
+\[{\bf x}(k+1) = \mA{\bf x}(k)+\mB{\bf u}(k),\]  
 The controller uses the angular measurements required to perform CCA and EMG data to derive the model's $\mA$ and $\mB$ terms.  The predicted state from EMG model provides the desired input to yet another PD controller: 
 \[\tau_i = K_p (\theta_i^d - \theta_i) + K_d (\dot\theta_i^d - \dot \theta_i),\] 
 with gains of $K_p = 1000$ and $K_d = 100$.
 
-In hip tracking experiments, the team found EMG data to be helpful.  When using EMG signals, XoR achieved a mean squared error of $1.8E^{-3}$.  Without the EMG data, the mean squared error increased to $2.1$.  Additional experiments confirm the air muscles can effectively perform gravity compensation when used in conjunction with electric actuators (to correct for torque errors induced by inaccuracies in the model mapping position to toque in air muscles).
+In hip tracking experiments, the team found EMG data to be helpful.  When using EMG signals, XoR achieved a mean squared error of $1.8E^{-3}$.  Without the EMG data, the mean squared error increased to $2.1$.  Additional experiments confirm the air muscles can effectively perform gravity compensation when used in conjunction with electric actuators (to correct for torque errors induced by inaccuracies in the model mapping position to torque in air muscles).
 
 
 \subsection{Assessment and Recommendations}
