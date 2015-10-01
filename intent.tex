@@ -50,12 +50,17 @@ for intent recognition and prediction.
 We recommend developing an intent prediction system that can use
 as {\bf many sensors and measurements} of the operator as possible.
 \item
-We seriously consider {\bf implanting devices and markers} in operators.
+We recommend investigating recent developments in {\bf robot skin} to improve
+operator-exoskeleton force estimation.
 \item
 We recommend each exoskeleton controller
 to be used by and {\bf optimized for a single operator.}
 A substantial investment in capturing the operator's normal behavior,
 operator training and learning, and controller customization should be made.
+\item
+We recommend investigating {\bf implanting devices and markers} in operators.
+For users whose lives depend on the exoskeleton,
+it might be worth considering implanted devices.
 \end{enumerate}
 
 \section{Clickable web links}
@@ -417,8 +422,8 @@ in large fast movements.
 Implanted electrodes
 with wireless connections for signals and power
 get high quality stable measurements.
-For the class of users whose lives depend on the exoskeleton,
-it might be worth implanting devices, if they did not interfere
+For users whose lives depend on the exoskeleton,
+it might be worth implanting devices, if they don't interfere
 with performance (soreness, pain in some positions or due to
 movement). It is roughly equivalent to
 operating with embedded shrapnel that has healed over.
@@ -485,9 +490,143 @@ Pressure Sensors Embedded in a Shoe,” IEEE/ASME Transactions on
 Mechatronics, vol. 14, pp. 358–370, 2009.
 \end{verbatim}
 
-These devices measure relative motion of tissue, and could be used
+These implanted devices measure relative motion of tissue, and could be used
 to measure force by measuring tendon stretch:\\
 \url{http://bme.usc.edu/assets/004/54640.pdf}
+
+\subsection{Robot Skin}
+
+We recommend investigating recent developments in robot skin to improve
+operator-exoskeleton force estimation (Figures~\ref{fig:softArtificialSkin}, \ref{fig:IonicLiquidSensors}, \ref{fig:fbgSkin}, and \ref{fig:waveguidesoftsensor}).\\
+\url{http://softrobotics.cs.cmu.edu/research.html#SoftSkin}\\
+\url{http://sml.me.cmu.edu/?page_id=38}\\
+\url{http://softroboticstoolkit.com/book/egain-sensors}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figs/softArtificialSkin.png}
+\caption{Soft artificial skin sensors. (a) Multi-axis strain and pressure sensing skin. (b) Soft multi-axis force sensor.}
+\label{fig:softArtificialSkin}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figs/IonicLiquidSensors.png}
+\caption{Ionic liquid microchannel embedded soft artificial skin sensors. (a) Soft strain sensor. (b) Hand motion detection artificial skin. (c) Soft pressure sensor using an EIT microchannel network.}
+\label{fig:IonicLiquidSensors}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figs/fbgSkin.png}
+\caption{Fiber optically sensorized exoskeletal skin prototypes (a) FBG embedded skin structure with honeycomb patterns. (b) Human fingertip sized robotic finger with embedded FBGs.}
+\label{fig:fbgSkin}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{figs/opticalsoftsensing.png}
+\caption{Optical soft pressure sensor. (a) Preliminary prototype. (b) Prototype with light source and detector. (c) Stressed prototype showing cracked reflective coating. (d) Preliminary experimental result showing resistance increase in\
+ the photo detector with increased curvature.}
+\label{fig:waveguidesoftsensor}
+\end{figure}
+
+\subsection{Ultrasonic sensing}
+
+Ultrasonic imaing is another way to estimate operator force.
+
+Here is a blurb from a previous Atkeson proposal.
+In the case of exoskeleton operators, we do not use a dry interface,
+but can use well designed ultrasound transducers on the skin, probably
+with a gel (vaseline-like) interface for good ultrasonic transmission.
+
+We will explore using ultrasound transducers mounted in the skin
+of the robot to see into the person being manipulated, to track bones,
+tissue movement, and estimate tissue strain.
+We can use real time ultrasound measurements
+to locate bones to guide manipulation.
+We can also use ultrasound to monitor tissue deformation (displacement and
+strain) to guide forces and detect when a manipulation is failing and
+should be stopped or adjusted.
+Using phase-sensitive 2D speckle
+tracking,
+tissue deformation can be accurately
+measured in real time at high spatial ($<$ 1 mm) and temporal ($<$ 10 ms)
+resolution with a large imaging depth of a few cm at typical clinical
+ultrasound imaging frequencies (2-10 MHz).
+Based on the tissue displacement
+information from speckle tracking, a complete set of “locally developed” strain
+tensors of the deformed tissue will be generated, indicating the
+degree of the strains of the tissue in different directions to guide
+manipulation.
+The ``globally applied''
+strain also can be estimated by measuring the distance change of the
+tissue and skin from the bones.
+Non-linear analysis of ``locally
+developed'' strain and ``globally applied'' strain will also
+be applied to determine the criteria
+at which tissue deforms significantly and passes into the
+non-linear region of the soft tissue mechanics,
+and the robot should change its behavior.
+We will do feasibility tests using a
+commercially available linear array transducer, connected to a
+commercial ultrasound research platform (Verasonics US Engine, Verasonics Inc,
+WA, USA), which will be mounted in the robot skin. A
+set of off-the-shelf single element transducers will be mounted on the
+palm and fingers of the robot hand for optimal sensing, imaging and
+feedback. Based on the design parameters obtained, a custom
+built array transducer system incorporated in the skin will be
+developed and evaluated. We expect substantial revision and
+improvements in our volumetric sensing in response to how well it does
+in experimental use, including development of
+better image processing algorithms, as we go.
+In principle, the concept of mounting
+ultrasound transducers in
+robot skin is very similar to the
+detection of prostate cancers from an ultrasound probe mounted
+on a doctor's finger in the rectum to measure
+the elastic properties of nearby tissue.
+The integration of an ultrasound linear array
+transducer onto the robot hand will also be similar to the approaches
+of a previous study of muscle fatigue in the forearms.
+Building a custom ultrasound transducer opens the possibility of distributing
+the transducer across the skin, or putting
+elements of the transducer in support surfaces such as a
+bed or chair, and doing transmission
+ultrasound imaging as well as reflective imaging. Transmission imaging
+may give us better images at greater depth.
+
+{\bf Preliminary Results:}
+In previous work a commercial ultrasound
+linear transducer integrated on to a simulated robot hand (knee pad)
+measured local elasticity and contractility of the muscles in
+the forearm. In the proposed
+study, the knee pad will be replaced with an actual robot hand and the full
+set of strain tensors will be calculated to determine the criteria for
+pain and eventual tissue failure due to the applied shear force.
+It should be noted that ultrasound may conduct poorly without a liquid
+coupling and there is a potential challenge to image the tissues through
+patient clothes. It was confirmed by our pilot tests that ultrasound
+imaging is possible with a minimal spray of water (only enough to moisten
+the clothes. A moisturizing device or sweat may be necessary
+as part of the robot hand next to the ultrasound transducers.
+We will also explore the use of other coupling materials such as very
+soft silicone or gels,
+which might allow ``dry'' measurements. 
+
+Initial tests also confirmed the feasibility of obtaining two
+dimensional strain tensor fields from the ultrasound data obtained with
+clothes on the forearm.
+The strain tensor consists of the
+axial, lateral and shear strains. The axial direction corresponds to
+the direction of
+propagation of ultrasound
+while the lateral direction is
+the one perpendicular to the axial direction.
+If the measured strain goes beyond a specified threshold the robot would be
+programmed to alter its manipulation procedure. Such real time strain
+feedback comes with the possibility of reinforcement learning for the
+robot.
 
 \subsection{Operator state and motion}
 
@@ -560,12 +699,17 @@ and accelerometers/microphones/vibration-sensors attached to the operator skin.
 This will enable the implementation of a variety of intent prediction approaches,
 and avoid ``putting all our eggs in one basket.''
 
-3) We seriously consider implanting devices and markers in operators.
+3) We recommend investigating recent developments in robot skin to improve
+operator-exoskeleton force estimation.
 
 4) We recommend each exoskeleton controller
 to be used by and optimized for a single operator.
 A substantial investment in capturing the operators normal behavior,
 operator training and learning, and controller customization should be made.
+
+5) We recommend investigating implanting devices and markers in operators.
+For users whose lives depend on the exoskeleton,
+it might be worth considering implanted devices.
 
 \section{Appendix: Online Behavior Recognition}
 
