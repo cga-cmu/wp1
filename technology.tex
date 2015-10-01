@@ -134,6 +134,7 @@ ankle 2Nm/kg, 13W/kg
 \end{itemize}
 From: {\it The biomechanics of running,} Tom F. Novacheck,
 Gait and Posture 7 (1998) 77–95.
+\url{http://www.cs.cmu.edu/~cga/exo/info/Novacheck1998.pdf}
 
 \section{What performance is currently available?}
 
@@ -242,10 +243,12 @@ is quite mechanically robust (low maintenance).
 This measurement is before the piston
 seals and transmission, so it does not capture these sources
 of friction. The joint torques are off by up to 10Nm at each joint.
-The Sarcos robot uses load cells in the actuator to joint transmissions.
+The Sarcos robot uses load cells in the actuator to joint transmissions,
+and gets much better measurements. In 10 years we have only had
+one load cell (of 30) fail. It was undersized due to a design error.
 
 On the Atlas humanoid robot there was electromagnetic interactions between
-nearby valves.
+nearby valves which required magnetic shielding.
 
 \subsubsection{Can we do better?}
 
@@ -313,12 +316,15 @@ higher limit on electrical current is demagnetization of motor magnets.
 The JST lab at the University of Tokyo pushed the design of water
 cooled electric motors and motor drivers. This led to the high
 performance of the Schaft robot, a spinoff from that lab.
+We note that the team that won the DARPA Robotics Challenge, KAIST, used
+forced air cooling of its electric motors and drive circuits,
+rather than using water cooling. More details follow.
 
-The water cooled motor driver they developed is capable of 80V and
+The water cooled motor driver JST developed is capable of 80V and
 80A continuous.\\
 \url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5649683}\\
 
-They modified
+JST modified
 MAXON EC-powermax30 200W brush-less motors, and added harmonic drives
 to make an integrated actuator.
 The maximum speed of these actuators was 3 revolutions/second.
@@ -356,10 +362,23 @@ Note that this capacitor weighs 9 kg (Fig~\ref{f:s2}).
 \label{f:s2}
 \end{figure}
 
+Here is information on the KAIST robot DRC-HUBO with air cooled electric
+motors:
+
+{\it ``With customized motor drivers and an air cooling system (fans and fins), the robot is able to drive 3x to 4x more current than what is listed in the motor specs, with peaks of 30 amperes in some cases.}
+
+{\it ``Compliance: The team wanted to make their robot compliant, but didn't want to use force-torque sensors and a conventional feedback controller (which they feared would introduce instabilities). So instead the implemented compliance on their custom motor driver, using a special amplifier.}
+
+{\it ``When motors draw lots of current, the main power system may fail to provide enough power to critical components. To avoid that, the team used a supercapacitor system that keeps computers, communications, and some sensors like gyros running even if the main power system goes down.''}\\
+\url{http://spectrum.ieee.org/automaton/robotics/humanoids/how-kaist-drc-hubo-won-darpa-robotics-challenge}
+
 \subsubsection{What have we learned from implementations?}
 
-This effort ``went dark'' after Google bought the spinoff company
+The JST effort ``went dark'' after Google bought the spinoff company
 Schaft, so there is a lot we don't know.
+
+We will get more information about the DRC-HUBO robot in November at
+the Humanoids conference.
 
 There are concerns about motor lifetime with this pattern of utilization.
 
@@ -465,7 +484,7 @@ of liquid fuels.\\
 
 Different types of actuation can be combined: springs and electric motors,
 for example. This combination can also be viewed as combining energy
-storage and actuation. Slow pneumatics and fast electric motors.\\
+storage and actuation. XoR combined slow pneumatics and fast electric motors.\\
 \url{http://www.cs.cmu.edu/~cga/exo/survey.pdf}\\
 Mini/Macro.\\
 \url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4479941}\\
@@ -569,6 +588,12 @@ an operator, mimicking the operators movement.
 An "angel" could walk, jump, or fly between an operator and potential
 hostile sites, and deflect or disable projectiles.
 \end{enumerate}
+A variant of this approach is to have an exoskeleton that is attached
+to the operator with springs, or springs and dampers. This could give
+the system much more flexibility in terms of deviation between
+operator and exoskeleton motion, and provide a robust substrate for
+operator-exoskeleton force sensing. Maybe a tight fitting exoskeleton
+is a bad idea.
 
 \section{Conclusions and Recommendations}
 

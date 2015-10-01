@@ -48,11 +48,13 @@ We recommend using a Bayesian {\bf (probabilistic) framework}
 for intent recognition and prediction.
 \item
 We recommend developing an intent prediction system that can use
-as {\bf many sensors and measurements} of the operator as are possible.
+as {\bf many sensors and measurements} of the operator as possible.
+\item
+We seriously consider {\bf implanting devices and markers} in operators.
 \item
 We recommend each exoskeleton controller
 to be used by and {\bf optimized for a single operator.}
-A substantial investment in capturing the operators normal behavior,
+A substantial investment in capturing the operator's normal behavior,
 operator training and learning, and controller customization should be made.
 \end{enumerate}
 
@@ -142,7 +144,7 @@ such as mixtures of Gaussians, or probability distributions for trajectories
 of values, supporting non-Markov models of processes such as libraries
 of behaviors.
 
-\subsection{Operator physical state}
+\subsection{Operator state (joint positions and velocities)}
 
 It is useful to estimate the full state of the operator in terms
 of joint positions and velocities.
@@ -186,6 +188,12 @@ parameters and weights.
 Predicting optimization criteria is known as ``inverse optimal control''
 in optimal control and reinforcement learning.\\
 \url{http://www.ri.cmu.edu/publication_view.html?pub_id=7800}
+
+\subsection{Operator physical state}
+
+Estimating operator physical state: how much fatigue (perhaps down
+to the level of metabolic and muscle biochemistry estimates) and
+current and future capabilities.
 
 \subsection{Operator mental state}
 
@@ -282,7 +290,7 @@ is about
 It takes longer to recognize a signal from a set of ongoing events,
 and even longer if the operator has to make a choice based on the signal
 (go left or right, for example).
-Reaction times for complex actions are longer that reaction times
+Reaction times for complex actions are longer than reaction times
 for simple actions.\\
 \url{https://en.wikipedia.org/wiki/Mental_chronometry}.
 
@@ -302,9 +310,8 @@ Voluntary responses - 120-180ms.
 [Motor Learning and Performance: A Situation-based Learning Approach
  By Richard A. Schmidt, Craig A. Wrisber]
 
-Looking at more detail to a reaction to a foot tactile event (a much
-simpler stimulus than to a slip or trip)
-to a calf muscle EMG response:
+Looking in more detail at a reaction to a foot tactile event (a much
+simpler stimulus than to a slip or trip).
 \begin{itemize}
 \item
 Sensing delay foot to foot sensory cells: 5-10ms
@@ -313,7 +320,7 @@ Foot sensors to spinal cord: 10ms
 \item
 Processing in spine (depends on stimulus): 5-10 ms
 \item
-Spinal cord to muscle: 10ms 
+Spinal cord to muscle: 10ms (calf muscle)
 \item
 Electrical delay muscle activation to EMG: 5-10ms
 EMG has a fixed delay from muscle activation due to
@@ -365,7 +372,7 @@ the one at the recent World Cup:\\
 
 The second view is that the field is full of crap. In the above demo,
 the user looked at LEDs in order to get a measurable brain signal.
-This means that one could have just tracked where the user was looking
+This means that one could have just tracked where the user's eyes were looking
 (no brain signals used at all) to figure out what to do.
 In general the bit rate coming out of any brain-machine interface is
 very very low, so decoding the signal is going to be very very slow
@@ -376,8 +383,8 @@ that brain signals,
 in the context of a wide range of other measurements,
 might improve overall intent estimation.
 It may be that brain signals are useful to tell us {\bf when} a behavior
-is happening, if they are not very useful for telling us {\bf what}
-behavior is happening.
+is going to happen, if they are not very useful for telling us {\bf what}
+behavior is going to happen.
 
 \subsection{EMG}
 
@@ -403,10 +410,52 @@ Perspiration changes the measurement.
 Muscle movement leads to surface electrodes losing good contact,
 fully detaching, or
 even ripping off (especially for large fast
-movements, the worst time).
+movements, the worst time). Muscle moves relative to skin,
+so any electrodes going through the skin will get ripped off
+in large fast movements. 
 
-Off the shelf electronics:\\
+Implanted electrodes
+with wireless connections for signals and power
+get high quality stable measurements.
+For the class of users whose lives depend on the exoskeleton,
+it might be worth implanting devices, if they did not interfere
+with performance (soreness, pain in some positions or due to
+movement). It is roughly equivalent to
+operating with embedded shrapnel that has healed over.
+A research goal would be getting these electrodes the size of rice
+grains or smaller.
+
+Implantable EMG electrodes (Figure~\ref{f:emg}):\\
+\url{http://neural.iit.edu/research/imes/}\\
+\url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4716669}\\
+\url{http://link.springer.com/chapter/10.1007\%2F978-3-319-08072-7_12}\\
+\url{http://www.ncbi.nlm.nih.gov/pubmed/19224729}\\
+\url{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2878855/}\\
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figs/emg.png}
+\caption{Implanted EMG electrodes \url{http://neural.iit.edu/research/imes/}}
+\label{f:emg}
+\end{figure}
+
+Off the shelf electronics for surface EMG:\\
 \url{http://www.advancertechnologies.com/p/muscle-sensor-v3.html}
+
+\subsection{Operator muscle motion}
+
+This implantable device measures relative motion of muscle relative
+to other muscles and soft tissues:\\
+\url{http://bme.usc.edu/assets/004/54640.pdf}
+
+It would be relatively easy to develop implanted MEMs IMU devices (MEMs accelerometers
+and gyros) to measure high frequency events (movement onset, reflexes,
+impacts, relative muscle moition, muscle contraction, ...).\\
+\url{http://www.designworldonline.com/surface-mount-accelerometer-for-implantable-medical-devices/}\\
+\url{https://www.endevco.com/meggitt-sensing-systems-announces-endevco\%C2\%AE-surface-mount-accelerometer-series-for-implantable-medical-device-applications/}\\
+\url{http://www.sciencedirect.com/science/article/pii/S0924424713005979}\\
+\url{http://www.ncbi.nlm.nih.gov/pubmed/17574533}\\
+\url{http://circep.ahajournals.org/content/3/6/657.full}\\
 
 \subsection{Operator-exoskeleton force sensing}
 
@@ -436,6 +485,10 @@ Pressure Sensors Embedded in a Shoe,” IEEE/ASME Transactions on
 Mechatronics, vol. 14, pp. 358–370, 2009.
 \end{verbatim}
 
+These devices measure relative motion of tissue, and could be used
+to measure force by measuring tendon stretch:\\
+\url{http://bme.usc.edu/assets/004/54640.pdf}
+
 \subsection{Operator state and motion}
 
 In a full-body exoskeleton
@@ -444,7 +497,8 @@ exoskeleton can be used to measure positions, velocities,
 and accelerations. For partial exoskeletons,
 it may be the case that additional sensors such as distributed 
 angle sensors, tachometers, or inertial measurement units (IMUs)
-are attached to the operator or part of the operator's clothing.
+are attached to or implanted in the operator 
+or part of the operator's clothing.
 
 \section{Modeling the individual operator}
 
@@ -474,7 +528,7 @@ and speech recognition.
 Operators can resolve ambiguities, select behaviors, and indicate
 parameterization (how far, how high, how fast) using these interfaces.
 
-We note that the operator will use more command channels that just
+We note that the operator will probably use more command channels that just
 body movement, since
 the operator controls more than the pose and motion of the
 exoskeleton. What if there are ``pointing'' sensors or communication
@@ -506,7 +560,9 @@ and accelerometers/microphones/vibration-sensors attached to the operator skin.
 This will enable the implementation of a variety of intent prediction approaches,
 and avoid ``putting all our eggs in one basket.''
 
-3) We recommend each exoskeleton controller
+3) We seriously consider implanting devices and markers in operators.
+
+4) We recommend each exoskeleton controller
 to be used by and optimized for a single operator.
 A substantial investment in capturing the operators normal behavior,
 operator training and learning, and controller customization should be made.

@@ -305,11 +305,12 @@ the user specifies a desired force or torque
 which changes according to the position, velocity,
 and acceleration of the joint.
 \item
-Valve control (for fluidic systems):
+Valve control (for fluidic systems)
 \begin{equation}
 \vu = \mK_{\vq} (\vq - \vq_d) + \mK_{\dot{\vq}} ( \dot{\vq} - \dot{\vq}_d )
 + \mK_{\vtau} ( \vtau - \vtau_d )
 + \mK_{\dot{\vtau}} ( \dot{\vtau} - \dot{\vtau}_d ) + \vu_{\ff}
+\label{eq:valve}
 \end{equation}
 where $\vu$ is a valve command vector (with a valve command for each actuator),
 $\vq$ is the vector of joint angles, $\dot{\vq}$ are joint velocities,
@@ -326,6 +327,7 @@ and allows full state feedback
 (including $\vtau$ as part of the state), pole placement, and linear quadratic
 regulator (LQR) control of
 a third order model of actuator plus rigid body dynamics.
+
 If electric motor and power amplifier dynamics are taken into account in electric
 motor systems, there would be an analogous equation for the commanded
 motor voltage of
@@ -334,6 +336,13 @@ the control input of a PWM amplifier.
 The torque error term $\mK_{\vtau} ( \vtau - \vtau_d )$ could be replaced or augmented
 by a servo on piston differential pressure in a fluidic system or
 an electrical current servo in an electric system.
+
+Often this type of control is referred to as a ``torque control inner loop''
+with a ``position/velocity control outer loop''. In this approach
+the inner and outer loops are combined in one equation (eq.~\ref{eq:valve}),
+and there is no
+longer ``inner'' and ``outer'' control quantities. All feedback is
+treated the same way.
 \item
 Online optimization of accelerations, actuator forces and torques, and contact forces
 using quadratic programming. See Section \ref{sec:qp} for further explanation.
@@ -398,7 +407,7 @@ Example word behaviors: walk-to-location(x=7.8m, y=2.3m), run-to-location(speed=
 and horizontal-jump(height=2m, length=5m).
 Global inverse kinematics (selection of solution branch) is performed at this level.
 
-\subsection{Behavior Selection}
+\subsection{``Sentence'' Control: Behavior Selection}
 
 The highest level of control in the recommended architecture is behavior selection,
 which answers the question:
@@ -1085,7 +1094,7 @@ $\mJ_{\myx}$ is used to map from actuation variables $\vu$ to joint torques $\vt
 The rows in $\mJ_{\myx}$ corresponding to the root linear and angular velocities
 are all zero.
 To maintain compatibility in our joint representation, we will similarly
-map operator ``muscle commands'' $\myo$ to operator joint torques $\vtau_{\myo}$.
+map operator ``muscle commands'' $\vu_{\myo}$ to operator joint torques $\vtau_{\myo}$.
 \begin{equation}
 \vtau_{\myo} = \mJ_{\myo} \vu_{\myo}
 \end{equation}
@@ -2040,10 +2049,10 @@ the high frequency noise amplified by the double differentiation process.
 
 Integral admittance control is a refinement of 
 sensitivity amplification control.
-This section is quotes from:\\
+This section quotes from:\\
 \url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7139989}
 
-{\it [Exoskeletons] have the implicit property
+{\it ``[Exoskeletons] have the implicit property
 of causing a virtual modification of the dynamic response of
 the human limb. We use this property of the exoskeletons
 action to formulate a unified control design framework called
@@ -2059,7 +2068,7 @@ achieved. This framework also ensures that the coupled stability
 and passivity are guaranteed.}
 %~\cite{Nagarajan_etal_2015}
 
-{\it ... the impedance of the coupled human-exoskeleton
+{\it ``... the impedance of the coupled human-exoskeleton
 system needs to be reduced below that of the unassisted
 human limb. This implies that the exoskeleton needs to
 cancel its own impedance first and then compensate for
@@ -2081,7 +2090,7 @@ is stable and passive. ...
 %~\cite{Nagarajan_etal_2015}
 
 {\it
-... Inertia compensation is more complex ...
+``... Inertia compensation is more complex ...
 It can be shown that using only positive acceleration
 feedback ..., the gain margin of the coupled system
 reduces to the moment of inertia of the exoskeleton, which
@@ -2094,7 +2103,7 @@ compromising coupled stability. However, using low-pass
 filtered acceleration feedback, it can be shown that inertia 
 reduction can be achieved. ...
 This work uses filtered acceleration
-feedback with a second-order low-pass Butterworth filter. ...
+feedback with a second-order low-pass Butterworth filter. ...''
 }
 %~\cite{Nagarajan_etal_2015}
 
@@ -2112,7 +2121,7 @@ Tech. Rep. TR-CIM-94-15, Nov. 1994.
 This approach implements a passive leg swing in addition to Sensitivity 
 Amplification Control for the stance leg.
 
-{\it The robot utilized the dual-mode control scheme, which is
+{\it ``The robot utilized the dual-mode control scheme, which is
 comprised of the active control for the stance phase and the
 passive control (using bypass valves) for the swing phase, to achieve high walking
 speed in the swing phase while supporting heavy loads in
@@ -2121,7 +2130,7 @@ command at the transition from the swing phase to the stance
 phase, a smoothing method is adopted. We also implemented
 a pre-transition method to take a foot off quickly for fast
 walking by predicting the change from the swing to the stance
-in advance.}\\
+in advance.''}\\
 %~\cite{IEEE07222598}
 \url{http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=7222598}
 
@@ -2131,14 +2140,8 @@ Stance: virtual joint torque control method Kazerooni et al.(2005)
 When contact location between the wearer and the
 exoskeleton is not fixed and difficult to estimate, this method
 has been shown to be an effective method to generate the
-locomotion for an exoskeleton robot.[3],[4],[21]
+locomotion for an exoskeleton robot.
 \begin{verbatim}
-H. Kazerooni , Z. Racine , L. Huang and R. Steger ”On the control of
-the Berkeley lower extremity exoskeleton (BLEEX),” Proc. IEEE Int.
-Conf. Robot. Autom., pp. 4364-4371, 2005.
-Racine Jean-Louis Charles ”Control of a Lower Extrmity Exoskeleton
-for Human Performance Amplification,” University of California,2003.
-582
 Xiuxia Yang, Hongchao Zhao, Yi Zhang, Xiaowei Liu ”Carrying
 Lower Extreme Exoskeleton Rapid Terminal Sliding-Mode Robust
 Control,” Journal of computers, vol.9, No.1,202-208. 2014.
@@ -2146,13 +2149,10 @@ Control,” Journal of computers, vol.9, No.1,202-208. 2014.
 
 To reduce
 sudden changes(command jump) at the phase transitions, a
-smoothing method [5],[19] is introduced and a pre-transition
+smoothing method is introduced and a pre-transition
 method is used to solve the swing delay due to the internal
 pressure(approx 5 bar).
 \begin{verbatim}
-H. Kazerooni , Ryan Steger, Lihua Huang ”Hybrid Control of the
-Berkeley Lower Extremity Exoskeleton (BLEEX),” Int. Journal of
-Robotics Research, pp. 561-573, 2006.
 oonbum Bae, Kyoungchul Kong, Masayoshi Tomizuka ”Gait Phase-
 Based Control for a Rotary Series Elastic Actuator Assisting the knee
 \end{verbatim}
